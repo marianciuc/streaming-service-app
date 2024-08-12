@@ -1,0 +1,31 @@
+package com.mv.streamingservice.content.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Builder
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "seasons")
+@Data
+public class Season extends BaseEntity {
+    @ManyToOne
+    @JoinColumn(name = "content_id", nullable = false)
+    private Content content;
+
+    @Column(name = "season_number")
+    private Integer seasonNumber;
+
+    @Column(name = "season_title")
+    private String seasonTitle;
+
+    @Column(name = "season_release_date")
+    private LocalDateTime seasonReleaseDate;
+
+}
