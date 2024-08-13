@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Entity
@@ -28,4 +29,6 @@ public class Season extends BaseEntity {
     @Column(name = "season_release_date")
     private LocalDateTime seasonReleaseDate;
 
+    @OneToMany(mappedBy = "season")
+    private List<Episode> episodes;
 }
