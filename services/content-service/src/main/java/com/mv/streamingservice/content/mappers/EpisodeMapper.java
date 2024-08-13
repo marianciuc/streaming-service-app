@@ -28,6 +28,12 @@ public class EpisodeMapper implements GenericMapper<Episode, EpisodeResponse, Ep
 
     @Override
     public Episode toEntity(EpisodeRequest dto) {
-        return null;
+        return Episode.builder()
+                .id(dto.id())
+                .title(dto.title())
+                .releaseDate(dto.releaseDate())
+                .description(dto.description())
+                .episodeNumber(dto.episodeNumber())
+                .build();
     }
 }
