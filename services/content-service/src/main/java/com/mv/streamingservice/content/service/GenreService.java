@@ -57,7 +57,7 @@ public class GenreService {
                 .findById(id)
                 .map(genreMapper::toDto)
                 .orElseThrow(
-                        () -> new NoSuchElementException("Genre not found :: " + id.toString())
+                        () -> new NoSuchElementException("Genre not found :: " + id)
                 );
     }
 
@@ -70,7 +70,7 @@ public class GenreService {
      * @throws NoSuchElementException if the genre with the given ID is not found.
      */
     public UUID updateGenre(UUID id, GenreRequest genreRequest) {
-        Genre genre = genreRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Genre not found :: " + id.toString()));
+        Genre genre = genreRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Genre not found :: " + id));
 
         if (!Objects.equals(genreRequest.name(), genre.getName())) genre.setName(genreRequest.name());
         if (!Objects.equals(genreRequest.description(), genre.getDescription()))
@@ -106,7 +106,7 @@ public class GenreService {
      */
     public void deleteById(UUID id) {
         log.info("Deleting genre : {}", id);
-        Genre genre = genreRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Genre not found :: " + id.toString()));
+        Genre genre = genreRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Genre not found :: " + id));
         genre.setRecordStatus(RecordStatus.DELETED);
         genreRepository.save(genre);
     }
