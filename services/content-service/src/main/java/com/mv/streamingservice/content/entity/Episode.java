@@ -6,6 +6,9 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * The Episode class represents an episode of a TV series.
+ */
 @Data
 @Entity
 @Builder
@@ -13,13 +16,27 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "episodes")
 public class Episode extends BaseEntity{
+
+    /**
+     * The season variable represents the season to which an episode belongs.
+     */
     @ManyToOne
     @JoinColumn(name = "season_id", nullable = false)
     private Season season;
 
+    /**
+     * The episodeNumber variable represents the episode number of an episode of a TV series.
+     * It is mapped to the database column "episode_number".
+     * It is a required field and cannot be null.
+     */
     @Column(name = "episode_number", nullable = false)
-    private int episodeNumber;
+    private Integer episodeNumber;
 
+    /**
+     * The title variable represents the title of an episode of a TV series.
+     * It is mapped to the database column "title".
+     * It is a required field and cannot be null.
+     */
     @Column(name = "title", nullable = false)
     private String title;
 
