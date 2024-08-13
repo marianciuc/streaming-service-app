@@ -1,6 +1,7 @@
 package com.mv.streamingservice.content.controller;
 
 import com.mv.streamingservice.content.dto.request.ContentRequest;
+import com.mv.streamingservice.content.dto.request.SeasonRequest;
 import com.mv.streamingservice.content.dto.response.*;
 import com.mv.streamingservice.content.enums.ContentType;
 import com.mv.streamingservice.content.service.ContentService;
@@ -31,7 +32,7 @@ public class ContentController {
     @GetMapping
     public ResponseEntity<PaginationResponse<ContentResponse>> findAllContents(
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-            @RequestParam(value = "size", required = false, defaultValue = "0") Integer size,
+            @RequestParam(value = "size", required = false, defaultValue = "1") Integer size,
             @RequestParam(value = "title", required = false, defaultValue = "") String title,
             @RequestParam(value = "type", required = false, defaultValue = "") ContentType type,
             @RequestParam(value = "genre-id", required = false, defaultValue = "") UUID genreId
@@ -75,5 +76,10 @@ public class ContentController {
             @PathVariable("episode-number") Integer episodeNumber
     ) {
         return ResponseEntity.ok(episodeService.findEpisodeByContentIdAndSeasonNumberAndEpisodeNumber(contentId, seasonNumber, episodeNumber));
+    }
+
+    @PostMapping("/content/{content-id}/series/seasons")
+    public ResponseEntity<UUID> createSeasonContent(@PathVariable("content-id") UUID contentId, @RequestBody @Validated SeasonRequest request) {
+        return ResponseEntity.ok(seasonService.createSeason(contentId, request));
     }
 }
