@@ -29,7 +29,7 @@ public class GenreController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GenreResponse> findGenreById(@RequestParam("id") UUID id) {
+    public ResponseEntity<GenreResponse> findGenreById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(genreService.findGenreResponseById(id));
     }
 
