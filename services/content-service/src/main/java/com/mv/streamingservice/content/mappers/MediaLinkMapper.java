@@ -18,6 +18,10 @@ public class MediaLinkMapper implements GenericMapper<MediaLink, MediaLinkRespon
 
     @Override
     public MediaLink toEntity(MediaLinkRequest dto) {
-        return null;
+        return MediaLink.builder()
+                .id(dto.id())
+                .link(dto.link())
+                .resolution(dto.resolution())
+                .build();
     }
 }

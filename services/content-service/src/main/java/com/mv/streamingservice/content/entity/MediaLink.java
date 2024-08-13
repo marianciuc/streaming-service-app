@@ -3,13 +3,13 @@ package com.mv.streamingservice.content.entity;
 import com.mv.streamingservice.content.enums.Resolution;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @Entity
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "media_links", indexes = {
