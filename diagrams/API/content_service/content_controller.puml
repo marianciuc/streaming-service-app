@@ -1,0 +1,72 @@
+@startuml
+title Content API
+
+actor User
+
+boundary API
+
+User -> API: GET /api/v1/content/{id}
+API --> User: 200 OK (ContentResponse)
+note right: User requests content by ID, API returns content response
+API --> User: 400 Bad Request
+API --> User: 404 Not Found
+API --> User: 500 Server Error
+
+User -> API: GET /api/v1/content?page=0&size=1&title=&type=&genreId=
+API --> User: 200 OK (PaginationResponse<ContentResponse>)
+note right: User requests all content, API returns pagination response
+API --> User: 400 Bad Request
+API --> User: 500 Server Error
+
+User -> API: POST /api/v1/content
+note right: User sends a ContentRequest to create content
+API --> User: 201 Created (UUID)
+note right: API creates a content, returns the content ID
+API --> User: 400 Bad Request
+API --> User: 500 Server Error
+
+User -> API: PUT /api/v1/content/{id}
+note right: User sends a ContentRequest to update content by ID
+API --> User: 200 OK (UUID)
+note right: API updates a content, returns the updated content ID
+API --> User: 400 Bad Request
+API --> User: 404 Not Found
+API --> User: 500 Server Error
+
+User -> API: DELETE /api/v1/content/{id}
+note right: User requests deletion of content by ID
+API --> User: 200 OK
+note right: API deletes the content
+API --> User: 403 Forbidden
+API --> User: 404 Not Found
+API --> User: 500 Server Error
+
+User -> API: GET /api/v1/content/content/{content-id}/movie
+API --> User: 200 OK (MovieResponse)
+note right: User requests movie content, API returns MovieResponse
+API --> User: 400 Bad Request
+API --> User: 404 Not Found
+API --> User: 500 Server Error
+
+User -> API: GET /api/v1/content/content/{content-id}/series/seasons?season-number=
+API --> User: 200 OK (List<SeasonResponse>)
+note right: User requests all seasons of the series, API returns SeasonResponse list
+API --> User: 400 Bad Request
+API --> User: 404 Not Found
+API --> User: 500 Server Error
+
+User -> API: GET /api/v1/content/content/{content-id}/series/seasons/{season-number}/episode/{episode-number}
+API --> User: 200 OK (EpisodeResponse)
+note right: User requests episode by number, API returns EpisodeResponse
+API --> User: 400 Bad Request
+API --> User: 404 Not Found
+API --> User: 500 Server Error
+
+User -> API: POST /api/v1/content/content/{content-id}/series/seasons
+note right: User sends a SeasonRequest to add season to series
+API --> User: 200 OK (UUID)
+note right: API creates a season, returns the season ID
+API --> User: 400 Bad Request
+API --> User: 500 Server Error
+
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+title Genre API
+
+actor User
+
+boundary API
+
+User -> API: GET /api/v1/genres?name=""&page=1&size=10
+API --> User: 200 OK (PaginationResponse<GenreResponse>)
+note right: User requests all genres, API returns pagination response
+API --> User: 400 Bad Request
+note right: API returns error when the request is invalid
+API --> User: 500 Server Error
+note right: API returns error when a server error occurred
+
+User -> API: GET /api/v1/genres/{id}
+API --> User: 200 OK (GenreResponse)
+note right: User requests genre by ID, API returns genre response
+API --> User: 404 Not Found
+note right: API returns error when genre not found
+API --> User: 500 Server Error
+note right: API returns error when a server error occurred
+
+User -> API: POST /api/v1/genres
+note right: User sends a GenreRequest to create a genre
+API --> User: 201 Created (UUID)
+note right: API creates a genre, returns the genre ID
+API --> User: 400 Bad Request
+note right: API returns error when request is invalid
+API --> User: 500 Server Error
+note right: API returns error when a server error occurred
+
+User -> API: PUT /api/v1/genres/{id}
+note right: User sends a GenreRequest to update a genre by ID
+API --> User: 200 OK (UUID)
+note right: API updates a genre, returns the updated genre's ID
+API --> User: 400 Bad Request
+note right: API returns error when request is invalid
+API --> User: 404 Not Found
+note right: API returns error when genre not found
+API --> User: 500 Server Error
+note right: API returns error when a server error occurred
+
+User -> API: DELETE /api/v1/genres/{id}
+note right: User requests deletion of a genre by ID
+API --> User: 200 OK
+note right: API deletes a genre
+API --> User: 403 Forbidden
+note right: API returns error when user is not allowed to delete the genre
+API --> User: 404 Not Found
+note right: API returns error when genre not found
+API --> User: 500 Server Error
+note right: API returns error when a server error occurred
+
+@enduml
