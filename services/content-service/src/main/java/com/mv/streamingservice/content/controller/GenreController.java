@@ -16,6 +16,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/genres")
 @RequiredArgsConstructor
 public class GenreController {
+
     public final GenreService genreService;
 
     @GetMapping
@@ -27,9 +28,9 @@ public class GenreController {
         return ResponseEntity.ok(genreService.findAll(name, page, size));
     }
 
-    @GetMapping("/{genre-id}")
-    public ResponseEntity<GenreResponse> findGenreById(@RequestParam(name = "genre-id") UUID id) {
-        return ResponseEntity.ok(genreService.findById(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<GenreResponse> findGenreById(@RequestParam("id") UUID id) {
+        return ResponseEntity.ok(genreService.findGenreResponseById(id));
     }
 
     @PostMapping
@@ -37,13 +38,13 @@ public class GenreController {
         return ResponseEntity.status(HttpStatus.CREATED).body(genreService.createGenre(genreRequest));
     }
 
-    @PutMapping("/{genre-id}")
-    public ResponseEntity<UUID> updateGenreById(@PathVariable("genre-id") UUID id, @RequestBody GenreRequest genreRequest) {
+    @PutMapping("/{id}")
+    public ResponseEntity<UUID> updateGenreById(@PathVariable("id") UUID id, @Valid @RequestBody GenreRequest genreRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(genreService.updateGenre(id, genreRequest));
     }
 
-    @DeleteMapping("/{genre-id}")
-    public ResponseEntity<Void> deleteGenreById(@PathVariable("genre-id") UUID id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGenreById(@PathVariable("id") UUID id) {
         genreService.deleteById(id);
         return ResponseEntity.ok().build();
     }

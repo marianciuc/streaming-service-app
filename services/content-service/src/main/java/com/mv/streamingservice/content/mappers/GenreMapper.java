@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 public class GenreMapper implements GenericMapper<Genre, GenreResponse, GenreRequest> {
 
     public GenreResponse toDto(Genre genre) {
+        if (genre == null) {
+            throw new IllegalArgumentException("Cannot map to DTO as genre is null");
+        }
         return new GenreResponse(genre.getId(), genre.getName(), genre.getDescription());
     }
 

@@ -46,16 +46,36 @@ public class GenreService {
     }
 
     /**
-     * Finds a genre by its ID.
+     * Finds the GenreResponse for the given genre Id.
      *
-     * @param id The ID of the genre to find.
-     * @return The GenreResponse object containing the genre information.
-     * @throws NoSuchElementException if the genre with the given ID is not found.
+     * @param id the Id of the genre
+     * @return the GenreResponse corresponding to the given Id
      */
-    public GenreResponse findById(UUID id) {
+    public GenreResponse findGenreResponseById(UUID id) {
+        Genre genre = getGenreById(id);
+        return genreMapper.toDto(genre);
+    }
+
+    /**
+     * Finds a genre entity in the database by its ID.
+     *
+     * @param id The ID of the genre entity.
+     * @return The genre entity associated with the given ID, or null if no such entity exists.
+     */
+    public Genre findGenreEntityById(UUID id) {
+        return getGenreById(id);
+    }
+
+    /**
+     * Retrieves the genre with the specified ID from the genre repository.
+     *
+     * @param id the ID of the genre to retrieve
+     * @return the genre with the specified ID
+     * @throws NoSuchElementException if no genre is found with the specified ID
+     */
+    private Genre getGenreById(UUID id) {
         return genreRepository
                 .findById(id)
-                .map(genreMapper::toDto)
                 .orElseThrow(
                         () -> new NoSuchElementException("Genre not found :: " + id)
                 );
