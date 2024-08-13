@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
+/**
+ * The ExceptionHandlerController class is responsible for handling exceptions thrown by RESTful APIs
+ * and constructing appropriate ResponseEntity objects.
+ */
 @RestControllerAdvice
 public class ExceptionHandlerController {
 
