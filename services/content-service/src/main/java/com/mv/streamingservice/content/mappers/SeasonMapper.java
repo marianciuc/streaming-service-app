@@ -28,6 +28,11 @@ public class SeasonMapper implements GenericMapper<Season, SeasonResponse, Seaso
 
     @Override
     public Season toEntity(SeasonRequest dto) {
-        return null;
+        return Season.builder()
+                .id(dto.id())
+                .seasonNumber(dto.seasonNumber())
+                .seasonTitle(dto.seasonTitle())
+                .seasonReleaseDate(dto.releaseDate())
+                .build();
     }
 }
