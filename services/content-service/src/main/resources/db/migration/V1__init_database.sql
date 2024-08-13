@@ -4,7 +4,7 @@ create table if not exists content
     created_at    timestamp default (CURRENT_TIMESTAMP),
     updated_at    timestamp default (CURRENT_TIMESTAMP),
     record_status varchar(20)  not null,
-    title         varchar(255) not null,
+    title         varchar(255) not null unique,
     description   text         not null,
     content_type  varchar(50)  not null,
     release_date  timestamp,
@@ -30,7 +30,7 @@ create table if not exists genres
     created_at    timestamp default (CURRENT_TIMESTAMP),
     updated_at    timestamp default (CURRENT_TIMESTAMP),
     record_status varchar(20)  not null,
-    name          varchar(255) not null,
+    name          varchar(255) not null unique,
     description   text         not null
 );
 
@@ -53,7 +53,7 @@ create table if not exists episodes
     title          text        not null,
     release_date   timestamp   not null,
     description    text        not null,
-    season_id      uuid not null
+    season_id      uuid        not null
 );
 
 create table if not exists media_links
@@ -70,15 +70,15 @@ create table if not exists media_links
 
 create table if not exists seasons
 (
-    id            uuid         not null primary key,
-    created_at    timestamp default (CURRENT_TIMESTAMP),
-    updated_at    timestamp default (CURRENT_TIMESTAMP),
-    record_status varchar(20)  not null,
-    content_id uuid not null,
-    season_number int not null,
-    season_title text not null,
-    season_release_date  timestamp not null,
-    foreign key (content_id) references content(id)
+    id                  uuid        not null primary key,
+    created_at          timestamp default (CURRENT_TIMESTAMP),
+    updated_at          timestamp default (CURRENT_TIMESTAMP),
+    record_status       varchar(20) not null,
+    content_id          uuid        not null,
+    season_number       int         not null,
+    season_title        text        not null,
+    season_release_date timestamp   not null,
+    foreign key (content_id) references content (id)
 );
 
 
@@ -89,4 +89,10 @@ alter table movies
 alter table media_links
     add foreign key (episode_id) references episodes (id),
     add foreign key (movie_id) references movies (id);
-alter table episodes add foreign key (season_id) references seasons(id)
+alter table episodes
+    add foreign key (season_id) references seasons (id);
+
+ALTER TABLE content ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY active_content_policy ON content
+    FOR SELECT USING (record_status != 'DELETED');
