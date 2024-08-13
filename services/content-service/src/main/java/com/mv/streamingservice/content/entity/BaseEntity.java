@@ -38,4 +38,9 @@ public class BaseEntity {
     @Column(name = "record_status", length = 30, columnDefinition = "varchar(30) default 'ACTIVE'")
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private RecordStatus recordStatus = RecordStatus.ACTIVE;
+
+    public boolean isRecordStatusDeleted() {
+        return this.recordStatus == RecordStatus.DELETED;
+    }
+
 }
