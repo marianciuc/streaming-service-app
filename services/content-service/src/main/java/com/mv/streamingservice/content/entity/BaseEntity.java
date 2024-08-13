@@ -2,7 +2,10 @@ package com.mv.streamingservice.content.entity;
 
 import com.mv.streamingservice.content.enums.RecordStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,6 +16,9 @@ import java.util.UUID;
 
 @Data
 @MappedSuperclass
+@AllArgsConstructor
+@SuperBuilder
+@NoArgsConstructor
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
