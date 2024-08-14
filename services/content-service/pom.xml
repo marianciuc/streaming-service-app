@@ -15,10 +15,21 @@
 	<description>Content Service</description>
 	<url/>
 	<licenses>
-		<license/>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<id>Vladimir Marianciuc</id>
+			<name>Vladimir Marianciuc</name>
+			<email>marianciuc.work@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>

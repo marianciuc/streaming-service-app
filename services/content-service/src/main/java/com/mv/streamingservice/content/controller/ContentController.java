@@ -1,6 +1,7 @@
 package com.mv.streamingservice.content.controller;
 
 import com.mv.streamingservice.content.dto.request.ContentRequest;
+import com.mv.streamingservice.content.dto.request.EpisodeRequest;
 import com.mv.streamingservice.content.dto.request.SeasonRequest;
 import com.mv.streamingservice.content.dto.response.*;
 import com.mv.streamingservice.content.enums.ContentType;
@@ -56,12 +57,12 @@ public class ContentController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/content/{content-id}/movie")
+    @GetMapping("/{content-id}/movie")
     public ResponseEntity<MovieResponse> getMovieContent(@PathVariable("content-id") UUID id) {
         return ResponseEntity.ok(contentService.getMovieContent(id));
     }
 
-    @GetMapping("/content/{content-id}/series/seasons")
+    @GetMapping("/{content-id}/series/seasons")
     public ResponseEntity<List<SeasonResponse>> getSeasonContents(
             @PathVariable("content-id") UUID contentId,
             @RequestParam(value = "season-number", required = false, defaultValue = "") Integer seasonNumber
@@ -69,7 +70,7 @@ public class ContentController {
         return ResponseEntity.ok(seasonService.getSeasonsByContentId(contentId, seasonNumber));
     }
 
-    @GetMapping("/content/{content-id}/series/seasons/{season-number}/episode/{episode-number}")
+    @GetMapping("/{content-id}/series/seasons/{season-number}/episode/{episode-number}")
     public ResponseEntity<EpisodeResponse> getEpisodeContent(
             @PathVariable("content-id") UUID contentId,
             @PathVariable("season-number") Integer seasonNumber,
@@ -78,8 +79,52 @@ public class ContentController {
         return ResponseEntity.ok(episodeService.findEpisodeByContentIdAndSeasonNumberAndEpisodeNumber(contentId, seasonNumber, episodeNumber));
     }
 
-    @PostMapping("/content/{content-id}/series/seasons")
-    public ResponseEntity<UUID> createSeasonContent(@PathVariable("content-id") UUID contentId, @RequestBody @Validated SeasonRequest request) {
+    @PostMapping("/{content-id}/series/seasons")
+    public ResponseEntity<UUID> createSeasonContent(
+            @PathVariable("content-id") UUID contentId,
+            @RequestBody @Validated SeasonRequest request
+    ) {
         return ResponseEntity.ok(seasonService.createSeason(contentId, request));
+    }
+
+    @PostMapping("/{content-id}/series/seasons/{season-number}/episode")
+    public ResponseEntity<UUID> createEpisodeContent(
+            @PathVariable("content-id") UUID contentId,
+            @PathVariable("season-number") Integer seasonNumber,
+            @RequestBody @Validated EpisodeRequest request
+    ) {
+        return ResponseEntity.ok(episodeService.createEpisode(contentId, seasonNumber, request));
+    }
+
+    @PutMapping("/seasons/{season-id}")
+    public ResponseEntity<UUID> updateSeasonContent(
+            @PathVariable("season-id") UUID seasonId,
+            @RequestBody @Validated SeasonRequest request
+    ) {
+        return ResponseEntity.ok(seasonService.updateSeason(seasonId, request));
+    }
+
+    @PutMapping("/episode/{episode-id}")
+    public ResponseEntity<UUID> updateEpisodeContent(
+            @PathVariable("episode-id") UUID episodeId,
+            @RequestBody @Validated EpisodeRequest request
+    ) {
+        return ResponseEntity.ok(episodeService.updateEpisode(episodeId, request));
+    }
+
+    @DeleteMapping("/episode/{episode-id}")
+    public ResponseEntity<Void> deleteEpisodeContent(
+            @PathVariable("episode-id") UUID episodeId
+    ){
+        episodeService.deleteEpisode(episodeId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/seasons/{season-id}")
+    public ResponseEntity<Void> deleteSeasonContent(
+            @PathVariable("season-id") UUID seasonId
+    ){
+        seasonService.deleteSeason(seasonId);
+        return ResponseEntity.ok().build();
     }
 }
