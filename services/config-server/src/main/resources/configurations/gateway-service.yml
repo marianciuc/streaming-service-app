@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: user-service
+          uri: lb:http://USER-SERVICE
+          predicates:
+            - Path=/api/v1/users/**
+        - id: security-server
+          uri: lb:http://SECURITY-SERVER
+          predicates:
+            - Path=/api/v1/auth/**
+server:
+  port: 8222

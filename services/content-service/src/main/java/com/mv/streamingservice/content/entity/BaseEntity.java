@@ -42,5 +42,4 @@ public class BaseEntity {
     public boolean isRecordStatusDeleted() {
         return this.recordStatus == RecordStatus.DELETED;
     }
-
 }

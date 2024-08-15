@@ -16,3 +16,5 @@ spring:
     baseline-version: 0
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
+server:
+  port: 8060

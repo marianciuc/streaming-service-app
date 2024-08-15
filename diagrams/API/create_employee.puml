@@ -1,0 +1,24 @@
+@startuml
+actor AdminHR as "Admin / HR"
+participant Gateway
+participant SecurityService as "Security Service"
+participant UserService as "User Service"
+participant EmployeeService as "Employee Service"
+
+AdminHR -> Gateway: POST /employee
+Gateway -> SecurityService: Token verification
+SecurityService --> Gateway: Verified / 403
+
+alt Verified
+    Gateway -> EmployeeService: POST /employee
+    EmployeeService -> SecurityService: Request password hash
+    SecurityService --> EmployeeService: JSON HashPassword
+    EmployeeService -> UserService: POST /user (with HashPassword)
+    UserService --> EmployeeService: User Id
+    EmployeeService --> Gateway: Employee created
+else 403 Forbidden
+    Gateway --> AdminHR: Access Denied
+end
+
+Gateway --> AdminHR: Confirmation / Error
+@enduml

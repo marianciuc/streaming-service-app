@@ -1,7 +1,8 @@
 services:
+  # PostgresSQL service
   postgres:
     container_name: ms_pg_sql_streaming_service
-    image: postgres
+    image: postgres:latest
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -14,6 +15,16 @@ services:
       - streaming-service-app-net
     restart: unless-stopped
 
+  # Zipkin service
+  zipkin:
+    container_name: zipkin_streaming_service
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - streaming-service-app-net
+
+  # Zookeeper service
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper_streaming_service
@@ -25,6 +36,8 @@ services:
       - 22181:2181
     networks:
       - streaming-service-app-net
+
+  # Kafka service
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: ms_kafka_streaming_service
@@ -42,6 +55,7 @@ services:
     networks:
       - streaming-service-app-net
 
+  # Mail Dev service
   mail-dev:
     container_name: ms_mail_streaming_service_dev
     image: maildev/maildev
@@ -49,10 +63,22 @@ services:
       - 1080:1080
       - 1025:1025
 
+  # MongoDb service
+  mongodb:
+    container_name: ms_mongodb_streaming_service
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+
 networks:
   streaming-service-app-net:
     driver: bridge
 
 volumes:
   postgres:
-  pgadmin:
+  mongo:
