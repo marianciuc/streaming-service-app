@@ -75,6 +75,27 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
 
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: ms_keycloak_streaming_service
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN: root
+      KEYCLOAK_ADMIN_PASSWORD: root
+    ports:
+      - 9098:8080
+    networks:
+      - streaming-service-app-net
+    depends_on:
+      - postgres
+    command:
+      - "start-dev"
+
 networks:
   streaming-service-app-net:
     driver: bridge

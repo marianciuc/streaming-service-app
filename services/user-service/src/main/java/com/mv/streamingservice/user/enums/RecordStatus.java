@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.entity;
+package com.mv.streamingservice.user.enums;
 
 /**
  * Defines the status of any given record.

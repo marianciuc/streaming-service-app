@@ -1,8 +1,8 @@
 package com.mv.streamingservice.user.dto;
 
-import com.mv.streamingservice.user.entity.RecordStatus;
-import com.mv.streamingservice.user.entity.Role;
-import com.mv.streamingservice.user.entity.UserType;
+import com.mv.streamingservice.user.enums.RecordStatus;
+import com.mv.streamingservice.user.enums.Role;
+import com.mv.streamingservice.user.enums.UserType;
 
 import java.util.UUID;
 

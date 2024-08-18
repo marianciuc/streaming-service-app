@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.entity;
+package com.mv.streamingservice.user.enums;
 
 /**
  * The {@code Role} enum represents the different roles
@@ -17,7 +17,7 @@ public enum Role {
      * {@code MANAGE_INTERNAL_RESOURCES},
      * {@code POST_COMMENTS}
      */
-    ADMIN("admin"),
+    ROLE_ADMIN("admin"),
 
     /**
      * Represents a role of a content moderator in the system.
@@ -26,7 +26,7 @@ public enum Role {
      * {@code MODERATE_COMMENTS},
      * {@code POST_COMMENTS}
      */
-    CONTENT_MODERATOR("content_moderator"),
+    ROLE_CONTENT_MODERATOR("content_moderator"),
     /**
      * Represents a role of a support staff in the system.
      * {@code VIEW_CONTENT},
@@ -34,7 +34,7 @@ public enum Role {
      * {@code MANAGE_SUBSCRIPTIONS},
      * {@code HANDLE_CUSTOMER_REQUESTS}
      */
-    SUPPORT_STAFF("support_staff"),
+    ROLE_SUPPORT_STAFF("support_staff"),
     /**
      * Represents a role of an unsubscribed user in the system.
      * {@code MANAGE_SUBSCRIPTIONS},
@@ -43,7 +43,7 @@ public enum Role {
      * Possible values:
      * - unsubscribed_user
      */
-    UNSUBSCRIBED_USER("unsubscribed_user"),
+    ROLE_UNSUBSCRIBED_USER("unsubscribed_user"),
     /**
      * Represents a role of a subscribed user in the system.
      * {@code MANAGE_SUBSCRIPTIONS}
@@ -53,7 +53,8 @@ public enum Role {
      * Possible values:
      * - subscribed_user
      */
-    SUBSCRIBED_USER("subscribed_user");
+    ROLE_SUBSCRIBED_USER("subscribed_user"),
+    ROLE_SERVICE("service");
 
     public final String roleName;
 

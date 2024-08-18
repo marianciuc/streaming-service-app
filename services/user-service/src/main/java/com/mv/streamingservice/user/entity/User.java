@@ -1,5 +1,8 @@
 package com.mv.streamingservice.user.entity;
 
+import com.mv.streamingservice.user.enums.RecordStatus;
+import com.mv.streamingservice.user.enums.Role;
+import com.mv.streamingservice.user.enums.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +12,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,7 +36,7 @@ import java.util.UUID;
         @Index(name = "idxEmail", columnList = "email"),
         @Index(name = "idxUsername", columnList = "username")
 })
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,7 +48,6 @@ public class User {
     @Column(nullable = false, unique = true, name = "username", updatable = false)
     private String username;
 
-    @Column(nullable = false, name = "passwordHash")
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
@@ -67,11 +74,33 @@ public class User {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private RecordStatus recordStatus = RecordStatus.ACTIVE;
 
-    public boolean isRecordStatusDeleted() {
-        return this.recordStatus == RecordStatus.DELETED;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    public boolean isRecordStatusActive() {
-        return this.recordStatus == RecordStatus.ACTIVE;
+    @Override
+    public String getPassword() {
+        return this.getPasswordHash();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !this.isBanned;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return recordStatus == RecordStatus.ACTIVE;
     }
 }

@@ -1,12 +1,11 @@
 package com.mv.streamingservice.user.repositories;
 
-import com.mv.streamingservice.user.entity.RecordStatus;
 import com.mv.streamingservice.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,5 +29,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * @return The optional
      */
     @Query("SELECT u FROM User u WHERE u.username = :value OR u.email = :value")
+    @Transactional(readOnly = true)
     Optional<User> findByEmailOrUsername(@Param("value") String value);
 }

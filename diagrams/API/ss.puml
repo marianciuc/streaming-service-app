@@ -1,0 +1,34 @@
+@startuml
+actor Client
+participant Gateway
+participant ServiceAccessMap
+participant IdentificationServer as IDServer
+participant UserRightsResponse
+
+Client -> Gateway: Отправка запроса с токеном
+alt Запрос от сервиса
+    Gateway -> ServiceAccessMap: Получение списка разрешённых маршрутов для сервиса
+    ServiceAccessMap --> Gateway: Список маршрутов
+    Gateway -> Gateway: Проверка совпадения requestPath с разрешёнными маршрутами
+    alt Маршрут разрешён
+        Gateway --> Client: Доступ разрешён
+    else
+        Gateway --> Client: Доступ запрещён
+    end
+else Запрос от пользователя
+    Gateway -> IDServer: Проверка токена на сервере идентификации
+    IDServer --> Gateway: Ответ с правами пользователя (roles, permissions)
+    Gateway -> UserRightsResponse: Проверка прав на доступ к requestPath
+    alt Разрешение на маршрут в permissions
+        Gateway --> Client: Доступ разрешён
+    else Роли пользователя содержат ADMIN
+        alt requestPath начинается с "/admin/"
+            Gateway --> Client: Доступ разрешён
+        else
+            Gateway --> Client: Доступ запрещён
+        end
+    else
+        Gateway --> Client: Доступ запрещён
+    end
+end
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+actor User
+participant Gateway
+participant UserSecurityService
+participant ServiceA
+participant ServiceB
+
+User -> Gateway: Request
+alt Request from User
+    Gateway -> UserSecurityService: Token validation
+    UserSecurityService --> Gateway: Is token valid?
+    alt Token is valid
+        Gateway -> ServiceA: Forward request to the appropriate service
+        ServiceA --> Gateway: Response from service
+        Gateway --> User: Response to user
+    else Token is invalid
+        Gateway --> User: Access denied
+    end
+else Request from Service
+    Gateway -> Gateway: Check x-server-name header
+    alt x-server-name header is present
+        Gateway -> Gateway: Validate service token
+        alt Service token is valid
+            Gateway -> ServiceB: Forward request to another service
+            ServiceB --> Gateway: Response from service
+            Gateway --> ServiceA: Response to Service A
+        else Service token is invalid
+            Gateway --> ServiceA: Access denied
+        end
+    else x-server-name header is absent
+        Gateway --> ServiceA: Access denied
+    end
+end
+@enduml

@@ -1,20 +1,17 @@
 package com.mv.streamingservice.user.mappers;
 
-import com.mv.streamingservice.user.dto.UserRequest;
+import com.mv.streamingservice.user.dto.RegistrationRequest;
 import com.mv.streamingservice.user.dto.UserResponse;
 import com.mv.streamingservice.user.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
-    public User toEntity(UserRequest userRequest) {
+
+    public User fromRegistrationRequest(RegistrationRequest request) {
         return User.builder()
-                .id(userRequest.id())
-                .role(userRequest.role())
-                .userType(userRequest.userType())
-                .username(userRequest.username())
-                .email(userRequest.email())
-                .passwordHash(userRequest.securePassword())
+                .email(request.email())
+                .username(request.username())
                 .build();
     }
 
