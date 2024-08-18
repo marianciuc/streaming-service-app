@@ -1,8 +1,0 @@
-jwt:
-  secret-key: b26abf5db60ed7128830420838e03dbf6b729d74143d1e0a1dfa268d339f781a
-  expiration: 86400000
-application:
-  config:
-    users-service-url: http://localhost:8222/api/v1/users
-server:
-  port: 8032

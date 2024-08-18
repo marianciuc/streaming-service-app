@@ -18,6 +18,3 @@ spring:
       password: ${spring.datasource.password}
   server:
     port: 8050
-  logging:
-    level:
-      org.flywaydb: DEBUG
