@@ -1,4 +1,4 @@
-package com.mv.streamingservice.payment.entity;
+package io.github.marianciuc.streamingservice.payment.entity;
 
 public class Address {
     private String line1;

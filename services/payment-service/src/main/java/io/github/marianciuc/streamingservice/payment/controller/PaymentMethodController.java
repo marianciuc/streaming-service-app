@@ -1,9 +1,9 @@
-package com.mv.streamingservice.payment.controller;
+package io.github.marianciuc.streamingservice.payment.controller;
 
 
-import com.mv.streamingservice.payment.dto.PaymentRequest;
-import com.mv.streamingservice.payment.dto.PaymentResponse;
-import com.mv.streamingservice.payment.service.PaymentService;
+import io.github.marianciuc.streamingservice.payment.dto.PaymentRequest;
+import io.github.marianciuc.streamingservice.payment.dto.PaymentResponse;
+import io.github.marianciuc.streamingservice.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

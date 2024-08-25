@@ -1,6 +1,7 @@
-package com.mv.streamingservice.payment.dto;
+package io.github.marianciuc.streamingservice.payment.dto;
 
-import com.mv.streamingservice.payment.entity.Currency;
+
+import io.github.marianciuc.streamingservice.payment.entity.Currency;
 
 public record ChargeRequest(
         Currency currency,

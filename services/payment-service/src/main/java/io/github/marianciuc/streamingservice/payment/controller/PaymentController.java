@@ -1,4 +1,4 @@
-package com.mv.streamingservice.payment.controller;
+package io.github.marianciuc.streamingservice.payment.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

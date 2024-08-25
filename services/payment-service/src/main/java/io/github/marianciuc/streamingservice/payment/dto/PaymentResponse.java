@@ -1,4 +1,4 @@
-package com.mv.streamingservice.payment.dto;
+package io.github.marianciuc.streamingservice.payment.dto;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package com.mv.streamingservice.payment.service;
+package io.github.marianciuc.streamingservice.payment.service;
 
 import org.springframework.stereotype.Service;
 
