@@ -1,7 +1,7 @@
-package com.mv.streamingservice.subscription.repository;
+package io.github.marianciuc.streamingservice.subscription.repository;
 
-import com.mv.streamingservice.subscription.entity.SubscriptionStatus;
-import com.mv.streamingservice.subscription.entity.UserSubscriptions;
+import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
+import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;

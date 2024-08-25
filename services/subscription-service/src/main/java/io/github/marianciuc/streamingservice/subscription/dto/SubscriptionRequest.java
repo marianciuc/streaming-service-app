@@ -1,8 +1,8 @@
-package com.mv.streamingservice.subscription.dto;
+package io.github.marianciuc.streamingservice.subscription.dto;
 
 
-import com.mv.streamingservice.subscription.entity.Currency;
-import com.mv.streamingservice.subscription.entity.Resolution;
+import io.github.marianciuc.streamingservice.subscription.entity.Currency;
+import io.github.marianciuc.streamingservice.subscription.entity.Resolution;
 import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;
 

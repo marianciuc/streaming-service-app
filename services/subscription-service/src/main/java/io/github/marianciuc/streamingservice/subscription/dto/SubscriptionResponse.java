@@ -1,6 +1,7 @@
-package com.mv.streamingservice.subscription.dto;
+package io.github.marianciuc.streamingservice.subscription.dto;
 
-import com.mv.streamingservice.subscription.entity.RecordStatus;
+
+import io.github.marianciuc.streamingservice.subscription.entity.RecordStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

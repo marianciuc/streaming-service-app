@@ -1,8 +1,9 @@
-package com.mv.streamingservice.subscription.service;
+package io.github.marianciuc.streamingservice.subscription.service;
 
-import com.mv.streamingservice.subscription.entity.SubscriptionStatus;
-import com.mv.streamingservice.subscription.entity.UserSubscriptions;
-import com.mv.streamingservice.subscription.repository.UserSubscriptionRepository;
+
+import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
+import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
+import io.github.marianciuc.streamingservice.subscription.repository.UserSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

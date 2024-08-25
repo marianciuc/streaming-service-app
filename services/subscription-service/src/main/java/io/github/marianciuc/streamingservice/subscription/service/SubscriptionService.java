@@ -1,12 +1,13 @@
-package com.mv.streamingservice.subscription.service;
+package io.github.marianciuc.streamingservice.subscription.service;
 
-import com.mv.streamingservice.subscription.dto.SubscriptionRequest;
-import com.mv.streamingservice.subscription.dto.SubscriptionResponse;
-import com.mv.streamingservice.subscription.entity.RecordStatus;
-import com.mv.streamingservice.subscription.entity.Subscription;
-import com.mv.streamingservice.subscription.exceptions.NotFoundException;
-import com.mv.streamingservice.subscription.mapper.SubscriptionMapper;
-import com.mv.streamingservice.subscription.repository.SubscriptionRepository;
+
+import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionRequest;
+import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionResponse;
+import io.github.marianciuc.streamingservice.subscription.entity.RecordStatus;
+import io.github.marianciuc.streamingservice.subscription.entity.Subscription;
+import io.github.marianciuc.streamingservice.subscription.exceptions.NotFoundException;
+import io.github.marianciuc.streamingservice.subscription.mapper.SubscriptionMapper;
+import io.github.marianciuc.streamingservice.subscription.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

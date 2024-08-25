@@ -1,7 +1,7 @@
-package com.mv.streamingservice.subscription.mapper;
+package io.github.marianciuc.streamingservice.subscription.mapper;
 
-import com.mv.streamingservice.subscription.dto.SubscriptionRequest;
-import com.mv.streamingservice.subscription.entity.Subscription;
+import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionRequest;
+import io.github.marianciuc.streamingservice.subscription.entity.Subscription;
 import org.springframework.stereotype.Component;
 
 @Component
