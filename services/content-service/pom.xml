@@ -8,8 +8,8 @@
 		<version>3.3.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.mv.streamingservice</groupId>
-	<artifactId>content-service</artifactId>
+	<groupId>io.github.marianciuc.streamingservice</groupId>
+	<artifactId>content</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>content-service</name>
 	<description>Content Service</description>
