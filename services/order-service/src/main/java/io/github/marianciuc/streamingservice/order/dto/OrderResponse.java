@@ -1,6 +1,7 @@
-package com.mv.streamingservice.order.dto;
+package io.github.marianciuc.streamingservice.order.dto;
 
-import com.mv.streamingservice.order.entity.OrderStatus;
+
+import io.github.marianciuc.streamingservice.order.entity.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

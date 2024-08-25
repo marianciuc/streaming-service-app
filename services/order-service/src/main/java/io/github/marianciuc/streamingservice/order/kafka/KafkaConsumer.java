@@ -1,4 +1,4 @@
-package com.mv.streamingservice.order.kafka;
+package io.github.marianciuc.streamingservice.order.kafka;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

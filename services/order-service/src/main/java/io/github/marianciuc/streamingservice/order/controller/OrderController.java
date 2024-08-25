@@ -1,9 +1,9 @@
-package com.mv.streamingservice.order.controller;
+package io.github.marianciuc.streamingservice.order.controller;
 
-import com.mv.streamingservice.order.dto.OrderRequest;
-import com.mv.streamingservice.order.dto.OrderResponse;
-import com.mv.streamingservice.order.service.OrderService;
-import com.mv.streamingservice.order.entity.Order;
+import io.github.marianciuc.streamingservice.order.dto.OrderRequest;
+import io.github.marianciuc.streamingservice.order.dto.OrderResponse;
+import io.github.marianciuc.streamingservice.order.entity.Order;
+import io.github.marianciuc.streamingservice.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

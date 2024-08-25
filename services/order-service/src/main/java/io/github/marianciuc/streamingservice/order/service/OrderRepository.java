@@ -1,6 +1,6 @@
-package com.mv.streamingservice.order.service;
+package io.github.marianciuc.streamingservice.order.service;
 
-import com.mv.streamingservice.order.entity.Order;
+import io.github.marianciuc.streamingservice.order.entity.Order;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.UUID;

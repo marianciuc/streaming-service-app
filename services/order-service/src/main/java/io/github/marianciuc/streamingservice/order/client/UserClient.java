@@ -1,4 +1,4 @@
-package com.mv.streamingservice.order.client;
+package io.github.marianciuc.streamingservice.order.client;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;

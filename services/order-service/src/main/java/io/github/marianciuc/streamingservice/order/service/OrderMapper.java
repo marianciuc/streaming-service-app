@@ -1,7 +1,7 @@
-package com.mv.streamingservice.order.service;
+package io.github.marianciuc.streamingservice.order.service;
 
-import com.mv.streamingservice.order.dto.OrderResponse;
-import com.mv.streamingservice.order.entity.Order;
+import io.github.marianciuc.streamingservice.order.dto.OrderResponse;
+import io.github.marianciuc.streamingservice.order.entity.Order;
 import org.springframework.stereotype.Component;
 
 @Component

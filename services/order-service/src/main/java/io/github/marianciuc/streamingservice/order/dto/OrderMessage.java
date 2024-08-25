@@ -1,4 +1,4 @@
-package com.mv.streamingservice.order.dto;
+package io.github.marianciuc.streamingservice.order.dto;
 
 import java.util.UUID;
 

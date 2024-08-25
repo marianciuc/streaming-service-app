@@ -1,6 +1,6 @@
-package com.mv.streamingservice.order.client;
+package io.github.marianciuc.streamingservice.order.client;
 
-import com.mv.streamingservice.order.dto.Subscription;
+import io.github.marianciuc.streamingservice.order.dto.Subscription;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

@@ -1,13 +1,12 @@
-package com.mv.streamingservice.order.service;
+package io.github.marianciuc.streamingservice.order.service;
 
-import com.mv.streamingservice.order.client.UserClient;
-import com.mv.streamingservice.order.client.SubscriptionClient;
-import com.mv.streamingservice.order.dto.OrderRequest;
-import com.mv.streamingservice.order.dto.OrderResponse;
-import com.mv.streamingservice.order.dto.Subscription;
-import com.mv.streamingservice.order.entity.Order;
-import com.mv.streamingservice.order.entity.OrderStatus;
-import com.mv.streamingservice.order.kafka.KafkaProducer;
+import io.github.marianciuc.streamingservice.order.client.SubscriptionClient;
+import io.github.marianciuc.streamingservice.order.dto.OrderRequest;
+import io.github.marianciuc.streamingservice.order.dto.OrderResponse;
+import io.github.marianciuc.streamingservice.order.dto.Subscription;
+import io.github.marianciuc.streamingservice.order.entity.Order;
+import io.github.marianciuc.streamingservice.order.entity.OrderStatus;
+import io.github.marianciuc.streamingservice.order.kafka.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserClient customerClient;
     private final SubscriptionClient subscriptionClient;
     private final KafkaProducer kafkaProducer;
     private final OrderMapper orderMapper;

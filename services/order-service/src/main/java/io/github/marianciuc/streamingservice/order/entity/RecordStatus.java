@@ -1,4 +1,4 @@
-package com.mv.streamingservice.order.entity;
+package io.github.marianciuc.streamingservice.order.entity;
 
 /**
  * Defines the status of any given record.

@@ -1,4 +1,4 @@
-package com.mv.streamingservice.order.client;
+package io.github.marianciuc.streamingservice.order.client;
 
 public class PaymentClient {
 }

@@ -1,6 +1,5 @@
-package com.mv.streamingservice.order.config;
+package io.github.marianciuc.streamingservice.order.config;
 
-import com.mv.streamingservice.order.client.UserClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,14 +8,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private UserClient customerClient;
 
 
     @Bean

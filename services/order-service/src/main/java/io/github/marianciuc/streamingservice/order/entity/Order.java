@@ -1,4 +1,4 @@
-package com.mv.streamingservice.order.entity;
+package io.github.marianciuc.streamingservice.order.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

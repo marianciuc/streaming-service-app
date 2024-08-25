@@ -1,7 +1,8 @@
-package com.mv.streamingservice.order.kafka;
+package io.github.marianciuc.streamingservice.order.kafka;
 
-import com.mv.streamingservice.order.dto.OrderMessage;
-import com.mv.streamingservice.order.dto.OrderResponse;
+
+import io.github.marianciuc.streamingservice.order.dto.OrderMessage;
+import io.github.marianciuc.streamingservice.order.dto.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
