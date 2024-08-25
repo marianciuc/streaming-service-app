@@ -1,6 +1,6 @@
-package com.mv.streamingservice.user.dto;
+package io.github.marianciuc.streamingservice.user.dto;
 
-import com.mv.streamingservice.user.enums.Role;
+import io.github.marianciuc.streamingservice.user.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

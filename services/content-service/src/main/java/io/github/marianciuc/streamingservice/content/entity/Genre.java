@@ -1,4 +1,4 @@
-package com.mv.streamingservice.content.entity;
+package io.github.marianciuc.streamingservice.content.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

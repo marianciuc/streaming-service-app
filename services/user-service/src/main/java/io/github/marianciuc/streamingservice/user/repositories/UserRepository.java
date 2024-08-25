@@ -1,6 +1,6 @@
-package com.mv.streamingservice.user.repositories;
+package io.github.marianciuc.streamingservice.user.repositories;
 
-import com.mv.streamingservice.user.entity.User;
+import io.github.marianciuc.streamingservice.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

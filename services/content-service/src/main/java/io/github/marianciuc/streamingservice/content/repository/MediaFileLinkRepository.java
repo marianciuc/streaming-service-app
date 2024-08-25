@@ -1,6 +1,6 @@
-package com.mv.streamingservice.content.repository;
+package io.github.marianciuc.streamingservice.content.repository;
 
-import com.mv.streamingservice.content.entity.MediaLink;
+import io.github.marianciuc.streamingservice.content.entity.MediaLink;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.enums;
+package io.github.marianciuc.streamingservice.user.enums;
 
 /**
  * The {@code Role} enum represents the different roles

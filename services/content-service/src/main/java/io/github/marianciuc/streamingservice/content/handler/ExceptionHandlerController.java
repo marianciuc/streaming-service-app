@@ -1,7 +1,8 @@
-package com.mv.streamingservice.content.handler;
+package io.github.marianciuc.streamingservice.content.handler;
 
-import com.mv.streamingservice.content.dto.response.ExceptionResponse;
-import com.mv.streamingservice.content.exceptions.NotFoundException;
+
+import io.github.marianciuc.streamingservice.content.dto.response.ExceptionResponse;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

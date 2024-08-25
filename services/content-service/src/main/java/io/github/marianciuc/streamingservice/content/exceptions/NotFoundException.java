@@ -1,4 +1,4 @@
-package com.mv.streamingservice.content.exceptions;
+package io.github.marianciuc.streamingservice.content.exceptions;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

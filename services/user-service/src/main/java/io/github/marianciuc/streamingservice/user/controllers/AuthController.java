@@ -1,11 +1,11 @@
-package com.mv.streamingservice.user.controllers;
+package io.github.marianciuc.streamingservice.user.controllers;
 
-import com.mv.streamingservice.user.dto.CredentialsRequest;
-import com.mv.streamingservice.user.dto.JsonWebTokenResponse;
-import com.mv.streamingservice.user.dto.RegistrationRequest;
-import com.mv.streamingservice.user.dto.UserResponse;
-import com.mv.streamingservice.user.enums.APIPath;
-import com.mv.streamingservice.user.services.UserService;
+import io.github.marianciuc.streamingservice.user.dto.CredentialsRequest;
+import io.github.marianciuc.streamingservice.user.dto.JsonWebTokenResponse;
+import io.github.marianciuc.streamingservice.user.dto.RegistrationRequest;
+import io.github.marianciuc.streamingservice.user.dto.UserResponse;
+import io.github.marianciuc.streamingservice.user.enums.APIPath;
+import io.github.marianciuc.streamingservice.user.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.dto;
+package io.github.marianciuc.streamingservice.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

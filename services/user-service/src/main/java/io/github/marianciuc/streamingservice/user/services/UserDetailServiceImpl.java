@@ -1,7 +1,7 @@
-package com.mv.streamingservice.user.services;
+package io.github.marianciuc.streamingservice.user.services;
 
-import com.mv.streamingservice.user.exceptions.NotFoundException;
-import com.mv.streamingservice.user.repositories.UserRepository;
+import io.github.marianciuc.streamingservice.user.exceptions.NotFoundException;
+import io.github.marianciuc.streamingservice.user.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

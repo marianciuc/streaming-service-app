@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.handler;
+package io.github.marianciuc.streamingservice.user.dto;
 
 import java.time.LocalDateTime;
 

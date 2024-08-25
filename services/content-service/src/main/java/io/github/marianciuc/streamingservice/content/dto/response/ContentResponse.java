@@ -1,6 +1,7 @@
-package com.mv.streamingservice.content.dto.response;
+package io.github.marianciuc.streamingservice.content.dto.response;
 
-import com.mv.streamingservice.content.enums.ContentType;
+
+import io.github.marianciuc.streamingservice.content.enums.ContentType;
 
 import java.time.LocalDateTime;
 import java.util.List;

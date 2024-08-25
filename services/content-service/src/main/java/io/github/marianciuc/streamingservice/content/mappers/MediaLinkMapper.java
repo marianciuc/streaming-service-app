@@ -1,8 +1,8 @@
-package com.mv.streamingservice.content.mappers;
+package io.github.marianciuc.streamingservice.content.mappers;
 
-import com.mv.streamingservice.content.dto.request.MediaLinkRequest;
-import com.mv.streamingservice.content.dto.response.MediaLinkResponse;
-import com.mv.streamingservice.content.entity.MediaLink;
+import io.github.marianciuc.streamingservice.content.dto.request.MediaLinkRequest;
+import io.github.marianciuc.streamingservice.content.dto.response.MediaLinkResponse;
+import io.github.marianciuc.streamingservice.content.entity.MediaLink;
 import org.springframework.stereotype.Service;
 
 @Service

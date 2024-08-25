@@ -1,8 +1,8 @@
-package com.mv.streamingservice.content.mappers;
+package io.github.marianciuc.streamingservice.content.mappers;
 
-import com.mv.streamingservice.content.dto.request.GenreRequest;
-import com.mv.streamingservice.content.dto.response.GenreResponse;
-import com.mv.streamingservice.content.entity.Genre;
+import io.github.marianciuc.streamingservice.content.dto.request.GenreRequest;
+import io.github.marianciuc.streamingservice.content.dto.response.GenreResponse;
+import io.github.marianciuc.streamingservice.content.entity.Genre;
 import org.springframework.stereotype.Service;
 
 @Service

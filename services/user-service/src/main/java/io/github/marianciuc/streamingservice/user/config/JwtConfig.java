@@ -1,5 +1,6 @@
-package com.mv.streamingservice.user.config;
+package io.github.marianciuc.streamingservice.user.config;
 
+import io.github.marianciuc.jwtsecurity.service.JsonWebTokenFilter;
 import io.github.marianciuc.jwtsecurity.service.JsonWebTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

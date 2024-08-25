@@ -1,6 +1,6 @@
-package com.mv.streamingservice.content.entity;
+package io.github.marianciuc.streamingservice.content.entity;
 
-import com.mv.streamingservice.content.enums.RecordStatus;
+import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

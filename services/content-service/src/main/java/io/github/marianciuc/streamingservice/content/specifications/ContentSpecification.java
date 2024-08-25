@@ -1,7 +1,7 @@
-package com.mv.streamingservice.content.specifications;
+package io.github.marianciuc.streamingservice.content.specifications;
 
-import com.mv.streamingservice.content.entity.Content;
-import com.mv.streamingservice.content.enums.ContentType;
+import io.github.marianciuc.streamingservice.content.entity.Content;
+import io.github.marianciuc.streamingservice.content.enums.ContentType;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.UUID;

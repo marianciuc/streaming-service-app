@@ -1,8 +1,9 @@
-package com.mv.streamingservice.user.dto;
+package io.github.marianciuc.streamingservice.user.dto;
 
-import com.mv.streamingservice.user.enums.RecordStatus;
-import com.mv.streamingservice.user.enums.Role;
-import com.mv.streamingservice.user.enums.UserType;
+
+import io.github.marianciuc.streamingservice.user.enums.RecordStatus;
+import io.github.marianciuc.streamingservice.user.enums.Role;
+import io.github.marianciuc.streamingservice.user.enums.UserType;
 
 import java.util.UUID;
 

@@ -1,13 +1,14 @@
-package com.mv.streamingservice.content.service;
+package io.github.marianciuc.streamingservice.content.service;
 
-import com.mv.streamingservice.content.dto.request.SeasonRequest;
-import com.mv.streamingservice.content.dto.response.SeasonResponse;
-import com.mv.streamingservice.content.entity.Content;
-import com.mv.streamingservice.content.entity.Season;
-import com.mv.streamingservice.content.enums.RecordStatus;
-import com.mv.streamingservice.content.exceptions.NotFoundException;
-import com.mv.streamingservice.content.mappers.SeasonMapper;
-import com.mv.streamingservice.content.repository.SeasonRepository;
+
+import io.github.marianciuc.streamingservice.content.dto.request.SeasonRequest;
+import io.github.marianciuc.streamingservice.content.dto.response.SeasonResponse;
+import io.github.marianciuc.streamingservice.content.entity.Content;
+import io.github.marianciuc.streamingservice.content.entity.Season;
+import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
+import io.github.marianciuc.streamingservice.content.exceptions.NotFoundException;
+import io.github.marianciuc.streamingservice.content.mappers.SeasonMapper;
+import io.github.marianciuc.streamingservice.content.repository.SeasonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

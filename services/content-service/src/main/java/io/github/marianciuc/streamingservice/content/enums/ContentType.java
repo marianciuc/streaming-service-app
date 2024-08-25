@@ -1,4 +1,4 @@
-package com.mv.streamingservice.content.enums;
+package io.github.marianciuc.streamingservice.content.enums;
 
 public enum ContentType {
     MOVIE,

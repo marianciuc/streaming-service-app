@@ -1,9 +1,9 @@
-package com.mv.streamingservice.content.controller;
+package io.github.marianciuc.streamingservice.content.controller;
 
-import com.mv.streamingservice.content.dto.request.GenreRequest;
-import com.mv.streamingservice.content.dto.response.GenreResponse;
-import com.mv.streamingservice.content.dto.response.PaginationResponse;
-import com.mv.streamingservice.content.service.GenreService;
+import io.github.marianciuc.streamingservice.content.dto.request.GenreRequest;
+import io.github.marianciuc.streamingservice.content.dto.response.GenreResponse;
+import io.github.marianciuc.streamingservice.content.dto.response.PaginationResponse;
+import io.github.marianciuc.streamingservice.content.service.GenreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.dto;
+package io.github.marianciuc.streamingservice.user.dto;
 
 public record ChangePasswordRequest(
         String oldPassword,

@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.config;
+package io.github.marianciuc.streamingservice.user.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

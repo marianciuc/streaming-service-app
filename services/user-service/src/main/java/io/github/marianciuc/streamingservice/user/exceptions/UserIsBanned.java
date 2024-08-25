@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.exceptions;
+package io.github.marianciuc.streamingservice.user.exceptions;
 
 /**
  * The UserIsBanned class is a custom RuntimeException that is thrown when a user is banned from accessing certain resources.

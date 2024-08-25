@@ -1,17 +1,16 @@
-package com.mv.streamingservice.user.services;
+package io.github.marianciuc.streamingservice.user.services;
 
-import com.mv.streamingservice.user.controllers.UserDetailsRequest;
-import com.mv.streamingservice.user.dto.CreateEmployeeRequest;
-import com.mv.streamingservice.user.dto.*;
-import com.mv.streamingservice.user.enums.RecordStatus;
-import com.mv.streamingservice.user.enums.Role;
-import com.mv.streamingservice.user.entity.User;
-import com.mv.streamingservice.user.enums.UserType;
-import com.mv.streamingservice.user.exceptions.NotFoundException;
-import com.mv.streamingservice.user.exceptions.SecurityBadCredentialsException;
-import com.mv.streamingservice.user.mappers.UserMapper;
-import com.mv.streamingservice.user.repositories.UserRepository;
+
 import io.github.marianciuc.jwtsecurity.service.JsonWebTokenService;
+import io.github.marianciuc.streamingservice.user.dto.*;
+import io.github.marianciuc.streamingservice.user.entity.User;
+import io.github.marianciuc.streamingservice.user.enums.RecordStatus;
+import io.github.marianciuc.streamingservice.user.enums.Role;
+import io.github.marianciuc.streamingservice.user.enums.UserType;
+import io.github.marianciuc.streamingservice.user.exceptions.NotFoundException;
+import io.github.marianciuc.streamingservice.user.exceptions.SecurityBadCredentialsException;
+import io.github.marianciuc.streamingservice.user.mappers.UserMapper;
+import io.github.marianciuc.streamingservice.user.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -41,7 +40,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JsonWebTokenService jsonWebTokenService;
-    private final UserDetailServiceImpl userDetailsService;
+    private final UserDetailServiceImpl userDetailService;
 
 
     /**
@@ -86,7 +85,7 @@ public class UserService {
      */
     public UserResponse registerUser(RegistrationRequest request) {
         User user = createUserFromRequest(request, Role.ROLE_UNSUBSCRIBED_USER, UserType.CUSTOMER);
-        return userMapper.toResponse(saveUserDetails(user));
+        return userMapper.toResponse(this.saveUserDetails(user));
     }
 
     /**
@@ -129,7 +128,7 @@ public class UserService {
     private void authenticateUser(String login, String password) {
         UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(login, password);
         authenticationManager.authenticate(userToken);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+        UserDetails userDetails = userDetailService.loadUserByUsername(login);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

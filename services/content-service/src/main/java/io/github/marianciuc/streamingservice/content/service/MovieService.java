@@ -1,9 +1,9 @@
-package com.mv.streamingservice.content.service;
+package io.github.marianciuc.streamingservice.content.service;
 
-import com.mv.streamingservice.content.dto.response.MovieResponse;
-import com.mv.streamingservice.content.entity.Movie;
-import com.mv.streamingservice.content.mappers.MovieMapper;
-import com.mv.streamingservice.content.repository.MovieRepository;
+import io.github.marianciuc.streamingservice.content.dto.response.MovieResponse;
+import io.github.marianciuc.streamingservice.content.entity.Movie;
+import io.github.marianciuc.streamingservice.content.mappers.MovieMapper;
+import io.github.marianciuc.streamingservice.content.repository.MovieRepository;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

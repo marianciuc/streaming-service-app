@@ -1,7 +1,8 @@
-package com.mv.streamingservice.content.dto.request;
+package io.github.marianciuc.streamingservice.content.dto.request;
 
-import com.mv.streamingservice.content.enums.ContentType;
-import com.mv.streamingservice.content.enums.RecordStatus;
+
+import io.github.marianciuc.streamingservice.content.enums.ContentType;
+import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

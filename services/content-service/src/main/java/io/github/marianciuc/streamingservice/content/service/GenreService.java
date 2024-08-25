@@ -1,13 +1,14 @@
-package com.mv.streamingservice.content.service;
+package io.github.marianciuc.streamingservice.content.service;
 
-import com.mv.streamingservice.content.dto.request.GenreRequest;
-import com.mv.streamingservice.content.dto.response.GenreResponse;
-import com.mv.streamingservice.content.dto.response.PaginationResponse;
-import com.mv.streamingservice.content.entity.Genre;
-import com.mv.streamingservice.content.enums.RecordStatus;
-import com.mv.streamingservice.content.mappers.GenreMapper;
-import com.mv.streamingservice.content.mappers.PageMapper;
-import com.mv.streamingservice.content.repository.GenreRepository;
+
+import io.github.marianciuc.streamingservice.content.dto.request.GenreRequest;
+import io.github.marianciuc.streamingservice.content.dto.response.GenreResponse;
+import io.github.marianciuc.streamingservice.content.dto.response.PaginationResponse;
+import io.github.marianciuc.streamingservice.content.entity.Genre;
+import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
+import io.github.marianciuc.streamingservice.content.mappers.GenreMapper;
+import io.github.marianciuc.streamingservice.content.mappers.PageMapper;
+import io.github.marianciuc.streamingservice.content.repository.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

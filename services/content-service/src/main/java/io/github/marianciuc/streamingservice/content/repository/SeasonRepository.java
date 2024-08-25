@@ -1,7 +1,7 @@
-package com.mv.streamingservice.content.repository;
+package io.github.marianciuc.streamingservice.content.repository;
 
-import com.mv.streamingservice.content.entity.Season;
-import com.mv.streamingservice.content.enums.RecordStatus;
+import io.github.marianciuc.streamingservice.content.entity.Season;
+import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

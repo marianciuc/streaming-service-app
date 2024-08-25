@@ -1,8 +1,9 @@
-package com.mv.streamingservice.content.mappers;
+package io.github.marianciuc.streamingservice.content.mappers;
 
-import com.mv.streamingservice.content.dto.response.EpisodeResponse;
-import com.mv.streamingservice.content.dto.request.EpisodeRequest;
-import com.mv.streamingservice.content.entity.Episode;
+
+import io.github.marianciuc.streamingservice.content.dto.request.EpisodeRequest;
+import io.github.marianciuc.streamingservice.content.dto.response.EpisodeResponse;
+import io.github.marianciuc.streamingservice.content.entity.Episode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.mv.streamingservice.user.exceptions;
+package io.github.marianciuc.streamingservice.user.exceptions;
 
 import org.springframework.security.authentication.BadCredentialsException;
 

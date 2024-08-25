@@ -1,13 +1,14 @@
-package com.mv.streamingservice.content.service;
+package io.github.marianciuc.streamingservice.content.service;
 
-import com.mv.streamingservice.content.dto.request.EpisodeRequest;
-import com.mv.streamingservice.content.dto.response.EpisodeResponse;
-import com.mv.streamingservice.content.entity.Content;
-import com.mv.streamingservice.content.entity.Episode;
-import com.mv.streamingservice.content.entity.Season;
-import com.mv.streamingservice.content.enums.RecordStatus;
-import com.mv.streamingservice.content.mappers.EpisodeMapper;
-import com.mv.streamingservice.content.repository.EpisodeRepository;
+
+import io.github.marianciuc.streamingservice.content.dto.request.EpisodeRequest;
+import io.github.marianciuc.streamingservice.content.dto.response.EpisodeResponse;
+import io.github.marianciuc.streamingservice.content.entity.Content;
+import io.github.marianciuc.streamingservice.content.entity.Episode;
+import io.github.marianciuc.streamingservice.content.entity.Season;
+import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
+import io.github.marianciuc.streamingservice.content.mappers.EpisodeMapper;
+import io.github.marianciuc.streamingservice.content.repository.EpisodeRepository;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

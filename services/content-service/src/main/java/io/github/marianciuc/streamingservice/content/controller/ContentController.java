@@ -1,13 +1,13 @@
-package com.mv.streamingservice.content.controller;
+package io.github.marianciuc.streamingservice.content.controller;
 
-import com.mv.streamingservice.content.dto.request.ContentRequest;
-import com.mv.streamingservice.content.dto.request.EpisodeRequest;
-import com.mv.streamingservice.content.dto.request.SeasonRequest;
-import com.mv.streamingservice.content.dto.response.*;
-import com.mv.streamingservice.content.enums.ContentType;
-import com.mv.streamingservice.content.service.ContentService;
-import com.mv.streamingservice.content.service.EpisodeService;
-import com.mv.streamingservice.content.service.SeasonService;
+import io.github.marianciuc.streamingservice.content.dto.request.ContentRequest;
+import io.github.marianciuc.streamingservice.content.dto.request.EpisodeRequest;
+import io.github.marianciuc.streamingservice.content.dto.request.SeasonRequest;
+import io.github.marianciuc.streamingservice.content.dto.response.*;
+import io.github.marianciuc.streamingservice.content.enums.ContentType;
+import io.github.marianciuc.streamingservice.content.service.ContentService;
+import io.github.marianciuc.streamingservice.content.service.EpisodeService;
+import io.github.marianciuc.streamingservice.content.service.SeasonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

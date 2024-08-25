@@ -1,5 +1,7 @@
-package com.mv.streamingservice.user.config;
+package io.github.marianciuc.streamingservice.user.config;
 
+import io.github.marianciuc.jwtsecurity.service.JsonWebTokenFilter;
+import io.github.marianciuc.jwtsecurity.service.JsonWebTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JsonWebTokenService jsonWebTokenService;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -38,5 +41,10 @@ public class ApplicationConfig {
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
+    }
+
+    @Bean
+    JsonWebTokenFilter jsonWebTokenFilter(){
+        return new JsonWebTokenFilter(jsonWebTokenService);
     }
 }

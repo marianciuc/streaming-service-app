@@ -1,4 +1,4 @@
-package com.mv.streamingservice.content.dto.request;
+package io.github.marianciuc.streamingservice.content.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.List;

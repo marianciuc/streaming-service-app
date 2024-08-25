@@ -1,6 +1,6 @@
-package com.mv.streamingservice.content.dto.response;
+package io.github.marianciuc.streamingservice.content.dto.response;
 
-import com.mv.streamingservice.content.enums.Resolution;
+import io.github.marianciuc.streamingservice.content.enums.Resolution;
 
 import java.util.UUID;
 

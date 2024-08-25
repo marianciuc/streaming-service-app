@@ -1,8 +1,8 @@
-package com.mv.streamingservice.user.mappers;
+package io.github.marianciuc.streamingservice.user.mappers;
 
-import com.mv.streamingservice.user.dto.RegistrationRequest;
-import com.mv.streamingservice.user.dto.UserResponse;
-import com.mv.streamingservice.user.entity.User;
+import io.github.marianciuc.streamingservice.user.dto.RegistrationRequest;
+import io.github.marianciuc.streamingservice.user.dto.UserResponse;
+import io.github.marianciuc.streamingservice.user.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component

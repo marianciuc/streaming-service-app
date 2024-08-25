@@ -1,6 +1,6 @@
-package com.mv.streamingservice.content.repository;
+package io.github.marianciuc.streamingservice.content.repository;
 
-import com.mv.streamingservice.content.entity.Content;
+import io.github.marianciuc.streamingservice.content.entity.Content;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

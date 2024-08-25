@@ -1,6 +1,6 @@
-package com.mv.streamingservice.content.mappers;
+package io.github.marianciuc.streamingservice.content.mappers;
 
-import com.mv.streamingservice.content.dto.response.PaginationResponse;
+import io.github.marianciuc.streamingservice.content.dto.response.PaginationResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.mv.streamingservice.content.dto.response;
+package io.github.marianciuc.streamingservice.content.dto.response;
 
 import java.time.LocalDateTime;
 

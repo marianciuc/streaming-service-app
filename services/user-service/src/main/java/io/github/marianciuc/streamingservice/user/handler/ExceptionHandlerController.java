@@ -1,6 +1,8 @@
-package com.mv.streamingservice.user.handler;
+package io.github.marianciuc.streamingservice.user.handler;
 
-import com.mv.streamingservice.user.exceptions.*;
+import io.github.marianciuc.jwtsecurity.exceptions.UnsupportedJsonWebTokenException;
+import io.github.marianciuc.streamingservice.user.dto.ExceptionResponse;
+import io.github.marianciuc.streamingservice.user.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

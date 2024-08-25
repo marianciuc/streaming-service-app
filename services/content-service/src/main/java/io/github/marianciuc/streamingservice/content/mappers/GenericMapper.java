@@ -1,4 +1,4 @@
-package com.mv.streamingservice.content.mappers;
+package io.github.marianciuc.streamingservice.content.mappers;
 
 /**
  * The GenericMapper interface represents a mapping contract between entity objects and DTO (Data Transfer Object) objects.

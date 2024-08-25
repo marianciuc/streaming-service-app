@@ -1,11 +1,10 @@
-package com.mv.streamingservice.user.controllers;
+package io.github.marianciuc.streamingservice.user.controllers;
 
-
-import com.mv.streamingservice.user.dto.ChangePasswordRequest;
-import com.mv.streamingservice.user.dto.CreateEmployeeRequest;
-import com.mv.streamingservice.user.enums.APIPath;
-import com.mv.streamingservice.user.enums.Role;
-import com.mv.streamingservice.user.services.UserService;
+import io.github.marianciuc.streamingservice.user.dto.ChangePasswordRequest;
+import io.github.marianciuc.streamingservice.user.dto.CreateEmployeeRequest;
+import io.github.marianciuc.streamingservice.user.enums.APIPath;
+import io.github.marianciuc.streamingservice.user.enums.Role;
+import io.github.marianciuc.streamingservice.user.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,11 +78,5 @@ public class UserController {
     ){
         userService.updateUserRole(role, userId);
         return ResponseEntity.ok().build();
-    }
-
-    @PreAuthorize("hasAuthority('ROLE_SERVICE')")
-    @GetMapping("/user-details")
-    public ResponseEntity<UserDetailsRequest> validateToken(@RequestParam("token") String token){
-        return ResponseEntity.ok(userService.extractUserData(token));
     }
 }
