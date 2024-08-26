@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: subscription-service
+  config:
+    import: optional:configserver:http://localhost:8888
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: subscription
+      username: root
+      password: root
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: org.apache.kafka.common.serialization.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: subscription-group
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
