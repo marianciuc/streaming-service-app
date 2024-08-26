@@ -1,4 +1,4 @@
-package io.github.marianciuc.streamingservice.order.service;
+package io.github.marianciuc.streamingservice.order.mappers;
 
 import io.github.marianciuc.streamingservice.order.dto.OrderResponse;
 import io.github.marianciuc.streamingservice.order.entity.Order;

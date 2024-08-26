@@ -19,7 +19,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_SERVICE','ROLE_UNSUBSCRIDED')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SERVICE','ROLE_UNSUBSCRIDED_USER')")
     public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
         return ResponseEntity.ok(orderService.createOrder(orderRequest));
     }

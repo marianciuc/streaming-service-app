@@ -26,4 +26,5 @@ public class Order {
     private UUID subscriptionId;
     private LocalDateTime orderDate;
     private OrderStatus orderStatus;
+    private UUID previousOrderId;
 }
