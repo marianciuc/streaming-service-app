@@ -1,8 +1,8 @@
 package io.github.marianciuc.streamingservice.payment.controller;
 
 
-import io.github.marianciuc.streamingservice.payment.dto.PaymentRequest;
-import io.github.marianciuc.streamingservice.payment.dto.PaymentResponse;
+import io.github.marianciuc.streamingservice.payment.dto.PaymentMethodRequest;
+import io.github.marianciuc.streamingservice.payment.dto.PaymentMethodResponse;
 import io.github.marianciuc.streamingservice.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +18,17 @@ public class PaymentMethodController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public ResponseEntity<PaymentResponse> addPaymentMethod(PaymentRequest paymentRequest) {
-        return null;
+    public ResponseEntity<PaymentMethodResponse> addPaymentMethod(PaymentMethodRequest paymentMethodRequest) {
+        return ResponseEntity.ok(paymentService.addPaymentMethod(paymentMethodRequest));
     }
 
     @PutMapping
-    public ResponseEntity<PaymentResponse> updatePaymentMethod(PaymentRequest paymentRequest) {
+    public ResponseEntity<PaymentMethodResponse> updatePaymentMethod(PaymentMethodRequest paymentMethodRequest) {
         return null;
     }
 
     @GetMapping
-    public ResponseEntity<PaymentResponse> getPaymentMethod(@RequestParam("id") UUID id) {
+    public ResponseEntity<PaymentMethodResponse> getPaymentMethod(@RequestParam("id") UUID id) {
         return null;
     }
 

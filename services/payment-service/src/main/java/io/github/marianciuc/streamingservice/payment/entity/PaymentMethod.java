@@ -26,7 +26,7 @@ public class PaymentMethod {
     private String cardLast4;
     private String cardBrand;
     private String cardNumber;
-    private String cardExpiryMonth;
-    private String cardExpiryYear;
+    private Long cardExpiryMonth;
+    private Long cardExpiryYear;
     private String cardCVV;
 }

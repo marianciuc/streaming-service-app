@@ -1,10 +1,14 @@
 package io.github.marianciuc.streamingservice.payment.service;
 
-import org.springframework.stereotype.Service;
+import io.github.marianciuc.streamingservice.payment.dto.InitializePaymentRequest;
+import io.github.marianciuc.streamingservice.payment.dto.PaymentMethodRequest;
+import io.github.marianciuc.streamingservice.payment.dto.PaymentMethodResponse;
 
-@Service
-public class PaymentService {
-    private String apiKey;
+import java.util.UUID;
 
-
+public interface PaymentService {
+    PaymentMethodResponse addPaymentMethod(PaymentMethodRequest paymentMethodRequest);
+    PaymentMethodResponse updatePaymentMethod(PaymentMethodRequest paymentMethodRequest);
+    void deletePaymentMethod(UUID paymentMethodId);
+    void createChargeByOrderId(InitializePaymentRequest request);
 }
