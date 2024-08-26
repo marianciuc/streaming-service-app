@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface UserSubscriptionRepository extends MongoRepository<UserSubscriptions, UUID> {
     List<UserSubscriptions> findAllByStatus(SubscriptionStatus status);
     List<UserSubscriptions> findAllByStatusAndEndDateBetween(SubscriptionStatus status, LocalDate startDate, LocalDate endDate);
+    List<UserSubscriptions> findAllByStatusAndEndDate(SubscriptionStatus status, LocalDate endDate);
 }
