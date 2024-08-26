@@ -1,0 +1,12 @@
+org:
+  quartz:
+    jobStore:
+      class: com.novemberain.quartz.mongodb.MongoDBJobStore
+      mongoUri: mongodb://localhost:27017
+      collectionPrefix: schedulerCollection
+      dbName: SubscriptionQuartz
+      isClustered: true
+      clusterCheckinInterval: 20000
+    scheduler:
+      instanceId: AUTO
+      instanceIdGenerator.class: org.quartz.simpl.SimpleInstanceIdGenerator
