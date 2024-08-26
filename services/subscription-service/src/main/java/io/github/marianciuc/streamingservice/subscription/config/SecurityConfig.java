@@ -1,4 +1,4 @@
-package io.github.marianciuc.streamingservice.order.config;
+package io.github.marianciuc.streamingservice.subscription.config;
 
 
 import io.github.marianciuc.jwtsecurity.service.JsonWebTokenFilter;

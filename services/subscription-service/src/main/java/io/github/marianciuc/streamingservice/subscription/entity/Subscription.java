@@ -1,6 +1,5 @@
 package io.github.marianciuc.streamingservice.subscription.entity;
 
-
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
