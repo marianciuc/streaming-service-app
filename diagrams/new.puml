@@ -1,0 +1,39 @@
+@startuml
+actor User
+
+User -> Gateway: Create Subscription Order Request
+Gateway -> OrderService: Create Order
+OrderService -> User: Return Order Information
+
+OrderService -> EventBus: Publish Order Created Event
+
+EventBus -> OrderService: Start Async Order Processing
+OrderService -> SubscriptionService: Check Active Subscription
+SubscriptionService -> OrderService: Active Subscription Exists?
+
+alt Active Subscription Exists
+    OrderService -> TaskScheduler: Schedule Deferred Order
+else No Active Subscription
+    OrderService -> EventBus: Publish Immediate Payment Event
+    EventBus -> PaymentService: Initiate Payment
+
+    alt Payment Successful
+        PaymentService -> NotificationService: Notify Payment Success
+        PaymentService -> OrderService: Payment Success
+        OrderService -> SubscriptionService: Assign Subscription
+        SubscriptionService -> UserService: Assign Role
+        SubscriptionService -> User: Subscription Activated
+    else Payment Failed
+        PaymentService -> OrderService: Notify Payment Failure
+        OrderService -> User: Notify Payment Failure
+    end
+end
+
+TaskScheduler -> SubscriptionService: Check Subscription Expiration
+SubscriptionService -> TaskScheduler: Subscription Expired
+
+TaskScheduler -> OrderService: Trigger Deferred Order
+OrderService -> EventBus: Publish Deferred Order Event
+
+
+@enduml
