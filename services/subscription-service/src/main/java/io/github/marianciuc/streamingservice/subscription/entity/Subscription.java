@@ -1,6 +1,6 @@
 package io.github.marianciuc.streamingservice.subscription.entity;
 
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,10 +16,15 @@ import java.util.UUID;
 @Builder
 @Data
 @AllArgsConstructor
-@Document
+@Entity
+@Table(name = "subscriptions")
 public class Subscription {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
     private UUID id;
+
+    @Column(name = "name", nullable = false)
     private String name;
     private String description;
 
