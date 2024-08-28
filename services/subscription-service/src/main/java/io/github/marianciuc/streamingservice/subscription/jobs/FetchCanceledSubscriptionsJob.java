@@ -3,7 +3,7 @@ package io.github.marianciuc.streamingservice.subscription.jobs;
 import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
 import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
 import io.github.marianciuc.streamingservice.subscription.kafka.KafkaUserSubscriptionProducer;
-import io.github.marianciuc.streamingservice.subscription.service.UserSubscriptionService;
+import io.github.marianciuc.streamingservice.subscription.service.impl.UserSubscriptionServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -21,13 +21,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FetchCanceledSubscriptionsJob implements Job {
 
-    private final UserSubscriptionService service;
+    private final UserSubscriptionServiceImpl service;
     private final KafkaUserSubscriptionProducer kafkaProducerService;
 
+    /**
+     * Executes the job to fetch cancelled subscriptions and send them to a Kafka topic.
+     *
+     * @param jobExecutionContext the execution context of the job
+     * @throws JobExecutionException if the job execution fails
+     */
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         LocalDate now = LocalDate.now();
-        List<UserSubscriptions> cancelledSubscriptions = service.getAllSubscriptionsByStatusAndEndDate(SubscriptionStatus.CANCELLED, now);
+        List<UserSubscriptions> cancelledSubscriptions = service.getAllUserSubscriptionsByStatusAndEndDate(SubscriptionStatus.CANCELLED, now);
 
         for (UserSubscriptions subscription : cancelledSubscriptions) {
             kafkaProducerService.sendTopic(subscription);
