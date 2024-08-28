@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import javax.naming.OperationNotSupportedException;
+
 import static io.github.marianciuc.streamingservice.subscription.kafka.KafkaTopics.*;
 
 
@@ -20,6 +22,10 @@ public class UserSubscriptionConsumer {
     @KafkaListener(topics = UNSUBSCRIBE_USER_TOPIC, groupId = "${spring.kafka.consumer.group-id}")
     private void consumeUserSubscription(UserSubscriptions userSubscriptions) {
         log.info("Kafka consumer consumeUserSubscription: {}", userSubscriptions);
-        userSubscriptionService.unsubscribeUser(userSubscriptions);
+        try {
+            userSubscriptionService.unsubscribeUser(userSubscriptions);
+        } catch (OperationNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
