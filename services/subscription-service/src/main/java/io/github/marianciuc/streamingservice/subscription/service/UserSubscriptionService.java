@@ -26,6 +26,8 @@ import io.github.marianciuc.streamingservice.subscription.dto.OrderCreationEvent
 import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
 import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
 
+import javax.naming.OperationNotSupportedException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -34,8 +36,8 @@ import java.util.List;
  */
 public interface UserSubscriptionService {
      void subscribeUser(OrderCreationEventKafkaDto req);
-     void unsubscribeUser(UserSubscriptions userSubscription);
-     void extendSubscription(UserSubscriptions userSubscription);
-     void cancelSubscription(UserSubscriptions userSubscription);
+     void unsubscribeUser(UserSubscriptions userSubscription) throws OperationNotSupportedException;
+     void extendSubscription(UserSubscriptions userSubscription) throws IOException, OperationNotSupportedException;
+     void cancelSubscription(UserSubscriptions userSubscription) throws OperationNotSupportedException;
      List<UserSubscriptions> getAllUserSubscriptionsByStatusAndEndDate(SubscriptionStatus status, LocalDate endDate);
 }

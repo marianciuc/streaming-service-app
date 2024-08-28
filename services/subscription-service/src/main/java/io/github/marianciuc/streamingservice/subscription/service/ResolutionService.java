@@ -32,9 +32,11 @@ public interface ResolutionService {
 
     Resolution getResolution(UUID id);
 
-    UUID createResolution(ResolutionDto resolution);
+    void createResolution(ResolutionDto resolution);
 
     List<Resolution> getAllResolutions();
 
     void deleteResolution(UUID id);
+
+    void updateResolution(ResolutionDto resolution);
 }

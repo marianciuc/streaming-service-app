@@ -9,6 +9,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.stereotype.Component;
 
+import javax.naming.OperationNotSupportedException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,7 +26,11 @@ public class FetchActiveSubscriptionsJob implements Job {
         List<UserSubscriptions> cancelledSubscriptions = service.getAllUserSubscriptionsByStatusAndEndDate(SubscriptionStatus.ACTIVE, now);
 
         for (UserSubscriptions subscription : cancelledSubscriptions) {
-            service.unsubscribeUser(subscription);
+            try {
+                service.extendSubscription(subscription);
+            } catch (IOException | OperationNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

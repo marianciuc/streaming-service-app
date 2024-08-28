@@ -25,6 +25,7 @@ package io.github.marianciuc.streamingservice.subscription.jobs;
 import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
 import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
 import io.github.marianciuc.streamingservice.subscription.service.impl.UserSubscriptionServiceImpl;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -42,6 +43,7 @@ public class FetchActiveSubscriptionsJobTest {
     @MockBean
     private UserSubscriptionServiceImpl service;
     
+    @SneakyThrows
     @Test
     public void testExecute() throws JobExecutionException {
         FetchActiveSubscriptionsJob aSJob = new FetchActiveSubscriptionsJob(service);

@@ -22,7 +22,10 @@
 
 package io.github.marianciuc.streamingservice.subscription.service.impl;
 
+import io.github.marianciuc.streamingservice.subscription.clients.OrderClient;
+import io.github.marianciuc.streamingservice.subscription.dto.CreateOrderRequest;
 import io.github.marianciuc.streamingservice.subscription.dto.OrderCreationEventKafkaDto;
+import io.github.marianciuc.streamingservice.subscription.dto.OrderResponse;
 import io.github.marianciuc.streamingservice.subscription.entity.Subscription;
 import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
 import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
@@ -30,10 +33,16 @@ import io.github.marianciuc.streamingservice.subscription.repository.UserSubscri
 import io.github.marianciuc.streamingservice.subscription.service.SubscriptionService;
 import io.github.marianciuc.streamingservice.subscription.service.UserSubscriptionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.naming.OperationNotSupportedException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * UserSubscriptionService is a class that provides methods for managing user subscriptions.
@@ -44,20 +53,27 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     private final UserSubscriptionRepository repository;
     private final SubscriptionService subscriptionService;
+    private final OrderClient orderClient;
+
 
 
     public void subscribeUser(OrderCreationEventKafkaDto orderCreationEventKafkaDto) {
         Subscription subscription = subscriptionService.getSubscription(orderCreationEventKafkaDto.subscriptionId());
-        UserSubscriptions userSubscription = UserSubscriptions.builder()
-                .subscription(subscription)
-                .orderId(orderCreationEventKafkaDto.orderId())
-                .userId(orderCreationEventKafkaDto.userId())
-                .status(SubscriptionStatus.ACTIVE)
-                .startDate(LocalDate.now())
-                .endDate(LocalDate.now().plusDays(subscription.getDurationInDays()))
-                .build();
+        Optional<UserSubscriptions> userSubscriptionsOptional = repository.findByOrderId(orderCreationEventKafkaDto.orderId());
 
-        repository.save(userSubscription);
+        if (userSubscriptionsOptional.isPresent()) {
+            UserSubscriptions userSubscriptions = userSubscriptionsOptional.get();
+
+            if(!userSubscriptions.getSubscription().equals(subscription)) {
+                userSubscriptions.setSubscription(subscription);
+            }
+
+            userSubscriptions.setStatus(SubscriptionStatus.ACTIVE);
+            repository.save(userSubscriptions);
+        } else {
+            UserSubscriptions userSubscription = createUserSubscription(subscription, orderCreationEventKafkaDto.userId(), orderCreationEventKafkaDto.orderId());
+            repository.save(userSubscription);
+        }
     }
 
 
@@ -66,25 +82,59 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
 
-    public void cancelSubscription(UserSubscriptions subscription) {
-        subscription.setStatus(SubscriptionStatus.CANCELLED);
-        repository.save(subscription);
-        // TODO отправить сообщение пользователю на почту что подписка отменена
-    }
-
-    public void extendSubscription(UserSubscriptions userSubscription) {
-        Subscription subscription = userSubscription.getSubscription();
-        if (subscription.getIsTemporary()) {
-            // create new order request
+    public void cancelSubscription(UserSubscriptions subscription) throws OperationNotSupportedException {
+        if (!subscription.getStatus().equals(SubscriptionStatus.CANCELLED)) {
+            subscription.setStatus(SubscriptionStatus.CANCELLED);
+            repository.save(subscription);
+            // TODO send email to user that subscription is cancelled
         } else {
-
+            throw new OperationNotSupportedException("Not allowed to repeat cancellation of subscription.");
         }
     }
 
-    public void unsubscribeUser(UserSubscriptions subscription) {
-        subscription.setStatus(SubscriptionStatus.INACTIVE);
-        repository.save(subscription);
-        // Send topic to users to change role
-        // send topic to notify user
+    public void extendSubscription(UserSubscriptions userSubscription) throws IOException, OperationNotSupportedException {
+        Subscription subscription = userSubscription.getSubscription();
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest(
+                userSubscription.getUserId(),
+                subscription.getIsTemporary() ? subscription.getNextSubscription().getId() : subscription.getId(),
+                subscription.getIsTemporary() ? subscription.getNextSubscription().getPrice() : subscription.getPrice()
+        );
+
+        ResponseEntity<OrderResponse> response;
+        try {
+            response = orderClient.createOrder(createOrderRequest);
+        } catch (Exception e) {
+            throw new IOException("Unable to extend subscription due to: " + e.getMessage());
+        }
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            UserSubscriptions newUserSubscription = createUserSubscription(subscription, userSubscription.getUserId(), Objects.requireNonNull(response.getBody()).id());
+            repository.save(newUserSubscription);
+            this.unsubscribeUser(userSubscription);
+        } else {
+            throw new IOException("Unable to extend subscription due to: " + response.getStatusCode());
+        }
+    }
+
+    public void unsubscribeUser(UserSubscriptions subscription) throws OperationNotSupportedException {
+        if (!subscription.getStatus().equals(SubscriptionStatus.EXPIRED)) {
+            subscription.setStatus(SubscriptionStatus.EXPIRED);
+            repository.save(subscription);
+            // Send topic to users to change role
+            // send topic to notify user
+        } else {
+            throw new OperationNotSupportedException("User is already unsubscribed.");
+        }
+    }
+
+    private UserSubscriptions createUserSubscription(Subscription subscription, UUID userId, UUID orderId) {
+        return UserSubscriptions.builder()
+                .subscription(subscription)
+                .orderId(orderId)
+                .userId(userId)
+                .status(SubscriptionStatus.ACTIVE)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(subscription.getDurationInDays()))
+                .build();
     }
 }

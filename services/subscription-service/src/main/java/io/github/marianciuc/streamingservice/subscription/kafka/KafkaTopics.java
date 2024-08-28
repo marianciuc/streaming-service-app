@@ -20,14 +20,14 @@
  *      THE SOFTWARE.
  */
 
-package io.github.marianciuc.streamingservice.subscription.dto;
+package io.github.marianciuc.streamingservice.subscription.kafka;
 
-import java.math.BigDecimal;
-import java.util.UUID;
-
-public record CreateOrderRequest(
-        UUID userId,
-        UUID subscriptionId,
-        BigDecimal price
-) {
+/**
+ * This class provides constants for Kafka topics that are used in the application.
+ */
+public class KafkaTopics {
+    public final static String UNSUBSCRIBE_USER_TOPIC = "unsubscribe-user-topic";
+    public final static String RESOLUTION_CREATED_TOPIC = "resolution-created-topic";
+    public final static String RESOLUTION_UPDATED_TOPIC = "resolution-updated-topic";
+    public final static String RESOLUTION_DELETED_TOPIC = "resolution-deleted-topic";
 }
