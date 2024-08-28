@@ -19,6 +19,6 @@ public class KafkaUserSubscriptionConsumer {
     @KafkaListener(topics = TOPIC, groupId = "${spring.kafka.consumer.group-id}")
     public void consumeTopic(UserSubscriptions userSubscriptions) {
       log.info("UserSubscriptionKafkaProducerService consumeTopic: {}", userSubscriptions);
-      userSubscriptionService.deactivateSubscription(userSubscriptions);
+      userSubscriptionService.unsubscribeUser(userSubscriptions);
     }
 }

@@ -29,7 +29,7 @@ public class SubscriptionMapper {
         return Subscription.builder()
                 .name(dto.name())
                 .price(dto.price())
-                .resolution(dto.allowedResolutionsIds().stream().map(resolutionService::getResolution).collect(Collectors.toSet()))
+                .resolutions(dto.allowedResolutionsIds().stream().map(resolutionService::getResolution).collect(Collectors.toSet()))
                 .durationInDays(dto.durationInDays())
                 .description(dto.description())
                 .build();
