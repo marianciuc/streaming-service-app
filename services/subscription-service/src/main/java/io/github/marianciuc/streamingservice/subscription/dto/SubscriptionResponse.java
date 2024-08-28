@@ -5,6 +5,7 @@ import io.github.marianciuc.streamingservice.subscription.entity.RecordStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 public record SubscriptionResponse(
@@ -13,6 +14,7 @@ public record SubscriptionResponse(
         String description,
         Integer allowedActiveSessions,
         Integer durationInDays,
+        Set<ResolutionDto> resolutions,
         BigDecimal price,
         Boolean isTemporary,
         UUID nextSubscriptionId,

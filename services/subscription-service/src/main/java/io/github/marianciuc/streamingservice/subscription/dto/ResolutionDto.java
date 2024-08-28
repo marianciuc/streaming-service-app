@@ -20,14 +20,13 @@
  *      THE SOFTWARE.
  */
 
-package io.github.marianciuc.streamingservice.subscription.service;
+package io.github.marianciuc.streamingservice.subscription.dto;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.openfeign.FeignClient;
+import java.util.UUID;
 
-@RequiredArgsConstructor
-@FeignClient
-public class OrderClient {
-
-
+public record ResolutionDto(
+        UUID id,
+        String description,
+        String name
+) {
 }

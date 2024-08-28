@@ -2,12 +2,11 @@ package io.github.marianciuc.streamingservice.subscription.dto;
 
 
 import io.github.marianciuc.streamingservice.subscription.entity.Currency;
-import io.github.marianciuc.streamingservice.subscription.entity.Resolution;
 import jakarta.validation.constraints.*;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Validated
@@ -32,7 +31,7 @@ public record SubscriptionRequest(
         Currency currency,
 
         @NotNull(message = "Allowed resolutions list cannot be null")
-        List<@NotNull(message = "Resolution in the list cannot be null") Resolution> allowedResolutions,
+        Set<@NotNull(message = "Resolution in the list cannot be null") UUID> allowedResolutionsIds,
         UUID nextSubscriptionId,
         Boolean isTemporary
 ) {

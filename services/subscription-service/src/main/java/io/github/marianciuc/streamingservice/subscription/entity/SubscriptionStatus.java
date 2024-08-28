@@ -1,9 +1,18 @@
 package io.github.marianciuc.streamingservice.subscription.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum SubscriptionStatus {
-    ACTIVE,
-    INACTIVE,
-    PENDING,
-    EXPIRED,
-    CANCELLED
+    ACTIVE("Active"),
+    INACTIVE("Inactive"),
+    PENDING("Pending"),
+    EXPIRED("Expired"),
+    CANCELLED("Cancelled");
+
+    private final String description;
+
+    SubscriptionStatus(String description) {
+        this.description = description;
+    }
 }
