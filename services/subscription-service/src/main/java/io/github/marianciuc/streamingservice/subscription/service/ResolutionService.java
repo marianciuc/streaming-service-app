@@ -22,24 +22,19 @@
 
 package io.github.marianciuc.streamingservice.subscription.service;
 
-import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionRequest;
-import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionResponse;
-import io.github.marianciuc.streamingservice.subscription.entity.Subscription;
+import io.github.marianciuc.streamingservice.subscription.dto.ResolutionDto;
+import io.github.marianciuc.streamingservice.subscription.entity.Resolution;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface SubscriptionService {
+public interface ResolutionService {
 
-    void deleteSubscription(UUID id);
+    Resolution getResolution(UUID id);
 
-    SubscriptionResponse createSubscription(SubscriptionRequest subscriptionRequest);
+    UUID createResolution(ResolutionDto resolution);
 
-    SubscriptionResponse updateSubscription(UUID id, SubscriptionRequest subscriptionRequest);
+    List<Resolution> getAllResolutions();
 
-    SubscriptionResponse getSubscriptionResponse(UUID id);
-
-    List<SubscriptionResponse> getAllSubscriptions();
-
-    Subscription getSubscription(UUID id);
+    void deleteResolution(UUID id);
 }

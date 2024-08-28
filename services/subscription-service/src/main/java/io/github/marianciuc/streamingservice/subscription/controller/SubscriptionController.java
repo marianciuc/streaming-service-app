@@ -3,6 +3,7 @@ package io.github.marianciuc.streamingservice.subscription.controller;
 import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionRequest;
 import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionResponse;
 import io.github.marianciuc.streamingservice.subscription.service.SubscriptionService;
+import io.github.marianciuc.streamingservice.subscription.service.impl.SubscriptionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class SubscriptionController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    public ResponseEntity<UUID> addSubscription(@RequestBody @Valid SubscriptionRequest request) {
+    public ResponseEntity<SubscriptionResponse> addSubscription(@RequestBody @Valid SubscriptionRequest request) {
         return ResponseEntity.ok(subscriptionService.createSubscription(request));
     }
 
@@ -45,7 +46,7 @@ public class SubscriptionController {
     @DeleteMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteSubscription(@RequestParam("id") UUID id) {
-        subscriptionService.delete(id);
+        subscriptionService.deleteSubscription(id);
         return ResponseEntity.ok().build();
     }
 }
