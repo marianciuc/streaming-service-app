@@ -2,6 +2,12 @@ package io.github.marianciuc.streamingservice.subscription.entity;
 
 import lombok.Getter;
 
+/**
+ * The {@code Currency} enum represents different types of currencies.
+ * It provides a description for each currency.
+ *
+ * @see Subscription
+ */
 @Getter
 public enum Currency {
     PLN("Polish Złoty"),
