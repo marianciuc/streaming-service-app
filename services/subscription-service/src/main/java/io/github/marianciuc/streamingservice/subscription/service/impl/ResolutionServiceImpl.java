@@ -52,6 +52,11 @@ public class ResolutionServiceImpl implements ResolutionService {
                 .orElseThrow(() -> new NotFoundException(String.format(NOT_FOUND_EXCEPTION_MSG_PATTERN, id)));
     }
 
+    /**
+     * Creates a resolution by saving a {@link ResolutionDto} object to the database.
+     *
+     * @param resolution the resolution to be created
+     */
     @Override
     public void createResolution(ResolutionDto resolution) {
         resolutionRepository.save(resolutionMapper.fromResolutionDto(resolution));
