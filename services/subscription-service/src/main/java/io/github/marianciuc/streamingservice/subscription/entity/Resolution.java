@@ -1,9 +1,7 @@
 package io.github.marianciuc.streamingservice.subscription.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 import java.util.UUID;
@@ -12,7 +10,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "resolutions")
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class Resolution {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
