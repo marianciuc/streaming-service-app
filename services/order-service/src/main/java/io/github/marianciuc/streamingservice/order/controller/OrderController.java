@@ -39,6 +39,4 @@ public class OrderController {
     public ResponseEntity<Void> updateOrderStatus(@RequestBody Order order) {
         return null;
     }
-
-//    @PutMapping
 }
