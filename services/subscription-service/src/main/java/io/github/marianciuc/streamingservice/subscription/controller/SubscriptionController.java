@@ -1,12 +1,15 @@
 package io.github.marianciuc.streamingservice.subscription.controller;
 
+import io.github.marianciuc.jwtsecurity.service.JwtUserDetails;
 import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionRequest;
 import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionResponse;
 import io.github.marianciuc.streamingservice.subscription.service.SubscriptionService;
+import io.github.marianciuc.streamingservice.subscription.service.UserSubscriptionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +26,7 @@ import java.util.UUID;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final UserSubscriptionService userSubscriptionService;
 
     /**
      * This endpoint retrieves all Subscription objects.
@@ -55,6 +59,13 @@ public class SubscriptionController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<SubscriptionResponse> addSubscription(@RequestBody @Valid SubscriptionRequest request) {
         return ResponseEntity.ok(subscriptionService.createSubscription(request));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_SUBSCRIBED_USER')")
+    @GetMapping("/active")
+    public ResponseEntity<SubscriptionResponse> getActiveSubscription(Authentication authentication) {
+        JwtUserDetails jwtUserDetails = (JwtUserDetails) authentication;
+        return ResponseEntity.ok(userSubscriptionService.getActiveSubscription(jwtUserDetails));
     }
 
 
