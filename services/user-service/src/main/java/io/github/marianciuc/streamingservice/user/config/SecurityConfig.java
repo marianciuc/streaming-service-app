@@ -1,6 +1,6 @@
 package io.github.marianciuc.streamingservice.user.config;
 
-import io.github.marianciuc.jwtsecurity.service.JsonWebTokenFilter;
+import io.github.marianciuc.jwtsecurity.filters.JsonWebTokenFilter;
 import io.github.marianciuc.streamingservice.user.enums.APIPath;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
