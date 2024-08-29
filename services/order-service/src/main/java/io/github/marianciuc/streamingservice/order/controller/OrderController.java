@@ -24,6 +24,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(orderRequest));
     }
 
+    @PutMapping
     public ResponseEntity<UUID> updatePlan(@RequestBody OrderRequest orderRequest) {
         return null;
     }
@@ -38,4 +39,6 @@ public class OrderController {
     public ResponseEntity<Void> updateOrderStatus(@RequestBody Order order) {
         return null;
     }
+
+//    @PutMapping
 }
