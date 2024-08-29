@@ -1,5 +1,7 @@
 package io.github.marianciuc.streamingservice.user.entity;
 
+import io.github.marianciuc.jwtsecurity.enums.TokenType;
+import io.github.marianciuc.jwtsecurity.service.JwtUserDetails;
 import io.github.marianciuc.streamingservice.user.enums.RecordStatus;
 import io.github.marianciuc.streamingservice.user.enums.Role;
 import io.github.marianciuc.streamingservice.user.enums.UserType;
@@ -14,7 +16,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -36,7 +37,7 @@ import java.util.UUID;
         @Index(name = "idxEmail", columnList = "email"),
         @Index(name = "idxUsername", columnList = "username")
 })
-public class User implements UserDetails {
+public class User implements JwtUserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -102,5 +103,15 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return recordStatus == RecordStatus.ACTIVE;
+    }
+
+    @Override
+    public TokenType getType() {
+        return null;
+    }
+
+    @Override
+    public boolean isService() {
+        return false;
     }
 }
