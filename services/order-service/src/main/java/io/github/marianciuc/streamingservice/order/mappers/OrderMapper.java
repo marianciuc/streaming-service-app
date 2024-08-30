@@ -9,10 +9,10 @@ public class OrderMapper {
     public OrderResponse toOrderResponse(Order order) {
         return new OrderResponse(
                 order.getId(),
-                order.getCustomerId(),
+                order.getUserId(),
                 order.getAmount(),
                 order.getSubscriptionId(),
-                order.getOrderDate(),
+                order.getOrderCreateDate(),
                 order.getOrderStatus()
         );
     }

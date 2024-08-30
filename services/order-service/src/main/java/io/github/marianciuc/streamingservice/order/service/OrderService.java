@@ -1,65 +1,70 @@
+/*
+ * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
+ *
+ * Project: STREAMING SERVICE APP
+ * File: OrderService.java
+ *
+ */
+
 package io.github.marianciuc.streamingservice.order.service;
 
-import io.github.marianciuc.jwtsecurity.service.UserService;
-import io.github.marianciuc.streamingservice.order.client.SubscriptionClient;
-import io.github.marianciuc.streamingservice.order.dto.CreateOrderMessage;
 import io.github.marianciuc.streamingservice.order.dto.OrderRequest;
 import io.github.marianciuc.streamingservice.order.dto.OrderResponse;
-import io.github.marianciuc.streamingservice.order.dto.Subscription;
-import io.github.marianciuc.streamingservice.order.entity.Order;
 import io.github.marianciuc.streamingservice.order.entity.OrderStatus;
-import io.github.marianciuc.streamingservice.order.kafka.KafkaProducer;
-import io.github.marianciuc.streamingservice.order.mappers.OrderMapper;
-import io.github.marianciuc.streamingservice.order.repository.OrderRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
-@Service
-@RequiredArgsConstructor
-public class OrderService {
+/**
+ * OrderService provides methods for creating, retrieving, and updating orders.
+ */
+public interface OrderService {
+    /**
+     * Creates a new order based on the provided order request and authentication.
+     *
+     * @param orderRequest the order request containing details for the new order
+     * @param authentication the authentication context of the user creating the order
+     * @return the response containing the details of the created order
+     */
+    OrderResponse createOrder(OrderRequest orderRequest, Authentication authentication);
 
-    private final OrderRepository orderRepository;
-    private final SubscriptionClient subscriptionClient;
-    private final KafkaProducer kafkaProducer;
-    private final OrderMapper orderMapper;
-    private final UserService userService;
+    /**
+     * Retrieves an order by its unique identifier.
+     *
+     * @param orderId the unique identifier of the order
+     * @return the response containing the details of the order
+     */
+    OrderResponse getOrderById(UUID orderId);
 
-    public OrderResponse createOrder(OrderRequest orderRequest) {
-        Subscription subscription = subscriptionClient.fetchSubscription(orderRequest.subscriptionId());
-        UUID userId = userService.getUserId();
-        // Проверить есть ли у пользователя акивная подписка
-        Optional<Subscription> activeSubscription = subscriptionClient.fetchActiveUserSubscription(userId);
+    /**
+     * Retrieves a list of orders made by a specific user.
+     *
+     * @param customerId the unique identifier of the user
+     * @return a list of responses each containing details of an order
+     */
+    List<OrderResponse> getOrdersByUserId(UUID customerId);
 
-        if (activeSubscription.isPresent()) {
+    /**
+     * Retrieves all orders in the system.
+     *
+     * @return a list of responses each containing details of an order
+     */
+    List<OrderResponse> getAllOrders();
 
-        }
+    /**
+     * Retrieves a list of orders based on the authentication context of the user.
+     *
+     * @param authentication the authentication context of the user
+     * @return a list of responses each containing details of an order
+     */
+    List<OrderResponse> getOrdersByAuthentication(Authentication authentication);
 
-
-        Order order = Order.builder()
-                .orderStatus(OrderStatus.CREATED)
-                .orderDate(LocalDateTime.now())
-                .subscriptionId(subscription.id())
-                .customerId(orderRequest.userId())
-                .amount(subscription.price())
-                .build();
-        OrderResponse orderResponse = orderMapper.toOrderResponse(orderRepository.save(order));
-        kafkaProducer.produceOrderMessage(orderResponse);
-        return orderResponse;
-    }
-
-    public void createOrder(CreateOrderMessage message) {
-        Order order = Order.builder()
-                .orderStatus(OrderStatus.CREATED)
-                .orderDate(LocalDateTime.now())
-                .subscriptionId(message.subscriptionId())
-                .customerId(message.userId())
-                .amount(message.price())
-                .build();
-        OrderResponse orderResponse = orderMapper.toOrderResponse(orderRepository.save(order));
-        kafkaProducer.produceOrderMessage(orderResponse);
-    }
+    /**
+     * Updates the status of an order based on its unique identifier and the new status.
+     *
+     * @param orderId the unique identifier of the order
+     * @param orderStatus the new status to be applied to the order
+     */
+    void updateOrderStatus(UUID orderId, OrderStatus orderStatus);
 }
