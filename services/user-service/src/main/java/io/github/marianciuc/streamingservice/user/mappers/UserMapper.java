@@ -3,6 +3,7 @@ package io.github.marianciuc.streamingservice.user.mappers;
 import io.github.marianciuc.streamingservice.user.dto.RegistrationRequest;
 import io.github.marianciuc.streamingservice.user.dto.UserResponse;
 import io.github.marianciuc.streamingservice.user.entity.User;
+import io.github.marianciuc.streamingservice.user.enums.Role;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,8 +22,7 @@ public class UserMapper {
                 user.getEmail(),
                 user.getPasswordHash(),
                 user.getRecordStatus(),
-                user.getUserType(),
-                user.getRole(),
+                Role.valueOf(user.getRole()),
                 user.getIsBanned()
         );
     }

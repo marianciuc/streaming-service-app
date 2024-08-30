@@ -4,10 +4,11 @@ import io.github.marianciuc.streamingservice.user.dto.ChangePasswordRequest;
 import io.github.marianciuc.streamingservice.user.dto.CreateEmployeeRequest;
 import io.github.marianciuc.streamingservice.user.enums.APIPath;
 import io.github.marianciuc.streamingservice.user.enums.Role;
-import io.github.marianciuc.streamingservice.user.services.UserService;
+import io.github.marianciuc.streamingservice.user.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     /**
      * Changes the password of the authenticated user if the old password matches the current password.
@@ -33,23 +34,10 @@ public class UserController {
      * @return a ResponseEntity with a status of 200 OK if the password change was successful, or the appropriate error response if it failed
      */
     @PutMapping(APIPath.CHANGE_PASSWORD)
-    public ResponseEntity<Void> changePassword(@RequestBody @Validated ChangePasswordRequest request){
-        userService.changePassword(request);
+    public ResponseEntity<Void> changePassword(@RequestBody @Validated ChangePasswordRequest request, Authentication authentication){
+        userService.changePassword(request, authentication);
         return ResponseEntity.ok().build();
     }
-
-    /**
-     * Creates a new employee user with the given request details.
-     *
-     * @param request the CreateEmployeeRequest object containing the employee details
-     * @return the unique identifier (UUID) of the created employee
-     */
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping(APIPath.CREATE_EMPLOYEE)
-    public ResponseEntity<UUID> createEmployee(@RequestBody @Validated CreateEmployeeRequest request) {
-        return ResponseEntity.ok(userService.createEmployee(request));
-    }
-
 
     /**
      * Bans a user in the system by setting the 'isBanned' attribute of the user to true.
@@ -59,8 +47,9 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping(APIPath.BAN_USER)
-    public ResponseEntity<UUID> banUser(@RequestParam("user-id") UUID userId) {
-        return ResponseEntity.ok(userService.banUser(userId));
+    public ResponseEntity<Void> banUser(@RequestParam("user-id") UUID userId) {
+        userService.banUser(userId);
+        return ResponseEntity.ok().build();
     }
 
     /**

@@ -4,7 +4,6 @@ import io.github.marianciuc.jwtsecurity.enums.TokenType;
 import io.github.marianciuc.jwtsecurity.service.JwtUserDetails;
 import io.github.marianciuc.streamingservice.user.enums.RecordStatus;
 import io.github.marianciuc.streamingservice.user.enums.Role;
-import io.github.marianciuc.streamingservice.user.enums.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +24,6 @@ import java.util.UUID;
 /**
  * The {@code User} class represents a user in the system.
  * @see Role
- * @see UserType
  * @see RecordStatus
  */
 @Builder
@@ -55,10 +53,6 @@ public class User implements JwtUserDetails {
     @Column(nullable = false, name = "role")
     private Role role;
 
-    @Column(nullable = false, name = "user_type", updatable = false)
-    @Enumerated(EnumType.STRING)
-    private UserType userType;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -78,6 +72,11 @@ public class User implements JwtUserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getRole() {
+        return role.name();
     }
 
     @Override

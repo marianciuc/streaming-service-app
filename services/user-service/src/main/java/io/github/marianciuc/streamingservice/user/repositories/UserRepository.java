@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * The interface User repository.
+ * UserRepository interface to manage data related to the user entity.
  */
 public interface UserRepository extends JpaRepository<User, UUID> {
     /**
@@ -23,10 +23,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
 
     /**
-     * Retrieves a user by email or username.
-     *
-     * @param value the email or username value
-     * @return The optional
+     * Finds a User by their email or username.
+     * @param value The email or username of the User.
+     * @return User if email or username exists, else Optional.empty().
      */
     @Query("SELECT u FROM User u WHERE u.username = :value OR u.email = :value")
     @Transactional(readOnly = true)
