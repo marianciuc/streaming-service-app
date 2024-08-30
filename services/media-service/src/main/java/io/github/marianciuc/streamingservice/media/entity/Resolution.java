@@ -1,34 +1,41 @@
 package io.github.marianciuc.streamingservice.media.entity;
 
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.UUID;
 
 
 /**
  * An enumeration representing different resolutions of media files.
  */
-@Getter
-public enum Resolution {
-    SD(480, 2000, 0),
-    HD(720, 4000, 1),
-    FHD( 1080, 15000, 2),
-    QHD( 1600, 35000, 3);
+@Data
+@Entity
+@Table(name = "resolutions")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Resolution {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    private final int height;
-    private final int bitrate;
-    private final int order;
+    @Column(name = "name")
+    private String name;
 
-    Resolution(int height, int bitrate, int order) {
-        this.height = height;
-        this.bitrate = bitrate;
-        this.order = order;
-    }
+    @Column(name = "description")
+    private String description;
 
-    public static Resolution getResolutionByOrder(int order) {
-        for (Resolution resolution : values()) {
-            if (resolution.order == order) {
-                return resolution;
-            }
-        }
-        throw new IllegalArgumentException("No resolution found for order: " + order);
-    }
+    @Column(name = "height")
+    private int height;
+
+    @Column(name = "bitrate")
+    private int bitrate;
+
+    @OneToMany(mappedBy = "resolution")
+    private List<Media> mediaList;
 }
