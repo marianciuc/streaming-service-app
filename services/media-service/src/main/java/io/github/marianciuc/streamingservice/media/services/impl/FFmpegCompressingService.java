@@ -10,9 +10,7 @@ package io.github.marianciuc.streamingservice.media.services.impl;
 
 import io.github.marianciuc.streamingservice.media.entity.Resolution;
 import io.github.marianciuc.streamingservice.media.services.VideoCompressingService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -22,8 +20,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Slf4j
-@Service
-@RequiredArgsConstructor
 public class FFmpegCompressingService implements VideoCompressingService {
 
     private static final String IO_EXCEPTION_MSG = "An exception occurred while interacting with the filesystem.";
