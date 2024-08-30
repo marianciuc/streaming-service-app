@@ -35,10 +35,6 @@ public class ImageServiceImpl implements ImageService {
     private static final String FORBIDDEN_MSG = "You are not authorized to upload videos.";
     private static final String IMAGE_NOT_FOUND_MSG = "Image not found";
     private static final String IO_EXCEPTION_MSG = "An exception occurred while interacting with the filesystem.";
-    private static final String INTERRUPTED_EXCEPTION_MSG = "The compression operation was interrupted.";
-    private static final String COMPRESSION_ERROR_MSG = "Error occurred during compression.";
-    private static final String FFMPEG_COMMAND = "ffmpeg";
-    private static final String CODEC = "libaom-av1";
 
     private final UserService userService;
     private final MediaRepository repository;
