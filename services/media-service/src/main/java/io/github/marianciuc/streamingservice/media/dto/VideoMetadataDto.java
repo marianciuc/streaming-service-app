@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public record VideoMetadataDto (
         UUID id,
-        ResolutionResponse resolution,
+        ResolutionMessage resolution,
         UUID contentId,
         MediaType mediaType
 ){
