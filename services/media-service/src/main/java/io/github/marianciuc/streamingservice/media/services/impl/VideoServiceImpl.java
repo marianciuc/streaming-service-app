@@ -14,6 +14,7 @@ import io.github.marianciuc.streamingservice.media.dto.VideoMetadataDto;
 import io.github.marianciuc.streamingservice.media.entity.Media;
 import io.github.marianciuc.streamingservice.media.entity.MediaType;
 import io.github.marianciuc.streamingservice.media.entity.Resolution;
+import io.github.marianciuc.streamingservice.media.exceptions.MediaContentNotFoundException;
 import io.github.marianciuc.streamingservice.media.kafka.KafkaVideoProducer;
 import io.github.marianciuc.streamingservice.media.mappers.MediaMapper;
 import io.github.marianciuc.streamingservice.media.repository.MediaRepository;
@@ -22,9 +23,12 @@ import io.github.marianciuc.streamingservice.media.services.VideoCompressingServ
 import io.github.marianciuc.streamingservice.media.services.VideoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -33,12 +37,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VideoServiceImpl implements VideoService {
 
+    private final static String NO_CONTENT_MSG = "Video not found";
+
     private final MediaRepository mediaRepository;
     private final ResolutionService resolutionService;
     private final VideoCompressingService compressingService;
     private final UserService userService;
-    private final KafkaVideoProducer kafkaVideoProducer;
     private final MediaMapper mediaMapper;
+    private final KafkaVideoProducer kafkaVideoProducer;
 
     @Override
     public void uploadVideo(MediaType mediaType, UUID contentId, UUID resolutionId, MultipartFile file) {
@@ -66,16 +72,59 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public void deleteVideo(UUID id) {
-
+        Media media = mediaRepository.findById(id).orElseThrow(() -> new MediaContentNotFoundException(NO_CONTENT_MSG));
+        kafkaVideoProducer.sendDeletedVideoTopic(mediaMapper.toVideoMetadataDto(media));
+        mediaRepository.delete(media);
     }
 
     @Override
     public ResourceDto getVideoResource(UUID videoId, HttpServletRequest request) {
-        return null;
+        Media media = mediaRepository.findById(videoId).orElseThrow(() -> new MediaContentNotFoundException(NO_CONTENT_MSG));
+        byte[] mediaData = media.getData();
+        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(mediaData));
+
+        String rangeHeader = request.getHeader("Range");
+        long fileLength = media.getContentLength();
+        long rangeStart = 0;
+        long rangeEnd = fileLength - 1;
+
+        if (rangeHeader != null) {
+            long[] rangeValues = parseRangeHeader(rangeHeader);
+            rangeStart = rangeValues[0];
+            rangeEnd = rangeValues[1] > 0 ? rangeValues[1] : rangeEnd;
+        }
+
+        long rangeLength = rangeEnd - rangeStart + 1;
+        resource = new InputStreamResource(new ByteArrayInputStream(mediaData, (int) rangeStart, (int) rangeLength));
+
+        return new ResourceDto(
+                HttpStatus.PARTIAL_CONTENT,
+                media.getContentType(),
+                String.valueOf(rangeLength),
+                rangeStart,
+                rangeEnd,
+                fileLength,
+                resource
+        );
+    }
+
+    private long[] parseRangeHeader(String rangeHeader) {
+        long rangeStart = 0;
+        long rangeEnd = -1;
+        String[] ranges = rangeHeader.replace("bytes=", "").split("-");
+        try {
+            rangeStart = Long.parseLong(ranges[0]);
+            if (ranges.length > 1) {
+                rangeEnd = ranges[1].isEmpty() ? -1 : Long.parseLong(ranges[1]);
+            }
+        } catch (NumberFormatException ignored) {
+        }
+        return new long[]{rangeStart, rangeEnd};
     }
 
     @Override
     public void deleteVideoByContent(UUID contentId) {
-
+        List<Media> mediaList = mediaRepository.findAllByContentId(contentId);
+        mediaRepository.deleteAll(mediaList);
     }
 }
