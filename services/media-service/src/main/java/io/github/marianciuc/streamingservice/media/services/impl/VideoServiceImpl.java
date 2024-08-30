@@ -81,7 +81,6 @@ public class VideoServiceImpl implements VideoService {
     public ResourceDto getVideoResource(UUID videoId, HttpServletRequest request) {
         Media media = mediaRepository.findById(videoId).orElseThrow(() -> new MediaContentNotFoundException(NO_CONTENT_MSG));
         byte[] mediaData = media.getData();
-        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(mediaData));
 
         String rangeHeader = request.getHeader("Range");
         long fileLength = media.getContentLength();
@@ -95,7 +94,7 @@ public class VideoServiceImpl implements VideoService {
         }
 
         long rangeLength = rangeEnd - rangeStart + 1;
-        resource = new InputStreamResource(new ByteArrayInputStream(mediaData, (int) rangeStart, (int) rangeLength));
+        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(mediaData, (int) rangeStart, (int) rangeLength));
 
         return new ResourceDto(
                 HttpStatus.PARTIAL_CONTENT,
