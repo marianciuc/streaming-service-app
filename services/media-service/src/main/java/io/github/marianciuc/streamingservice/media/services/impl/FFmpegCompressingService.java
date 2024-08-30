@@ -19,6 +19,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * Service for compressing video files using FFmpeg.
+ */
 @Slf4j
 public class FFmpegCompressingService implements VideoCompressingService {
 
@@ -29,6 +32,14 @@ public class FFmpegCompressingService implements VideoCompressingService {
     private static final String CODEC = "libaom-av1";
     private static final String TEMP_FILE_SUFFIX = ".tmp";
 
+    /**
+     * Compresses a video file to a specified resolution.
+     *
+     * @param file the video file to be compressed
+     * @param resolution the target resolution settings for the video compression
+     * @return a byte array representing the compressed video data
+     * @throws RuntimeException if an I/O error occurs during file operations or if the compression process is interrupted
+     */
     @Override
     public byte[] compressVideo(MultipartFile file, Resolution resolution) {
         File inputFile = null;
@@ -51,6 +62,14 @@ public class FFmpegCompressingService implements VideoCompressingService {
         return File.createTempFile(prefix + file.getName(), TEMP_FILE_SUFFIX);
     }
 
+    /**
+     * Executes the compression of a video file based on the provided resolution settings.
+     *
+     * @param inputFilePath The path to the input video file to be compressed.
+     * @param outputFilePath The path where the compressed video file will be saved.
+     * @param resolution The desired resolution settings for the compression, including height and bitrate.
+     * @return A byte array containing the compressed video file.
+     */
     private byte[] executeCompression(String inputFilePath, String outputFilePath, Resolution resolution) {
         Process process = null;
         try {
