@@ -1,6 +1,5 @@
 package io.github.marianciuc.streamingservice.subscription.repository;
 
-import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionResponse;
 import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
 import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +14,7 @@ public interface UserSubscriptionRepository extends JpaRepository<UserSubscripti
 
     Optional<UserSubscriptions> findByOrderId(UUID uuid);
 
-    Optional<SubscriptionResponse> findFirstByUserId(UUID id);
+    Optional<UserSubscriptions> findFirstByUserId(UUID id);
+
+    Optional<UserSubscriptions> findByUserIdAndStatus(UUID id, SubscriptionStatus status);
 }

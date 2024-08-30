@@ -24,7 +24,7 @@ package io.github.marianciuc.streamingservice.subscription.service;
 
 import io.github.marianciuc.jwtsecurity.service.JwtUserDetails;
 import io.github.marianciuc.streamingservice.subscription.dto.OrderCreationEventKafkaDto;
-import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionResponse;
+import io.github.marianciuc.streamingservice.subscription.dto.UserSubscriptionDto;
 import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
 import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
 
@@ -32,6 +32,7 @@ import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * UserSubscriptionService is an interface that provides methods for managing user subscriptions.
@@ -44,8 +45,10 @@ public interface UserSubscriptionService {
     void extendSubscription(UserSubscriptions userSubscription) throws IOException, OperationNotSupportedException;
 
     void cancelSubscription(UserSubscriptions userSubscription) throws OperationNotSupportedException;
+    void cancelSubscription(UUID id);
+    void cancelSubscription(JwtUserDetails jwtUserDetails);
 
     List<UserSubscriptions> getAllUserSubscriptionsByStatusAndEndDate(SubscriptionStatus status, LocalDate endDate);
 
-    SubscriptionResponse getActiveSubscription(JwtUserDetails jwtUserDetails);
+    UserSubscriptionDto getActiveSubscription(JwtUserDetails jwtUserDetails, UUID uuid);
 }

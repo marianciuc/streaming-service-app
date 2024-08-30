@@ -27,11 +27,12 @@ import io.github.marianciuc.streamingservice.subscription.clients.OrderClient;
 import io.github.marianciuc.streamingservice.subscription.dto.CreateOrderRequest;
 import io.github.marianciuc.streamingservice.subscription.dto.OrderCreationEventKafkaDto;
 import io.github.marianciuc.streamingservice.subscription.dto.OrderResponse;
-import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionResponse;
+import io.github.marianciuc.streamingservice.subscription.dto.UserSubscriptionDto;
 import io.github.marianciuc.streamingservice.subscription.entity.Subscription;
 import io.github.marianciuc.streamingservice.subscription.entity.SubscriptionStatus;
 import io.github.marianciuc.streamingservice.subscription.entity.UserSubscriptions;
 import io.github.marianciuc.streamingservice.subscription.exceptions.NotFoundException;
+import io.github.marianciuc.streamingservice.subscription.mapper.UserSubscriptionMapper;
 import io.github.marianciuc.streamingservice.subscription.repository.UserSubscriptionRepository;
 import io.github.marianciuc.streamingservice.subscription.service.SubscriptionService;
 import io.github.marianciuc.streamingservice.subscription.service.UserSubscriptionService;
@@ -57,7 +58,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     private final UserSubscriptionRepository repository;
     private final SubscriptionService subscriptionService;
     private final OrderClient orderClient;
-
+    private final UserSubscriptionMapper mapper;
 
 
     public void subscribeUser(OrderCreationEventKafkaDto orderCreationEventKafkaDto) {
@@ -67,7 +68,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
         if (userSubscriptionsOptional.isPresent()) {
             UserSubscriptions userSubscriptions = userSubscriptionsOptional.get();
 
-            if(!userSubscriptions.getSubscription().equals(subscription)) {
+            if (!userSubscriptions.getSubscription().equals(subscription)) {
                 userSubscriptions.setSubscription(subscription);
             }
 
@@ -79,16 +80,22 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
         }
     }
 
-
     public List<UserSubscriptions> getAllUserSubscriptionsByStatusAndEndDate(SubscriptionStatus status, LocalDate endDate) {
         return repository.findAllByStatusAndEndDate(status, endDate);
     }
 
     @Override
-    public SubscriptionResponse getActiveSubscription(JwtUserDetails jwtUserDetails) {
-        return repository.findFirstByUserId(jwtUserDetails.getId()).orElseThrow(() -> new NotFoundException("User didn't have subscription"));
+    public UserSubscriptionDto getActiveSubscription(JwtUserDetails jwtUserDetails, UUID uuid) {
+        if (uuid != null) {
+            return repository.findByUserIdAndStatus(uuid, SubscriptionStatus.ACTIVE)
+                    .map(mapper::toUserSubscriptionDto)
+                    .orElseThrow(() -> new NotFoundException("User didn't have subscription"));
+        } else {
+            return repository.findByUserIdAndStatus(jwtUserDetails.getId(), SubscriptionStatus.ACTIVE)
+                    .map(mapper::toUserSubscriptionDto)
+                    .orElseThrow(() -> new NotFoundException("User didn't have subscription"));
+        }
     }
-
 
     public void cancelSubscription(UserSubscriptions subscription) throws OperationNotSupportedException {
         if (!subscription.getStatus().equals(SubscriptionStatus.CANCELLED)) {
@@ -98,6 +105,19 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
         } else {
             throw new OperationNotSupportedException("Not allowed to repeat cancellation of subscription.");
         }
+    }
+
+    public void cancelSubscription(UUID subscriptionId) {
+        UserSubscriptions userSubscriptions = repository.findById(subscriptionId).orElseThrow(() -> new NotFoundException("Subscription not found"));
+        userSubscriptions.setStatus(SubscriptionStatus.CANCELLED);
+        repository.save(userSubscriptions);
+    }
+
+    @Override
+    public void cancelSubscription(JwtUserDetails jwtUserDetails) {
+        UserSubscriptions userSubscriptions = repository.findByUserIdAndStatus(jwtUserDetails.getId(), SubscriptionStatus.ACTIVE).orElseThrow(() -> new NotFoundException("Subscription not found"));
+        userSubscriptions.setStatus(SubscriptionStatus.CANCELLED);
+        repository.save(userSubscriptions);
     }
 
     public void extendSubscription(UserSubscriptions userSubscription) throws IOException, OperationNotSupportedException {
