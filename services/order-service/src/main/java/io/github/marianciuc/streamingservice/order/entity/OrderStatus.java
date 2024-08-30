@@ -27,5 +27,6 @@ public enum OrderStatus {
     /**
      * Order was cancelled and will not be processed.
      */
-    CANCELLED
+    CANCELLED,
+    SCHEDULED
 }
