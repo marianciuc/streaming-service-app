@@ -1,4 +1,12 @@
-package io.github.marianciuc.streamingservice.user.services;
+/*
+ * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
+ *
+ * Project: STREAMING SERVICE APP
+ * File: UserDetailServiceImpl.java
+ *
+ */
+
+package io.github.marianciuc.streamingservice.user.services.impl;
 
 import io.github.marianciuc.streamingservice.user.exceptions.NotFoundException;
 import io.github.marianciuc.streamingservice.user.repositories.UserRepository;
