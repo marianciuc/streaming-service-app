@@ -38,6 +38,7 @@ import java.util.UUID;
 public class VideoServiceImpl implements VideoService {
 
     private final static String NO_CONTENT_MSG = "Video not found";
+    private final static String RANGE_HEADER = "Range";
 
     private final MediaRepository mediaRepository;
     private final ResolutionService resolutionService;
@@ -82,7 +83,7 @@ public class VideoServiceImpl implements VideoService {
         Media media = mediaRepository.findById(videoId).orElseThrow(() -> new MediaContentNotFoundException(NO_CONTENT_MSG));
         byte[] mediaData = media.getData();
 
-        String rangeHeader = request.getHeader("Range");
+        String rangeHeader = request.getHeader(RANGE_HEADER);
         long fileLength = media.getContentLength();
         long rangeStart = 0;
         long rangeEnd = fileLength - 1;
