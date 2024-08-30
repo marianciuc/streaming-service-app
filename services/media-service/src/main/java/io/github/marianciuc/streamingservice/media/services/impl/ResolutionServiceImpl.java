@@ -32,7 +32,14 @@ public class ResolutionServiceImpl implements ResolutionService {
 
     @Override
     public ResolutionResponse createResolution(ResolutionRequest request) {
-        return null;
+        Resolution resolution = Resolution.builder()
+                .name(request.name())
+                .width(request.width())
+                .height(request.height())
+                .bitrate(request.bitrate())
+                .description(request.description())
+                .build();
+        return resolutionMapper.toResponse(resolutionRepository.save(resolution));
     }
 
     @Override

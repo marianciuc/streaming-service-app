@@ -8,5 +8,11 @@
 
 package io.github.marianciuc.streamingservice.media.dto;
 
-public record ResolutionRequest() {
+public record ResolutionRequest(
+        String name,
+        String description,
+        Integer height,
+        Integer width,
+        Integer bitrate
+) {
 }

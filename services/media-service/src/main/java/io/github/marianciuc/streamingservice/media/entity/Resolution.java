@@ -33,6 +33,9 @@ public class Resolution {
     @Column(name = "height")
     private int height;
 
+    @Column(name = "width")
+    private int width;
+
     @Column(name = "bitrate")
     private int bitrate;
 
