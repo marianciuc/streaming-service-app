@@ -3,23 +3,24 @@ package io.github.marianciuc.streamingservice.user.controllers;
 import io.github.marianciuc.streamingservice.user.dto.CredentialsRequest;
 import io.github.marianciuc.streamingservice.user.dto.JsonWebTokenResponse;
 import io.github.marianciuc.streamingservice.user.dto.RegistrationRequest;
-import io.github.marianciuc.streamingservice.user.dto.UserResponse;
 import io.github.marianciuc.streamingservice.user.enums.APIPath;
-import io.github.marianciuc.streamingservice.user.services.UserService;
+import io.github.marianciuc.streamingservice.user.services.AuthService;
+import io.github.marianciuc.streamingservice.user.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * The {@code AuthController} class handles API endpoints related to user authentication and authorization.
- * @see UserService
+ * @see UserServiceImpl
  */
 @RestController
 @RequestMapping(APIPath.AUTH_V1_CONTROLLER)
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
 
     /**
      * Registers a new user with the provided registration request details.
@@ -28,8 +29,8 @@ public class AuthController {
      * @return the user response object with the details of the registered user
      */
     @PostMapping(APIPath.REGISTER)
-    public ResponseEntity<UserResponse> register(@RequestBody RegistrationRequest request) {
-        return ResponseEntity.ok(userService.registerUser(request));
+    public ResponseEntity<JsonWebTokenResponse> register(@RequestBody RegistrationRequest request, Authentication authentication) {
+        return ResponseEntity.ok(authService.registerUser(request, authentication));
     }
 
     /**
@@ -40,7 +41,7 @@ public class AuthController {
      */
     @PostMapping(APIPath.LOGIN)
     public ResponseEntity<JsonWebTokenResponse> login(@RequestBody CredentialsRequest request) {
-        return ResponseEntity.ok(userService.authenticateUserByCredentials(request));
+        return ResponseEntity.ok(authService.authenticateUserByCredentials(request));
     }
 
     /**
@@ -51,6 +52,6 @@ public class AuthController {
      */
     @PostMapping(APIPath.REFRESH)
     public ResponseEntity<JsonWebTokenResponse> refreshToken(@RequestParam("token") String refreshToken) {
-        return ResponseEntity.ok(userService.refreshToken(refreshToken));
+        return ResponseEntity.ok(authService.refreshToken(refreshToken));
     }
 }
