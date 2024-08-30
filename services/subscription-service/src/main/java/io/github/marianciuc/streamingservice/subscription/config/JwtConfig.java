@@ -1,8 +1,10 @@
 package io.github.marianciuc.streamingservice.subscription.config;
 
-import io.github.marianciuc.jwtsecurity.service.JsonWebTokenFilter;
+import io.github.marianciuc.jwtsecurity.filters.JsonWebTokenFilter;
 import io.github.marianciuc.jwtsecurity.service.JsonWebTokenService;
 import io.github.marianciuc.jwtsecurity.service.UserService;
+import io.github.marianciuc.jwtsecurity.service.impl.JsonWebTokenServiceImpl;
+import io.github.marianciuc.jwtsecurity.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,34 +28,21 @@ public class JwtConfig {
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
 
-    /**
-     * This bean provides a service for handling JWT.
-     *
-     * @return a new instance of JsonWebTokenService
-     */
+    @Value("${spring.application.name}")
+    private String serviceName;
+
     @Bean
     public JsonWebTokenService jsonWebTokenService(){
-        return new JsonWebTokenService(secretKey, accessExpiration, refreshExpiration);
+        return new JsonWebTokenServiceImpl(serviceName, secretKey, accessExpiration, refreshExpiration);
     }
 
-    /**
-     * This bean provides a filter for JWT.
-     *
-     * @param jsonWebTokenService the JSON Web Token service
-     * @return a new instance of JsonWebTokenFilter
-     */
     @Bean
-    public JsonWebTokenFilter jsonWebTokenFilter(JsonWebTokenService jsonWebTokenService){
-        return new JsonWebTokenFilter(jsonWebTokenService);
+    public JsonWebTokenFilter jsonWebTokenFilter(JsonWebTokenService jsonWebTokenService, UserService userService){
+        return new JsonWebTokenFilter(jsonWebTokenService, userService);
     }
 
-    /**
-     * This bean provides a service for handling users.
-     *
-     * @return a new instance of UserService
-     */
     @Bean
     public UserService userService(){
-        return new UserService();
+        return new UserServiceImpl();
     }
 }

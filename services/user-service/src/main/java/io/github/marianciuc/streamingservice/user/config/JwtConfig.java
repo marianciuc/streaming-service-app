@@ -5,6 +5,7 @@ import io.github.marianciuc.jwtsecurity.service.JsonWebTokenService;
 import io.github.marianciuc.jwtsecurity.service.UserService;
 import io.github.marianciuc.jwtsecurity.service.impl.JsonWebTokenServiceImpl;
 import io.github.marianciuc.jwtsecurity.service.impl.UserServiceImpl;
+import io.github.marianciuc.streamingservice.user.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +33,9 @@ public class JwtConfig {
     UserService userService (){
         return new UserServiceImpl();
     }
+
     @Bean
-    JsonWebTokenFilter jsonWebTokenFilter(){
-        return new JsonWebTokenFilter(jsonWebTokenService(), userService());
+    JsonWebTokenFilter jsonWebTokenFilter(JsonWebTokenService jsonWebTokenService, UserService userService){
+        return new JsonWebTokenFilter(jsonWebTokenService, userService);
     }
 }
