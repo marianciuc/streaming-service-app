@@ -20,6 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+/**
+ * Service that handles video compression using FFmpeg and JavaCV.
+ * Implements the VideoCompressingService interface.
+ */
 @Service
 public class FFmpegJavaCVService implements VideoCompressingService {
 
@@ -31,6 +35,13 @@ public class FFmpegJavaCVService implements VideoCompressingService {
 
     private static final int CODEC_ID = avcodec.AV_CODEC_ID_AV1;
 
+    /**
+     * Compresses the given video file to the specified resolution.
+     *
+     * @param file the video file to be compressed
+     * @param resolution the desired resolution to which the video should be compressed
+     * @return a byte array containing the compressed video
+     */
     @Override
     public byte[] compressVideo(MultipartFile file, Resolution resolution) {
         File inputFile = null;
@@ -50,6 +61,14 @@ public class FFmpegJavaCVService implements VideoCompressingService {
         }
     }
 
+    /**
+     * Executes the video compression process using the specified input file path,
+     * output file path, and target resolution.
+     *
+     * @param inputFilePath  the path to the input video file to be compressed
+     * @param outputFilePath the path where the compressed video file will be saved
+     * @param resolution     the target resolution to which the video should be compressed
+     */
     private void executeCompression(String inputFilePath, String outputFilePath, Resolution resolution) {
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inputFilePath);
              FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(outputFilePath, resolution.getWidth(), resolution.getHeight());
