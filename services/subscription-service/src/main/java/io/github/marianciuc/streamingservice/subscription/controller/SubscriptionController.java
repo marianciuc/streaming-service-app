@@ -3,6 +3,7 @@ package io.github.marianciuc.streamingservice.subscription.controller;
 import io.github.marianciuc.jwtsecurity.service.JwtUserDetails;
 import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionRequest;
 import io.github.marianciuc.streamingservice.subscription.dto.SubscriptionResponse;
+import io.github.marianciuc.streamingservice.subscription.dto.UserSubscriptionDto;
 import io.github.marianciuc.streamingservice.subscription.service.SubscriptionService;
 import io.github.marianciuc.streamingservice.subscription.service.UserSubscriptionService;
 import jakarta.validation.Valid;
@@ -61,13 +62,11 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionService.createSubscription(request));
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_SUBSCRIBED_USER')")
     @GetMapping("/active")
-    public ResponseEntity<SubscriptionResponse> getActiveSubscription(Authentication authentication) {
+    public ResponseEntity<UserSubscriptionDto> getActiveSubscription(Authentication authentication, @RequestParam(required = false, value = "id") UUID uuid) {
         JwtUserDetails jwtUserDetails = (JwtUserDetails) authentication;
-        return ResponseEntity.ok(userSubscriptionService.getActiveSubscription(jwtUserDetails));
+        return ResponseEntity.ok(userSubscriptionService.getActiveSubscription(jwtUserDetails, uuid));
     }
-
 
     /**
      * This endpoint updates an existing Subscription object.
@@ -93,6 +92,15 @@ public class SubscriptionController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteSubscription(@RequestParam("id") UUID id) {
         subscriptionService.deleteSubscription(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> cancelSubscription(Authentication authentication, @RequestParam(value = "id", required = false) UUID id) {
+        JwtUserDetails jwtUserDetails = (JwtUserDetails) authentication;
+        if (jwtUserDetails.isService() && id != null) {
+            userSubscriptionService.cancelSubscription(id);
+        } else userSubscriptionService.cancelSubscription(jwtUserDetails);
         return ResponseEntity.ok().build();
     }
 }
