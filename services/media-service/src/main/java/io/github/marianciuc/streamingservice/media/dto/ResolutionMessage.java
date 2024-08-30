@@ -10,7 +10,7 @@ package io.github.marianciuc.streamingservice.media.dto;
 
 import java.util.UUID;
 
-public record ResolutionResponse(
+public record ResolutionMessage(
         UUID id,
         String description,
         String name
