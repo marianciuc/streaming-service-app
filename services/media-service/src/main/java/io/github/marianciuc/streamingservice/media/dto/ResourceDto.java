@@ -1,9 +1,17 @@
-package io.github.marianciuc.streamingservice.media.controllers;
+/*
+ * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
+ *
+ * Project: STREAMING SERVICE APP
+ * File: ResourceResponse.java
+ *
+ */
+
+package io.github.marianciuc.streamingservice.media.dto;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 
-public record ResourceResponse(
+public record ResourceDto(
         HttpStatus status,
         String contentType,
         String rangeLength,
