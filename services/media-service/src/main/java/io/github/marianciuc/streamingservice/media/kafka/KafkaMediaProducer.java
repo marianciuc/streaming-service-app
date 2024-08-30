@@ -8,19 +8,19 @@
 
 package io.github.marianciuc.streamingservice.media.kafka;
 
-import io.github.marianciuc.streamingservice.media.dto.ResolutionResponse;
+import io.github.marianciuc.streamingservice.media.dto.ResolutionMessage;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaMediaProducer {
-    private KafkaTemplate<String, ResolutionResponse> kafkaTemplate;
+    private KafkaTemplate<String, ResolutionMessage> kafkaTemplate;
 
-    public void sendCreatedResolutionTopic(ResolutionResponse resolutionResponse) {
+    public void sendCreatedResolutionTopic(ResolutionMessage resolutionResponse) {
         kafkaTemplate.send("created-resolution-topic", resolutionResponse);
     }
 
-    public void sendDeletedResolutionTopic(ResolutionResponse resolutionResponse) {
+    public void sendDeletedResolutionTopic(ResolutionMessage resolutionResponse) {
         kafkaTemplate.send("deleted-resolution-topic", resolutionResponse);
     }
 }
