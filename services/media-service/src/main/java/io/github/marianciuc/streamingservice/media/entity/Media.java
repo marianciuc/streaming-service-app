@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@MappedSuperclass
 @AllArgsConstructor
 @SuperBuilder
 @NoArgsConstructor
@@ -25,6 +24,26 @@ public class Media {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(name = "content_type")
+    private String contentType;
+
+    @Column(name = "content_length")
+    long contentLength;
+
+    @Column(name = "author_id")
+    private UUID authorId;
+
+    @Column(name = "content_id")
+    private UUID contentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Resolution resolution;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "media_type")
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    private MediaType mediaType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
@@ -40,9 +59,6 @@ public class Media {
     @Column(name = "record_status", length = 30, columnDefinition = "varchar(30) default 'ACTIVE'")
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private RecordStatus recordStatus = RecordStatus.ACTIVE;
-
-    @Column(name = "content_type")
-    private String contentType;
 
     @Lob
     @JsonIgnore
