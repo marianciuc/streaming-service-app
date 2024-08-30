@@ -5,7 +5,6 @@ create table if not exists users
     username varchar(200) unique not null,
     password_hash text not null,
     role varchar(50) not null,
-    user_type varchar(50) not null,
     created_at timestamp,
     updated_at timestamp,
     is_banned boolean not null default false,
