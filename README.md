@@ -2,13 +2,6 @@
 
 This is a backend application based on a microservices architecture designed to provide subscription-based video streaming services. The subscription management system is integrated with the Stripe payment gateway, allowing for payment processing and subscription status management. Every day at midnight, the subscription service checks for subscriptions that are about to expire and automatically renews or cancels them based on user settings and payment status.
 
-## Использование
-### Запуск в Docker
-Для запуска всех сервисов в контейнерах Docker выполните следующую команду:
-```bash
-docker compose up -d
-```
-
 ## Technology Stack
 The project employs the following technologies:
 - Java JDK 22
@@ -29,6 +22,6 @@ The project employs the following technologies:
 
 ## Diagrams
 All use case and architecture diagrams related to the project can be found in the diagrams folder. This folder contains visualizations that aid in understanding the structure and interactions of the system components.
-## Лицензия
+## License
 
 This project is distributed under the MIT License. For more details, please refer to the LICENSE file located in the root directory of the project.
