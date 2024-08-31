@@ -26,9 +26,9 @@ public class ResolutionController {
 
     private final ResolutionService resolutionService;
 
-    @GetMapping
+    @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_SERVICE', 'ROLE_ADMIN')")
-    private ResponseEntity<ResolutionDto> getResolution(@RequestParam("id") UUID id) {
+    private ResponseEntity<ResolutionDto> getResolution(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(resolutionService.getResolutionById(id));
     }
 
