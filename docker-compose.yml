@@ -63,6 +63,23 @@ services:
       - 1080:1080
       - 1025:1025
 
+  
+  # MinIO service
+  minio:
+    container_name: ms_minio_streaming_service
+    image: minio/minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
+    command: server /data --console-address ":9001"
+    networks:
+      - streaming-service-app-net
+
   # MongoDb service
   mongodb:
     container_name: ms_mongodb_streaming_service
@@ -72,8 +89,8 @@ services:
     volumes:
       - mongo:/data
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
 
 networks:
   streaming-service-app-net:
