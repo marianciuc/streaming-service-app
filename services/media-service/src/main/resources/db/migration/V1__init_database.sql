@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
- *
- * Project: STREAMING SERVICE APP
- * File: V1__init_database.sql
- *
- */
-
 create table if not exists resolutions
 (
     id          UUID primary key,
@@ -19,7 +11,7 @@ create table if not exists resolutions
 create table if not exists media
 (
     id             UUID primary key,
-    data           bytea        not null,
+    data           oid        not null,
     author_id      UUID         not null,
     content_id     UUID         not null,
     content_type   varchar(255) not null,
