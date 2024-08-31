@@ -17,6 +17,8 @@ import java.io.IOException;
 
 public class VideoFileValidator implements ConstraintValidator<VideoFile, MultipartFile> {
 
+    private Tika tika = new Tika();
+
     private static final String[] VIDEO_MIME_TYPES = {
             "video/mp4",
             "video/x-msvideo",
@@ -32,7 +34,6 @@ public class VideoFileValidator implements ConstraintValidator<VideoFile, Multip
             return false;
         }
 
-        Tika tika = new Tika();
         try {
             String mimeType = tika.detect(file.getInputStream());
             for (String videoMimeType : VIDEO_MIME_TYPES) {
