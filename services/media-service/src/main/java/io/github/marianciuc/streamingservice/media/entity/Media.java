@@ -10,7 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -62,7 +61,7 @@ public class Media {
 
     @Lob
     @JsonIgnore
-    @Column(name = "data", columnDefinition = "LONGBLOB")
+    @Column(name = "data")
     private byte[] data;
 
     public boolean isRecordStatusDeleted() {
