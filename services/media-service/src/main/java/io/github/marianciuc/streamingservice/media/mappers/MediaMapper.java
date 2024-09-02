@@ -9,7 +9,7 @@
 package io.github.marianciuc.streamingservice.media.mappers;
 
 import io.github.marianciuc.streamingservice.media.dto.VideoMetadataDto;
-import io.github.marianciuc.streamingservice.media.entity.Media;
+import io.github.marianciuc.streamingservice.media.entity.VideoFileMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ public class MediaMapper {
 
     private final ResolutionMapper resolutionMapper;
 
-    public VideoMetadataDto toVideoMetadataDto(Media entity) {
+    public VideoMetadataDto toVideoMetadataDto(VideoFileMetadata entity) {
         return new VideoMetadataDto(
                 entity.getId(),
                 resolutionMapper.toResponse(entity.getResolution()),
