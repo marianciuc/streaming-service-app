@@ -30,9 +30,11 @@ public class ChunkStateServiceImpl implements ChunkStateService {
         String key = CHUNK_UPLOAD_PREFIX + fileId;
         ValueOperations<String, Boolean[]> ops = redisTemplate.opsForValue();
         Boolean[] chunkStatus = ops.get(key);
+
         if (chunkStatus == null) {
             chunkStatus = new Boolean[totalChunks];
         }
+
         chunkStatus[chunkNumber - 1] = true;
         ops.set(key, chunkStatus, 1, TimeUnit.DAYS);
     }
