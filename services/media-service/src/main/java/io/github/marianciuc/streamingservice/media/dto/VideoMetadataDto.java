@@ -8,7 +8,7 @@
 
 package io.github.marianciuc.streamingservice.media.dto;
 
-import io.github.marianciuc.streamingservice.media.entity.MediaType;
+import io.github.marianciuc.streamingservice.media.enums.MediaType;
 
 import java.util.UUID;
 
