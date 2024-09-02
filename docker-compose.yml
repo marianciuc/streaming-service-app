@@ -62,8 +62,21 @@ services:
     ports:
       - 1080:1080
       - 1025:1025
-
   
+  
+  # Redis service
+  redis:
+    container_name: ms_redis_streaming_service
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      - streaming-service-app-net
+    volumes:
+      - redis:/data
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+
   # MinIO service
   minio:
     container_name: ms_minio_streaming_service
@@ -99,3 +112,6 @@ networks:
 volumes:
   postgres:
   mongo:
+  redis:
+  minio:
+
