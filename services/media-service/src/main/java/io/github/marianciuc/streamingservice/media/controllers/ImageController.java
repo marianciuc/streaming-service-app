@@ -29,7 +29,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @GetMapping("/{picture-id}")
-    public ResponseEntity<ByteArrayResource> get(@RequestParam("picture-id") UUID id) {
+    public ResponseEntity<ByteArrayResource> get(@PathVariable("picture-id") UUID id) {
         ImageDto imageDto = imageService.getImage(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -40,7 +40,6 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<UUID> upload(@RequestParam(value = "file") @ImageFile MultipartFile file, Authentication authentication) {
         return ResponseEntity.ok(imageService.uploadImage(file, authentication));
-
     }
 
     @DeleteMapping("/{picture-id}")
