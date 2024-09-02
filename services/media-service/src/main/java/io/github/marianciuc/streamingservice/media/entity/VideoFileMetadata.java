@@ -1,6 +1,5 @@
 package io.github.marianciuc.streamingservice.media.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +17,9 @@ import java.util.UUID;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
-@Table(name = "media")
-public class Media {
+@Table(name = "medias")
+public class VideoFileMetadata {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -35,6 +35,9 @@ public class Media {
 
     @Column(name = "content_id")
     private UUID contentId;
+
+    @Column(name = "file_name")
+    private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Resolution resolution;
@@ -53,18 +56,4 @@ public class Media {
     @UpdateTimestamp
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()", insertable = false)
     private LocalDateTime updatedAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "record_status", length = 30, columnDefinition = "varchar(30) default 'ACTIVE'")
-    @JdbcTypeCode(SqlTypes.VARCHAR)
-    private RecordStatus recordStatus = RecordStatus.ACTIVE;
-
-    @Lob
-    @JsonIgnore
-    @Column(name = "data")
-    private byte[] data;
-
-    public boolean isRecordStatusDeleted() {
-        return this.recordStatus == RecordStatus.DELETED;
-    }
 }
