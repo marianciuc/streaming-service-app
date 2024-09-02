@@ -9,7 +9,6 @@
 package io.github.marianciuc.streamingservice.media.entity;
 
 public enum MediaType {
-    IMAGE,
     MOVIE,
     EPISODE
 }
