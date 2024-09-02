@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "mime.url",
+      "type": "java.lang.String",
+      "description": "Description for mime.url."
+    },
+    {
+      "name": "mime.access-key",
+      "type": "java.lang.String",
+      "description": "Description for mime.access-key."
+    },
+    {
+      "name": "mime.secret-key",
+      "type": "java.lang.String",
+      "description": "Description for mime.secret-key."
+    },
+    {
+      "name": "mime.bucket-name",
+      "type": "java.lang.String",
+      "description": "Description for mime.bucket-name."
+    }
+  ] }
