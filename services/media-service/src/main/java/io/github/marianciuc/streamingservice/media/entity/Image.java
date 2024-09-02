@@ -8,14 +8,12 @@
 
 package io.github.marianciuc.streamingservice.media.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -32,27 +30,20 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "user_id")
+    private UUID userId;
+
     @Column(name = "content_type")
     private String contentType;
 
     @Column(name = "content_length")
-    long contentLength;
+    private long contentLength;
 
-    @Column(name = "author_id")
-    private UUID authorId;
+    @Column(name = "file_name")
+    private String fileName;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, insertable = false)
     private LocalDateTime createdAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    @Column(name = "updated_at", insertable = false)
-    private LocalDateTime updatedAt;
-
-    @Lob
-    @JsonIgnore
-    @Column(name = "data")
-    private byte[] data;
 }
