@@ -9,6 +9,9 @@
 package io.github.marianciuc.streamingservice.media.controllers;
 
 import io.github.marianciuc.streamingservice.media.dto.ResourceDto;
+import io.github.marianciuc.streamingservice.media.dto.UploadMetadataDto;
+import io.github.marianciuc.streamingservice.media.handlers.ChunkUploadHandler;
+import io.github.marianciuc.streamingservice.media.services.UploadVideoService;
 import io.github.marianciuc.streamingservice.media.services.VideoService;
 import io.github.marianciuc.streamingservice.media.validation.VideoFile;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,15 +32,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VideoController {
 
-    private final VideoService videoService;
-
     private static final String HEADER_CONTENT_LENGTH = HttpHeaders.CONTENT_LENGTH;
     private static final String HEADER_CONTENT_RANGE = HttpHeaders.CONTENT_RANGE;
 
-    private static final String PARAM_MEDIA_TYPE = "media-type";
-    private static final String PARAM_CONTENT_ID = "content-id";
-    private static final String PARAM_SOURCE_QUALITY = "source-quality";
+    private static final String PARAM_CONTENT_ID = "contentId";
+    private static final String PARAM_SOURCE_QUALITY = "sourceQuality";
     private static final String PARAM_FILE = "file";
+    private static final String PARAM_TOTAL_CHUNKS = "totalChunks";
+    private static final String PARAM_CHUNK_NUMBER = "chunkNumber";
+    private static final String PARAM_TEMP_FILE_ID = "tempFileName";
+
+    private static final long CHUNK_SIZE = 10 * 1024 * 1024;
+
+    private final VideoService videoService;
+    private final UploadVideoService uploadVideoService;
+    private final ChunkUploadHandler chunkUploadHandler;
+
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUBSCRIBED_USER', 'ROLE_CONTENT_MODERATOR')")
     @GetMapping(value = "/stream/{video-id}", produces = "video/mp4")
@@ -52,14 +62,32 @@ public class VideoController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    @PostMapping("/upload/video")
-    public ResponseEntity<UUID> upload(
-            @RequestParam(value = PARAM_MEDIA_TYPE) io.github.marianciuc.streamingservice.media.entity.MediaType mediaType,
+    @GetMapping("/upload/generate-metadata")
+    public ResponseEntity<UploadMetadataDto> generateMetadata(
+            @RequestParam(value = "file-size") long fileSize
+    ) {
+        return ResponseEntity.ok(new UploadMetadataDto(UUID.randomUUID(), (int) (fileSize / CHUNK_SIZE)));
+    }
+
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PostMapping("/upload")
+    public ResponseEntity<String> upload(
+            @RequestParam(value = PARAM_TEMP_FILE_ID) UUID tempFileId,
             @RequestParam(value = PARAM_CONTENT_ID) UUID contentId,
             @RequestParam(value = PARAM_SOURCE_QUALITY) UUID sourceResolutionId,
-            @RequestParam(value = PARAM_FILE) @VideoFile MultipartFile file
+            @RequestParam(value = PARAM_CHUNK_NUMBER) Integer chunkNumber,
+            @RequestParam(value = PARAM_TOTAL_CHUNKS) Integer totalChunks,
+            @RequestParam(value = PARAM_FILE) @VideoFile MultipartFile chunk
     ) {
-        videoService.uploadVideo(mediaType, contentId, sourceResolutionId, file);
-        return ResponseEntity.ok().build();
+        String key = "chunks/" + tempFileId + "/chunk_" + chunkNumber;
+        try {
+            uploadVideoService.uploadVideoFile(key, chunk);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error while chunk uploading.");
+        }
+        chunkUploadHandler.handleChunkUpload(tempFileId, chunkNumber, totalChunks, contentId, sourceResolutionId);
+        return ResponseEntity.ok("Chunk successfully uploaded.");
     }
+
 }
