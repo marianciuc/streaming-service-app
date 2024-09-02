@@ -1,4 +1,12 @@
-package io.github.marianciuc.streamingservice.media.entity;
+/*
+ * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
+ *
+ * Project: STREAMING SERVICE APP
+ * File: RecordStatus.java
+ *
+ */
+
+package io.github.marianciuc.streamingservice.media.enums;
 
 /**
  * Defines the status of any given record.

@@ -6,7 +6,7 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.media.entity;
+package io.github.marianciuc.streamingservice.media.enums;
 
 public enum MediaType {
     MOVIE,
