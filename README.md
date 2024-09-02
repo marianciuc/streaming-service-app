@@ -1,56 +1,27 @@
-# Стриминговый сервис
+# Streaming Service Backend App
 
-Это backend-приложение на основе микросервисной архитектуры, предназначенное для предоставления услуг стриминга видео по подписке. Система управления подписками интегрирована с платежным шлюзом Stripe, что позволяет обрабатывать платежи и управлять статусами подписок. Каждый день в полночь сервис подписок проверяет подписки, срок которых истекает, и автоматически продлевает их или аннулирует в зависимости от настроек пользователя и статуса платежа.
+This is a backend application based on a microservices architecture designed to provide subscription-based video streaming services. The subscription management system is integrated with the Stripe payment gateway, allowing for payment processing and subscription status management. Every day at midnight, the subscription service checks for subscriptions that are about to expire and automatically renews or cancels them based on user settings and payment status.
 
-## Установка
-Для установки проекта на вашу локальную машину выполните следующие шаги:
-
-1. Клонируйте репозиторий:
-```bash
-git clone https://github.com/your-username/streaming-service.git
-```
-2. Перейдите в каталог проекта:
-```bash
-cd streaming-service
-```
-3. Соберите проект и установите зависимости:
-```bash
-./mvnw clean install
-```
-
-## Использование
-### Запуск в Docker
-Для запуска всех сервисов в контейнерах Docker выполните следующую команду:
-```bash
-docker compose up -d
-```
-
-### Запуск сервисов отдельно
-Если вы хотите запустить каждый микросервис отдельно, перейдите в соответствующий каталог в `services` и выполните команду:
-```bash
-./mvnw spring-boot:run
-```
-
-## Стек технологий
-Проект использует следующие технологии:
+## Technology Stack
+The project employs the following technologies:
 - Java JDK 22
 - JWT
-- Spring Boot: фреймворк для создания микросервисов.
-- Spring Security: для управления аутентификацией и авторизацией.
-- Feign: декларативный HTTP клиент для микросервисов.
-- Spring Data JPA: для работы с реляционными базами данных.
-- PostgreSQL: реляционная база данных для хранения основной информации.
-- MongoDB: NoSQL база данных для хранения данных, не требующих жесткой схемы.
-- Eureka: сервис регистрации для управления микросервисами.
-- Spring Cloud Config: для централизованного управления конфигурацией.
-- Flyway Migration: для управления версионированием базы данных.
-- Zookeeper: для координации распределенных систем.
-- Gateway: API-шлюз для маршрутизации запросов.
-- Quartz: планировщик задач для управления периодическими операциями.
-- Stripe: интеграция с платежной системой для управления подписками и платежами.
-## Диаграммы
-Все диаграммы использования и архитектуры, связанные с проектом, находятся в папке `diagrams`. Эта папка содержит визуализации, которые помогут лучше понять структуру и взаимодействие компонентов системы.
+- Spring Boot: A framework for building microservices.
+- Spring Security: Manages authentication and authorization.
+- Feign: A declarative HTTP client for microservices.
+- Spring Data JPA: Facilitates interaction with relational databases.
+- PostgreSQL: A relational database for storing core information.
+- MongoDB: A NoSQL database for managing schema-less data.
+- Eureka: A service registry for managing microservices.
+- Spring Cloud Config: Enables centralized configuration management.
+- Flyway Migration: Handles database versioning.
+- Zookeeper: Coordinates distributed systems.
+- Gateway: An API gateway for routing requests.
+- Quartz: A task scheduler for managing periodic operations.
+- Stripe: Integrates with a payment system for handling subscriptions and payments.
 
-## Лицензия
+## Diagrams
+All use case and architecture diagrams related to the project can be found in the diagrams folder. This folder contains visualizations that aid in understanding the structure and interactions of the system components.
+## License
 
-Этот проект распространяется под лицензией MIT. Подробности см. в файле LICENSE в корневом каталоге проекта.
+This project is distributed under the MIT License. For more details, please refer to the LICENSE file located in the root directory of the project.
