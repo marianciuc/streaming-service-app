@@ -13,7 +13,6 @@ import io.github.marianciuc.streamingservice.media.entity.MediaType;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.MulticastSocket;
 import java.util.UUID;
 
 public interface VideoService {
