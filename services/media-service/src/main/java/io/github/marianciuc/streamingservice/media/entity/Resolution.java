@@ -40,5 +40,5 @@ public class Resolution {
     private int bitrate;
 
     @OneToMany(mappedBy = "resolution")
-    private List<Media> mediaList;
+    private List<VideoFileMetadata> mediaList;
 }
