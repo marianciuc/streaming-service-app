@@ -10,8 +10,9 @@ package io.github.marianciuc.streamingservice.media.services.impl;
 
 import io.github.marianciuc.jwtsecurity.service.UserService;
 import io.github.marianciuc.streamingservice.media.dto.ResourceDto;
+import io.github.marianciuc.streamingservice.media.dto.UploadMetadataDto;
 import io.github.marianciuc.streamingservice.media.dto.VideoMetadataDto;
-import io.github.marianciuc.streamingservice.media.entity.Media;
+import io.github.marianciuc.streamingservice.media.entity.VideoFileMetadata;
 import io.github.marianciuc.streamingservice.media.entity.MediaType;
 import io.github.marianciuc.streamingservice.media.entity.Resolution;
 import io.github.marianciuc.streamingservice.media.exceptions.MediaContentNotFoundException;
@@ -48,6 +49,11 @@ public class VideoServiceImpl implements VideoService {
     private final KafkaVideoProducer kafkaVideoProducer;
 
     @Override
+    public UploadMetadataDto getUploadMetadata(long fileSize) {
+        return null;
+    }
+
+    @Override
     public void uploadVideo(MediaType mediaType, UUID contentId, UUID resolutionId, MultipartFile file) {
         Resolution originalResolution = this.resolutionService.getEntityById(resolutionId);
 
@@ -56,7 +62,7 @@ public class VideoServiceImpl implements VideoService {
 
         for (Resolution resolution : resolutions) {
             byte[] compressedVideo = compressingService.compressVideo(file, resolution);
-            Media media = Media.builder()
+            VideoFileMetadata media = VideoFileMetadata.builder()
                     .data(compressedVideo)
                     .authorId(userService.getUser().getId())
                     .contentType(file.getContentType())
@@ -73,14 +79,14 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public void deleteVideo(UUID id) {
-        Media media = mediaRepository.findById(id).orElseThrow(() -> new MediaContentNotFoundException(NO_CONTENT_MSG));
+        VideoFileMetadata media = mediaRepository.findById(id).orElseThrow(() -> new MediaContentNotFoundException(NO_CONTENT_MSG));
         kafkaVideoProducer.sendDeletedVideoTopic(mediaMapper.toVideoMetadataDto(media));
         mediaRepository.delete(media);
     }
 
     @Override
     public ResourceDto getVideoResource(UUID videoId, HttpServletRequest request) {
-        Media media = mediaRepository.findById(videoId).orElseThrow(() -> new MediaContentNotFoundException(NO_CONTENT_MSG));
+        VideoFileMetadata media = mediaRepository.findById(videoId).orElseThrow(() -> new MediaContentNotFoundException(NO_CONTENT_MSG));
         byte[] mediaData = media.getData();
 
         String rangeHeader = request.getHeader(RANGE_HEADER);
@@ -124,7 +130,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public void deleteVideoByContent(UUID contentId) {
-        List<Media> mediaList = mediaRepository.findAllByContentId(contentId);
+        List<VideoFileMetadata> mediaList = mediaRepository.findAllByContentId(contentId);
         mediaRepository.deleteAll(mediaList);
     }
 }
