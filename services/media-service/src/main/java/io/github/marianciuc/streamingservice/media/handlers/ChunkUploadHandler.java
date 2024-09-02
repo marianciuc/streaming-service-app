@@ -29,7 +29,7 @@ public class ChunkUploadHandler {
         Boolean[] chunkStatus = chunkStateService.getChunkUploadStatus(fileId);
         if (chunkStatus != null && areAllChunksUploaded(chunkStatus)) {
             chunkStateService.deleteChunkUploadStatus(fileId);
-            taskProducer.sendTaskToQueue(fileId);
+            taskProducer.sendTaskToQueue(fileId, chunkNumber, totalChunks, contentId, sourceResolutionId);
         }
     }
 
