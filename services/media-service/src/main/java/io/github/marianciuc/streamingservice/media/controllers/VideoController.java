@@ -8,16 +8,15 @@
 
 package io.github.marianciuc.streamingservice.media.controllers;
 
-import io.github.marianciuc.streamingservice.media.dto.ResourceDto;
 import io.github.marianciuc.streamingservice.media.dto.UploadMetadataDto;
 import io.github.marianciuc.streamingservice.media.handlers.ChunkUploadHandler;
-import io.github.marianciuc.streamingservice.media.services.UploadVideoService;
-import io.github.marianciuc.streamingservice.media.services.VideoService;
+import io.github.marianciuc.streamingservice.media.services.VideoStorageService;
 import io.github.marianciuc.streamingservice.media.validation.VideoFile;
-import jakarta.servlet.http.HttpServletRequest;
+import io.minio.GetObjectArgs;
+import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,15 +24,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/media/video")
 @RequiredArgsConstructor
+@Slf4j
 public class VideoController {
-
-    private static final String HEADER_CONTENT_LENGTH = HttpHeaders.CONTENT_LENGTH;
-    private static final String HEADER_CONTENT_RANGE = HttpHeaders.CONTENT_RANGE;
 
     private static final String PARAM_CONTENT_ID = "contentId";
     private static final String PARAM_SOURCE_QUALITY = "sourceQuality";
@@ -44,22 +45,9 @@ public class VideoController {
 
     private static final long CHUNK_SIZE = 10 * 1024 * 1024;
 
-    private final VideoService videoService;
-    private final UploadVideoService uploadVideoService;
     private final ChunkUploadHandler chunkUploadHandler;
+    private final VideoStorageService videoStorageService;
 
-
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUBSCRIBED_USER', 'ROLE_CONTENT_MODERATOR')")
-    @GetMapping(value = "/stream/{video-id}", produces = "video/mp4")
-    public ResponseEntity<Resource> streamVideo(@PathVariable("video-id") UUID videoId, HttpServletRequest request) {
-        ResourceDto videoResponse = videoService.getVideoResource(videoId, request);
-
-        return ResponseEntity.status(videoResponse.status())
-                .contentType(MediaType.parseMediaType(videoResponse.contentType()))
-                .header(HEADER_CONTENT_LENGTH, videoResponse.rangeLength())
-                .header(HEADER_CONTENT_RANGE, "bytes " + videoResponse.rangeStart() + "-" + videoResponse.rangeEnd() + "/" + videoResponse.fileLength())
-                .body(new InputStreamResource(videoResponse.resource()));
-    }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @GetMapping("/upload/generate-metadata")
@@ -68,7 +56,6 @@ public class VideoController {
     ) {
         return ResponseEntity.ok(new UploadMetadataDto(UUID.randomUUID(), (int) (fileSize / CHUNK_SIZE)));
     }
-
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @PostMapping("/upload")
@@ -82,12 +69,55 @@ public class VideoController {
     ) {
         String key = "chunks/" + tempFileId + "/chunk_" + chunkNumber;
         try {
-            uploadVideoService.uploadVideoFile(key, chunk);
+            videoStorageService.uploadVideoChunk(chunk, chunkNumber, tempFileId);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while chunk uploading.");
         }
         chunkUploadHandler.handleChunkUpload(tempFileId, chunkNumber, totalChunks, contentId, sourceResolutionId);
         return ResponseEntity.ok("Chunk successfully uploaded.");
+    }
+
+
+    @GetMapping("/master/{fileId}")
+    public ResponseEntity<InputStreamResource> getMasterPlaylist(@PathVariable UUID fileId) {
+        try {
+            InputStream inputStream = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileId + "/master.m3u8")
+                            .build()
+            );
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=master.m3u8")
+                    .contentType(MediaType.parseMediaType("application/vnd.apple.mpegurl"))
+                    .body(new InputStreamResource(inputStream));
+        } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException | IOException e) {
+            log.error("Error occurred while fetching master playlist for file {}: {}", fileId, e.toString());
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/segment/{fileId}/{resolution}/{segment}")
+    public ResponseEntity<InputStreamResource> getSegment(@PathVariable UUID fileId,
+                                                          @PathVariable String resolution,
+                                                          @PathVariable String segment) {
+        try {
+            InputStream inputStream = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileId + "/" + resolution + "/" + segment)
+                            .build()
+            );
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + segment)
+                    .contentType(MediaType.parseMediaType("video/MP2T"))
+                    .body(new InputStreamResource(inputStream));
+        } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException | IOException e) {
+            log.error("Error occurred while fetching segment {} for file {}: {}", segment, fileId, e.toString());
+            return ResponseEntity.status(500).build();
+        }
     }
 
 }

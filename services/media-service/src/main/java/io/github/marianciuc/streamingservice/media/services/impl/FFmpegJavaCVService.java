@@ -8,7 +8,7 @@
 
 package io.github.marianciuc.streamingservice.media.services.impl;
 
-import io.github.marianciuc.streamingservice.media.entity.Resolution;
+import io.github.marianciuc.streamingservice.media.dto.ResolutionDto;
 import io.github.marianciuc.streamingservice.media.exceptions.CompressingException;
 import io.github.marianciuc.streamingservice.media.services.VideoCompressingService;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,10 @@ import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -53,17 +53,14 @@ public class FFmpegJavaCVService implements VideoCompressingService {
      * @return a byte array containing the compressed video
      */
     @Override
-    public byte[] compressVideo(MultipartFile file, Resolution resolution) {
+    public byte[] compressVideo(InputStream io, ResolutionDto resolution) {
         File inputFile = null;
         File outputFile = null;
         try {
-            log.info("MultipartFile name: {}", file.getOriginalFilename());
-            log.info("MultipartFile size: {}", file.getSize());
+            inputFile = createTempFile(PREFIX_INPUT_FILE, "input-temp-file");
+            Files.copy(io, Path.of(inputFile.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
 
-            inputFile = createTempFile(PREFIX_INPUT_FILE, file);
-            Files.copy(file.getInputStream(), Path.of(inputFile.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
-
-            outputFile = createTempFile(PREFIX_OUTPUT_FILE, file);
+            outputFile = createTempFile(PREFIX_OUTPUT_FILE, "output-temp-file");
             executeCompression(inputFile.getAbsolutePath(), outputFile.getAbsolutePath(), resolution);
             return Files.readAllBytes(outputFile.toPath());
         } catch (IOException e) {
@@ -83,7 +80,7 @@ public class FFmpegJavaCVService implements VideoCompressingService {
      * @param outputFilePath the path where the compressed video file will be saved
      * @param resolution     the target resolution to which the video should be compressed
      */
-    private void executeCompression(String inputFilePath, String outputFilePath, Resolution resolution) {
+    private void executeCompression(String inputFilePath, String outputFilePath, ResolutionDto resolution) {
         log.info("Starting video compression...");
         log.info("Input file: {}", inputFilePath);
         log.info("Output file: {}", outputFilePath);
@@ -93,8 +90,8 @@ public class FFmpegJavaCVService implements VideoCompressingService {
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(inputFilePath);
              FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(
                      outputFilePath,
-                     resolution.getWidth(),
-                     resolution.getHeight()
+                     resolution.width(),
+                     resolution.height()
              )
         ) {
             grabber.setFormat(FORMAT);
@@ -107,7 +104,7 @@ public class FFmpegJavaCVService implements VideoCompressingService {
             recorder.setAudioChannels(grabber.getAudioChannels());
             recorder.setFormat(FORMAT);
             recorder.setFrameRate(grabber.getFrameRate());
-            recorder.setVideoBitrate(resolution.getBitrate());
+            recorder.setVideoBitrate(resolution.bitrate());
             recorder.start();
 
             while (true) {
@@ -126,8 +123,8 @@ public class FFmpegJavaCVService implements VideoCompressingService {
         }
     }
 
-    private File createTempFile(String prefix, MultipartFile file) throws IOException {
-        return File.createTempFile(prefix + file.getName(), TEMP_FILE_SUFFIX).toPath().toFile();
+    private File createTempFile(String prefix, String fileName) throws IOException {
+        return File.createTempFile(prefix + fileName, TEMP_FILE_SUFFIX).toPath().toFile();
     }
 
     private void deleteFile(File file) {

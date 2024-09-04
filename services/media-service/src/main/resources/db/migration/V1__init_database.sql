@@ -1,6 +1,6 @@
 create table if not exists resolutions
 (
-    id          UUID primary key,
+    id          uuid primary key,
     name        varchar(255) not null,
     description varchar(255) not null,
     height      integer      not null,
@@ -8,19 +8,8 @@ create table if not exists resolutions
     bitrate     integer      not null
 );
 
-create table if not exists media
+create table if not exists images
 (
-    id             UUID primary key,
-    data           oid        not null,
-    author_id      UUID         not null,
-    content_id     UUID         not null,
-    content_type   varchar(255) not null,
-    media_type     varchar(255) not null,
-    content_length bigint       not null,
-    created_at     timestamp    not null,
-    updated_at     timestamp    not null,
-    resolution_id  UUID         not null,
-    record_status  varchar(255) not null,
-    foreign key (resolution_id) references resolutions (id)
-);
+    id uuid primary key,
 
+)

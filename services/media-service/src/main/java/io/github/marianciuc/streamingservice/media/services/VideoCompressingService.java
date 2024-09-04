@@ -8,9 +8,11 @@
 
 package io.github.marianciuc.streamingservice.media.services;
 
-import io.github.marianciuc.streamingservice.media.entity.Resolution;
-import org.springframework.web.multipart.MultipartFile;
+import io.github.marianciuc.streamingservice.media.dto.ResolutionDto;
+
+import java.io.InputStream;
 
 public interface VideoCompressingService {
-    byte [] compressVideo(MultipartFile file, Resolution resolution);
+    byte [] compressVideo(InputStream file, ResolutionDto resolution);
+
 }

@@ -1,5 +1,6 @@
 package io.github.marianciuc.streamingservice.media.entity;
 
+import io.github.marianciuc.streamingservice.media.enums.MediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -51,9 +51,4 @@ public class VideoFileMetadata {
     @CreationTimestamp
     @Column(name = "created_at", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()", updatable = false, insertable = false)
     private LocalDateTime createdAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()", insertable = false)
-    private LocalDateTime updatedAt;
 }

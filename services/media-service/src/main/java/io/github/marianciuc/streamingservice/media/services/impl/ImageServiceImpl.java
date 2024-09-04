@@ -52,13 +52,13 @@ public class ImageServiceImpl implements ImageService {
             throw new ForbiddenException(FORBIDDEN_MSG);
         }
         try {
-            String im = imageStorageService.uploadPhoto(file);
+            String url = imageStorageService.uploadPhoto(file);
             Image image = Image.builder()
                     .userId(jwtUser.getId())
                     .contentLength(file.getSize())
                     .contentType(file.getContentType())
                     .createdAt(LocalDateTime.now())
-                    .fileName(im)
+                    .fileName(url)
                     .build();
             return repository.save(image).getId();
         } catch (PhotoUploadException e) {

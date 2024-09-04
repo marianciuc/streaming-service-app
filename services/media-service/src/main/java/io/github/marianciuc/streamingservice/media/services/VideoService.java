@@ -8,9 +8,7 @@
 
 package io.github.marianciuc.streamingservice.media.services;
 
-import io.github.marianciuc.streamingservice.media.dto.ResourceDto;
-import io.github.marianciuc.streamingservice.media.entity.MediaType;
-import jakarta.servlet.http.HttpServletRequest;
+import io.github.marianciuc.streamingservice.media.enums.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -18,6 +16,6 @@ import java.util.UUID;
 public interface VideoService {
     void uploadVideo(MediaType mediaType, UUID contentId, UUID resolutionId, MultipartFile file);
     void deleteVideo(UUID id);
-    ResourceDto getVideoResource(UUID videoId, HttpServletRequest request);
     void deleteVideoByContent(UUID contentId);
+    void processVideo(UUID videoId);
 }
