@@ -8,8 +8,8 @@
 
 package io.github.marianciuc.streamingservice.media.services.impl;
 
-import io.github.marianciuc.streamingservice.media.exceptions.MediaContentNotFoundException;
-import io.github.marianciuc.streamingservice.media.exceptions.PhotoUploadException;
+import io.github.marianciuc.streamingservice.media.exceptions.ImageNotFoundException;
+import io.github.marianciuc.streamingservice.media.exceptions.ImageUploadException;
 import io.github.marianciuc.streamingservice.media.services.ImageStorageService;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
@@ -43,7 +43,7 @@ public class MinioImageStorageService implements ImageStorageService {
     private final MinioClient minioClient;
 
     @Override
-    public String uploadPhoto(MultipartFile file) throws PhotoUploadException {
+    public String uploadImage(MultipartFile file) throws ImageUploadException {
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         try {
             InputStream is = file.getInputStream();
@@ -59,12 +59,12 @@ public class MinioImageStorageService implements ImageStorageService {
         } catch (MinioException | IOException | InvalidKeyException | NoSuchAlgorithmException e) {
             String errorMsg = String.format(ERROR_UPLOADING_PHOTO_MSG, e.getMessage());
             log.error(errorMsg, e);
-            throw new PhotoUploadException(errorMsg);
+            throw new ImageUploadException(errorMsg, e);
         }
     }
 
     @Override
-    public InputStream getPhoto(String fileName) throws MediaContentNotFoundException {
+    public InputStream getImage(String fileName) throws ImageNotFoundException {
         try {
             return minioClient.getObject(
                     GetObjectArgs.builder()
@@ -75,12 +75,12 @@ public class MinioImageStorageService implements ImageStorageService {
         } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
             String errorMsg = String.format(ERROR_GETTING_IMAGE_MSG, fileName);
             log.error(errorMsg, e);
-            throw new MediaContentNotFoundException(errorMsg);
+            throw new ImageNotFoundException(errorMsg, e);
         }
     }
 
     @Override
-    public void deletePhoto(String fileName) {
+    public void deleteImage(String fileName) {
         try {
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
