@@ -12,7 +12,7 @@ import io.github.marianciuc.streamingservice.media.enums.RecordStatus;
 
 import java.util.UUID;
 
-public record UploadVideoDto(
+public record UploadVideoDto (
         UUID contentId,
         RecordStatus recordStatus
 ) {
