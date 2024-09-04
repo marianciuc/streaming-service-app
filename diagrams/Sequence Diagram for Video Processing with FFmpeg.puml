@@ -1,0 +1,14 @@
+@startuml
+participant "Kafka" as K
+participant "Video Processing Service" as VPS
+participant "Minio" as M
+participant "Postgres" as P
+
+K -> VPS: Message to start video processing
+VPS -> M: Retrieve video files
+VPS -> VPS: Process video using FFmpeg
+VPS -> M: Save HLS files to Minio
+VPS -> P: Update database record
+VPS -> K: Message about processing completion
+
+@enduml

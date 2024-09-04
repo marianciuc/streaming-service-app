@@ -1,0 +1,29 @@
+@startuml
+entity "Videos" as V {
+    * id: UUID [PK]
+    * user_id: UUID [FK]
+    * status: String
+    * created_at: DateTime
+    * updated_at: DateTime
+}
+
+entity "Video_Metadata" as VM {
+    * id: UUID [PK]
+    * video_id: UUID [FK]
+    * quality: String
+    * hls_url: String
+    * created_at: DateTime
+}
+
+entity "Photos" as P {
+    * id: UUID [PK]
+    * user_id: UUID [FK]
+    * file_name: String
+    * file_size: Long
+    * content_type: String
+    * created_at: DateTime
+}
+
+V ||--o{ VM: "one-to-many"
+
+@enduml

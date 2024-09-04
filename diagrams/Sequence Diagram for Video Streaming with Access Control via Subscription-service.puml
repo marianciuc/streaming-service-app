@@ -1,0 +1,15 @@
+@startuml
+actor User as U
+participant "API Gateway" as AG
+participant "Streaming Service" as SS
+participant "Subscription Service" as SubS
+participant "Minio" as M
+
+U -> AG: Request to stream video
+AG -> SS: Forward request
+SS -> SubS: Check user access rights
+SubS -> SS: Confirm access rights (or deny)
+SS -> M: Retrieve HLS files (if access granted)
+SS -> U: Stream video (or return access error)
+
+@enduml

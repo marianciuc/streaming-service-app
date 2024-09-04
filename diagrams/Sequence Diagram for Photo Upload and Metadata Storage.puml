@@ -1,0 +1,14 @@
+@startuml
+actor User as U
+participant "API Gateway" as AG
+participant "Photo Upload Service" as PUS
+participant "Minio" as M
+participant "Postgres" as P
+
+U -> AG: Request to upload photo (multipart)
+AG -> PUS: Forward request
+PUS -> M: Save file with UUID to Minio
+PUS -> P: Save file metadata to database
+PUS -> U: Confirm successful upload
+
+@enduml

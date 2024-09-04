@@ -1,0 +1,23 @@
+@startuml
+actor User as U
+participant "API Gateway" as AG
+participant "Upload Service" as US
+participant "Minio" as M
+participant "Redis" as R
+participant "Kafka" as K
+
+U -> AG: Request to start upload (file size, content type)
+AG -> US: Request to start upload
+US -> R: Create upload status record
+US -> U: Respond with file ID and chunk count
+
+U -> AG: Upload chunk N
+AG -> US: Forward chunk N
+US -> M: Save chunk to Minio
+US -> R: Update status in Redis
+
+US -> US: Check if all chunks are uploaded
+US -> R: Delete record from Redis (if all chunks uploaded)
+US -> K: Send message to start video processing
+
+@enduml
