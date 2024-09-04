@@ -29,8 +29,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
-import static io.github.marianciuc.streamingservice.media.services.VideoStorageService.CHUNKS_PATH;
-import static io.github.marianciuc.streamingservice.media.services.VideoStorageService.CONTENT_PATH;
+import static io.github.marianciuc.streamingservice.media.services.VideoStorageService.*;
 
 @Service
 @Slf4j
@@ -50,7 +49,6 @@ public class FFmpegJavaCVService implements VideoCompressingService {
 
     private static final String CONTENT_TYPE_VIDEO_MP2T = "video/mp2t";
     private static final String CONTENT_TYPE_APPLICATION_X_MPEGURL = "application/x-mpegURL";
-    private static final String PATH_CHUNK_TEMPLATE = CONTENT_PATH + "%d/ " + CHUNKS_PATH + "%s/segment%d.ts";
     private static final String PATH_PLAYLIST_TEMPLATE = CONTENT_PATH + "hls/%s/index.m3u8";
 
     private final VideoStorageService videoStorageService;
