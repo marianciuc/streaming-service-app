@@ -8,7 +8,6 @@
 
 package io.github.marianciuc.streamingservice.media.kafka;
 
-import io.github.marianciuc.streamingservice.media.dto.VideoMetadataDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -18,14 +17,14 @@ import static io.github.marianciuc.streamingservice.media.kafka.KafkaTopics.*;
 @Component
 @RequiredArgsConstructor
 public class KafkaVideoProducer {
-
-    private final KafkaTemplate<String, VideoMetadataDto> kafkaTemplate;
-
-    public void sendUploadedVideoTopic(VideoMetadataDto videoMetadataDto) {
-        kafkaTemplate.send(RESOLUTION_CREATED_TOPIC, videoMetadataDto);
-    }
-
-    public void sendDeletedVideoTopic(VideoMetadataDto videoMetadataDto) {
-        kafkaTemplate.send(RESOLUTION_CREATED_TOPIC, videoMetadataDto);
-    }
+//
+//    private final KafkaTemplate<String, VideoMetadataDto> kafkaTemplate;
+//
+//    public void sendUploadedVideoTopic(VideoMetadataDto videoMetadataDto) {
+//        kafkaTemplate.send(RESOLUTION_CREATED_TOPIC, videoMetadataDto);
+//    }
+//
+//    public void sendDeletedVideoTopic(VideoMetadataDto videoMetadataDto) {
+//        kafkaTemplate.send(RESOLUTION_CREATED_TOPIC, videoMetadataDto);
+//    }
 }
