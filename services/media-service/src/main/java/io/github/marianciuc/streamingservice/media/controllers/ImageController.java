@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
+/**
+ * REST controller for managing image-related operations.
+ */
 @RestController
 @RequestMapping("/api/v1/media/images")
 @RequiredArgsConstructor
@@ -28,6 +31,12 @@ public class ImageController {
 
     private final ImageService imageService;
 
+    /**
+     * Retrieves an image by its ID.
+     *
+     * @param id The UUID of the image.
+     * @return A ResponseEntity containing a ByteArrayResource with the image data and appropriate headers.
+     */
     @GetMapping("/{picture-id}")
     public ResponseEntity<ByteArrayResource> get(@PathVariable("picture-id") UUID id) {
         ImageDto imageDto = imageService.getImage(id);
@@ -37,11 +46,24 @@ public class ImageController {
                 .body(imageDto.byteArrayResource());
     }
 
+    /**
+     * Uploads a new image file.
+     *
+     * @param file The image file to upload.
+     * @param authentication The authentication information of the user uploading the image.
+     * @return ResponseEntity containing the UUID of the uploaded image.
+     */
     @PostMapping("/upload")
     public ResponseEntity<UUID> upload(@RequestParam(value = "file") @ImageFile MultipartFile file, Authentication authentication) {
         return ResponseEntity.ok(imageService.uploadImage(file, authentication));
     }
 
+    /**
+     * Deletes an image by its ID.
+     *
+     * @param id The UUID of the image to delete.
+     * @return ResponseEntity with no content upon successful deletion.
+     */
     @DeleteMapping("/{picture-id}")
     public ResponseEntity<Void> delete(@PathVariable("picture-id") UUID id) {
         imageService.deleteImage(id);
