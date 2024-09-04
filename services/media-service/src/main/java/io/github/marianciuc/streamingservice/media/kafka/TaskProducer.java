@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+import static io.github.marianciuc.streamingservice.media.kafka.KafkaTopics.START_COMPRESSING_TOPIC;
+
 @Service
 @RequiredArgsConstructor
 public class TaskProducer {
@@ -23,7 +25,7 @@ public class TaskProducer {
     private final KafkaTemplate<String, ConvertingTaskDto> kafkaTemplate;
 
     public void sendTaskToQueue(UUID fileId, ResolutionDto resolutionDto) {
-        kafkaTemplate.send("video-converting-topic",
+        kafkaTemplate.send(START_COMPRESSING_TOPIC,
                 new ConvertingTaskDto(fileId, resolutionDto));
     }
 }
