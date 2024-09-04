@@ -1,14 +1,11 @@
 package io.github.marianciuc.streamingservice.media.entity;
 
-import io.github.marianciuc.streamingservice.media.enums.MediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -27,25 +24,14 @@ public class VideoFileMetadata {
     @Column(name = "content_type")
     private String contentType;
 
-    @Column(name = "content_length")
-    long contentLength;
-
-    @Column(name = "author_id")
-    private UUID authorId;
-
-    @Column(name = "content_id")
-    private UUID contentId;
-
-    @Column(name = "file_name")
-    private String fileName;
+    @Column(name = "play_list_path")
+    private String playListPath;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Resolution resolution;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "media_type")
-    @JdbcTypeCode(SqlTypes.VARCHAR)
-    private MediaType mediaType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Video video;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
