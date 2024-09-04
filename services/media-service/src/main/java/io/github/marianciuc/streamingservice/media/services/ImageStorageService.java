@@ -20,7 +20,7 @@ public interface ImageStorageService {
      * @param file the photo to be uploaded
      * @return the unique identifier (e.g., filename) of the uploaded photo
      */
-    String uploadPhoto(MultipartFile file);
+    String uploadImage(MultipartFile file);
 
     /**
      * Retrieves a photo.
@@ -28,12 +28,12 @@ public interface ImageStorageService {
      * @param fileName the unique identifier of the photo
      * @return an InputStream to read the photo content
      */
-    InputStream getPhoto(String fileName);
+    InputStream getImage(String fileName);
 
     /**
      * Deletes a photo.
      *
      * @param fileName the unique identifier of the photo
      */
-    void deletePhoto(String fileName);
+    void deleteImage(String fileName);
 }

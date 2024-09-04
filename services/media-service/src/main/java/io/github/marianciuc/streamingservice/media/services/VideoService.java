@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 public interface VideoService {
-    void uploadVideo(MultipartFile chunk, Integer chunkNumber, UUID id);
+    void uploadVideo(MultipartFile chunk, Integer chunkNumber, UUID id, Integer totalChunks);
 
     /**
      * Deletes the video associated with the specified content identifier.
