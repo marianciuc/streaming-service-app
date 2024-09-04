@@ -8,7 +8,6 @@
 
 package io.github.marianciuc.streamingservice.media.handlers;
 
-import io.github.marianciuc.streamingservice.media.kafka.TaskProducer;
 import io.github.marianciuc.streamingservice.media.services.ChunkStateService;
 import io.github.marianciuc.streamingservice.media.services.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,14 @@ public class ChunkUploadHandler {
     private final ChunkStateService chunkStateService;
     private final VideoService videoService;
 
-
+    /**
+     * Handles the upload of a chunk for a file. It updates the chunk upload status and if all chunks
+     * are uploaded, it processes the video.
+     *
+     * @param fileId      The unique identifier of the file being uploaded.
+     * @param chunkNumber The sequence number of the current chunk being uploaded.
+     * @param totalChunks The total number of chunks the file is divided into.
+     */
     public void handleChunkUpload(UUID fileId, int chunkNumber, int totalChunks) {
         chunkStateService.updateChunkUploadStatus(fileId, chunkNumber, totalChunks);
 
@@ -34,6 +40,15 @@ public class ChunkUploadHandler {
         }
     }
 
+    /**
+     * Checks whether all chunks in the provided status array have been uploaded.
+     *
+     * @param status An array of Boolean values representing the upload status of each chunk.
+     *               A value of {@code true} indicates the chunk has been uploaded,
+     *               {@code false} indicates it has not been uploaded,
+     *               and {@code null} indicates unknown status.
+     * @return {@code true} if all chunks are marked as uploaded; {@code false} otherwise.
+     */
     private boolean areAllChunksUploaded(Boolean[] status) {
         for (Boolean s : status) {
             if (s == null || !s) {
