@@ -11,8 +11,8 @@ package io.github.marianciuc.streamingservice.media.services.impl;
 import io.github.marianciuc.jwtsecurity.entity.JwtUser;
 import io.github.marianciuc.streamingservice.media.entity.Image;
 import io.github.marianciuc.streamingservice.media.exceptions.ForbiddenException;
-import io.github.marianciuc.streamingservice.media.exceptions.MediaContentNotFoundException;
-import io.github.marianciuc.streamingservice.media.exceptions.PhotoUploadException;
+import io.github.marianciuc.streamingservice.media.exceptions.ImageNotFoundException;
+import io.github.marianciuc.streamingservice.media.exceptions.ImageUploadException;
 import io.github.marianciuc.streamingservice.media.services.ImageStorageService;
 import io.github.marianciuc.streamingservice.media.dto.ImageDto;
 import io.github.marianciuc.streamingservice.media.repository.ImageRepository;
@@ -52,7 +52,7 @@ public class ImageServiceImpl implements ImageService {
             throw new ForbiddenException(FORBIDDEN_MSG);
         }
         try {
-            String url = imageStorageService.uploadPhoto(file);
+            String url = imageStorageService.uploadImage(file);
             Image image = Image.builder()
                     .userId(jwtUser.getId())
                     .contentLength(file.getSize())
@@ -61,35 +61,35 @@ public class ImageServiceImpl implements ImageService {
                     .fileName(url)
                     .build();
             return repository.save(image).getId();
-        } catch (PhotoUploadException e) {
+        } catch (ImageUploadException e) {
             String errorMsg = String.format(UPLOAD_FAILED_MSG, e.getMessage());
             log.error(errorMsg, e);
-            throw new PhotoUploadException(errorMsg);
+            throw new ImageUploadException(errorMsg);
         }
     }
 
     @Override
     public ImageDto getImage(UUID id) {
         Image image = repository.findById(id)
-                .orElseThrow(() -> new MediaContentNotFoundException(String.format(IMAGE_NOT_FOUND_MSG, id)));
+                .orElseThrow(() -> new ImageNotFoundException(String.format(IMAGE_NOT_FOUND_MSG, id)));
         String fileName = image.getFileName();
-        try (InputStream photoInputStream = imageStorageService.getPhoto(fileName)) {
+        try (InputStream photoInputStream = imageStorageService.getImage(fileName)) {
             ByteArrayResource byteArrayResource = new ByteArrayResource(photoInputStream.readAllBytes());
             return new ImageDto(byteArrayResource, image.getContentType());
         } catch (IOException e) {
             String errorMsg = String.format(ERROR_READING_IMAGE_MSG, fileName);
             log.error(errorMsg, e);
-            throw new MediaContentNotFoundException(errorMsg);
+            throw new ImageNotFoundException(errorMsg);
         }
     }
 
     @Override
     public void deleteImage(UUID id) {
         Image image = repository.findById(id)
-                .orElseThrow(() -> new MediaContentNotFoundException(String.format(IMAGE_NOT_FOUND_MSG, id)));
+                .orElseThrow(() -> new ImageNotFoundException(String.format(IMAGE_NOT_FOUND_MSG, id)));
         String fileName = image.getFileName();
         try {
-            imageStorageService.deletePhoto(fileName);
+            imageStorageService.deleteImage(fileName);
             repository.delete(image);
         } catch (Exception e) {
             String errorMsg = String.format(ERROR_DELETING_IMAGE_MSG, id, fileName);
