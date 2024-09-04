@@ -6,6 +6,9 @@ This is a backend application based on a microservices architecture designed to 
 The project employs the following technologies:
 - Java JDK 22
 - JWT
+- MinIO (S3)
+- Redis
+- FFmpeg
 - Spring Boot: A framework for building microservices.
 - Spring Security: Manages authentication and authorization.
 - Feign: A declarative HTTP client for microservices.
