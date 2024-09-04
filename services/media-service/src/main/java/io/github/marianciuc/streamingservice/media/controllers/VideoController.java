@@ -11,7 +11,6 @@ package io.github.marianciuc.streamingservice.media.controllers;
 import io.github.marianciuc.streamingservice.media.dto.UploadMetadataDto;
 import io.github.marianciuc.streamingservice.media.handlers.ChunkUploadHandler;
 import io.github.marianciuc.streamingservice.media.services.VideoService;
-import io.github.marianciuc.streamingservice.media.services.VideoStorageService;
 import io.github.marianciuc.streamingservice.media.validation.VideoFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,6 @@ public class VideoController {
     private static final String PARAM_FILE_ID = "tempFileName";
 
     private final ChunkUploadHandler chunkUploadHandler;
-    private final VideoStorageService videoStorageService;
     private final VideoService videoService;
 
 
@@ -86,7 +84,7 @@ public class VideoController {
             @RequestParam(value = PARAM_FILE) @VideoFile MultipartFile chunk
     ) {
         try {
-            videoStorageService.uploadVideoChunk(chunk, chunkNumber, fileId);
+            videoService.uploadVideo(chunk, chunkNumber, fileId);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error while chunk uploading.");
         }
