@@ -8,7 +8,11 @@
 
 package io.github.marianciuc.streamingservice.media.exceptions;
 
-public class VideoUploadException extends RuntimeException {
+public class VideoUploadException extends VideoStorageException {
+    public VideoUploadException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public VideoUploadException(String message) {
         super(message);
     }

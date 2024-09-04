@@ -2,18 +2,18 @@
  * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
  *
  * Project: STREAMING SERVICE APP
- * File: CompressingException.java
+ * File: VideoDeleteException.java
  *
  */
 
 package io.github.marianciuc.streamingservice.media.exceptions;
 
-public class CompressingException extends VideoStorageException {
-    public CompressingException(String message, Throwable cause) {
+public class VideoDeleteException extends VideoStorageException {
+    public VideoDeleteException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public CompressingException(String message) {
+    public VideoDeleteException(String message) {
         super(message);
     }
 }

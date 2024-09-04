@@ -8,8 +8,12 @@
 
 package io.github.marianciuc.streamingservice.media.exceptions;
 
-public class MediaContentNotFoundException extends RuntimeException {
-    public MediaContentNotFoundException(String message) {
+public class ImageNotFoundException extends RuntimeException {
+    public ImageNotFoundException(String message) {
         super(message);
+    }
+
+    public ImageNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
