@@ -13,24 +13,20 @@ import io.github.marianciuc.streamingservice.media.handlers.ChunkUploadHandler;
 import io.github.marianciuc.streamingservice.media.services.VideoService;
 import io.github.marianciuc.streamingservice.media.services.VideoStorageService;
 import io.github.marianciuc.streamingservice.media.validation.VideoFile;
-import io.minio.GetObjectArgs;
-import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import io.github.marianciuc.streamingservice.media.enums.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
+/**
+ * The VideoController class provides REST API endpoints for handling
+ * video uploads, including generating metadata and uploading video chunks.
+ */
 @RestController
 @RequestMapping("/api/v1/media/video")
 @RequiredArgsConstructor
@@ -44,13 +40,22 @@ public class VideoController {
     private static final String PARAM_FILE_SIZE = "fileSize";
     private static final String PARAM_TOTAL_CHUNKS = "totalChunks";
     private static final String PARAM_CHUNK_NUMBER = "chunkNumber";
-    private static final String PARAM_TEMP_FILE_ID = "tempFileName";
+    private static final String PARAM_FILE_ID = "tempFileName";
 
     private final ChunkUploadHandler chunkUploadHandler;
     private final VideoStorageService videoStorageService;
     private final VideoService videoService;
 
 
+    /**
+     * Generates metadata for the video upload process.
+     *
+     * @param fileSize - The size of the file being uploaded.
+     * @param contentId - The unique identifier for the content.
+     * @param contentType - The type of content being uploaded.
+     * @param mediaType - The media type (e.g., MOVIE, EPISODE) of the content.
+     * @return A ResponseEntity containing the generated upload metadata.
+     */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @GetMapping("/upload/prepare")
     public ResponseEntity<UploadMetadataDto> generateMetadata(
@@ -62,10 +67,20 @@ public class VideoController {
         return ResponseEntity.ok(videoService.prepareVideo(contentType, fileSize, mediaType, contentId));
     }
 
+    /**
+     * Uploads a chunk of a video file.
+     *
+     * @param fileId The unique identifier of the file being uploaded.
+     * @param chunkNumber The sequential number of the chunk being uploaded.
+     * @param totalChunks The total number of chunks for the file.
+     * @param chunk The video file chunk being uploaded.
+     * @return A ResponseEntity containing a success message if the chunk is uploaded successfully
+     * or an error message if there is an issue during the upload.
+     */
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
-            @RequestParam(value = PARAM_TEMP_FILE_ID) UUID fileId,
+            @RequestParam(value = PARAM_FILE_ID) UUID fileId,
             @RequestParam(value = PARAM_CHUNK_NUMBER) Integer chunkNumber,
             @RequestParam(value = PARAM_TOTAL_CHUNKS) Integer totalChunks,
             @RequestParam(value = PARAM_FILE) @VideoFile MultipartFile chunk
@@ -78,48 +93,4 @@ public class VideoController {
         chunkUploadHandler.handleChunkUpload(fileId, chunkNumber, totalChunks);
         return ResponseEntity.ok("Chunk successfully uploaded.");
     }
-
-
-    @GetMapping("/master/{fileId}")
-    public ResponseEntity<InputStreamResource> getMasterPlaylist(@PathVariable UUID fileId) {
-        try {
-            InputStream inputStream = minioClient.getObject(
-                    GetObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileId + "/master.m3u8")
-                            .build()
-            );
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=master.m3u8")
-                    .contentType(MediaType.parseMediaType("application/vnd.apple.mpegurl"))
-                    .body(new InputStreamResource(inputStream));
-        } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException | IOException e) {
-            log.error("Error occurred while fetching master playlist for file {}: {}", fileId, e.toString());
-            return ResponseEntity.status(500).build();
-        }
-    }
-
-    @GetMapping("/segment/{fileId}/{resolution}/{segment}")
-    public ResponseEntity<InputStreamResource> getSegment(@PathVariable UUID fileId,
-                                                          @PathVariable String resolution,
-                                                          @PathVariable String segment) {
-        try {
-            InputStream inputStream = minioClient.getObject(
-                    GetObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(fileId + "/" + resolution + "/" + segment)
-                            .build()
-            );
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + segment)
-                    .contentType(MediaType.parseMediaType("video/MP2T"))
-                    .body(new InputStreamResource(inputStream));
-        } catch (MinioException | InvalidKeyException | NoSuchAlgorithmException | IOException e) {
-            log.error("Error occurred while fetching segment {} for file {}: {}", segment, fileId, e.toString());
-            return ResponseEntity.status(500).build();
-        }
-    }
-
 }
