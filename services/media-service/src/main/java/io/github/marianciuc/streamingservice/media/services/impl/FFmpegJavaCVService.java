@@ -62,7 +62,7 @@ public class FFmpegJavaCVService implements VideoCompressingService {
             Files.copy(io, Path.of(inputFile.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
             return executeCompression(inputFile.getAbsolutePath(), resolution, id);
         } catch (IOException e) {
-            throw new CompressingException(IO_EXCEPTION_MSG);
+            throw new CompressingException(IO_EXCEPTION_MSG, e);
         } finally {
             deleteFile(inputFile);
         }
@@ -107,7 +107,7 @@ public class FFmpegJavaCVService implements VideoCompressingService {
             return savePlaylist(id, playlistContent.toString(), resolution.height());
         } catch (Exception e) {
             log.error(FRAME_GRABBING_ERROR_MSG, e);
-            throw new CompressingException(FRAME_GRABBING_ERROR_MSG);
+            throw new CompressingException(FRAME_GRABBING_ERROR_MSG, e);
         }
     }
 
