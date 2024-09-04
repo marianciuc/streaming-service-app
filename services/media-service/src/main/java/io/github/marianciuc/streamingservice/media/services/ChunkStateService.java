@@ -14,4 +14,5 @@ public interface ChunkStateService {
     void updateChunkUploadStatus(UUID fileId, int chunkNumber, int totalChunks);
     Boolean[] getChunkUploadStatus(UUID fileId);
     void deleteChunkUploadStatus(UUID fileId);
+    void createChunkUploadStatus(UUID fileId, int totalChunks);
 }

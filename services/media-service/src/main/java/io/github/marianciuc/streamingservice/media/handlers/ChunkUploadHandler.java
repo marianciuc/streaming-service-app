@@ -10,6 +10,7 @@ package io.github.marianciuc.streamingservice.media.handlers;
 
 import io.github.marianciuc.streamingservice.media.kafka.TaskProducer;
 import io.github.marianciuc.streamingservice.media.services.ChunkStateService;
+import io.github.marianciuc.streamingservice.media.services.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +21,16 @@ import java.util.UUID;
 public class ChunkUploadHandler {
 
     private final ChunkStateService chunkStateService;
-    private final TaskProducer taskProducer;
+    private final VideoService videoService;
 
 
-    public void handleChunkUpload(UUID fileId, int chunkNumber, int totalChunks, UUID contentId, UUID sourceResolutionId) {
+    public void handleChunkUpload(UUID fileId, int chunkNumber, int totalChunks) {
         chunkStateService.updateChunkUploadStatus(fileId, chunkNumber, totalChunks);
 
         Boolean[] chunkStatus = chunkStateService.getChunkUploadStatus(fileId);
         if (chunkStatus != null && areAllChunksUploaded(chunkStatus)) {
             chunkStateService.deleteChunkUploadStatus(fileId);
-            taskProducer.sendTaskToQueue(fileId, chunkNumber, totalChunks, contentId, sourceResolutionId);
+            videoService.processVideo(fileId);
         }
     }
 

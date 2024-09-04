@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +24,7 @@ public class ChunkStateServiceImpl implements ChunkStateService {
 
     private RedisTemplate<String, Boolean[]> redisTemplate;
 
+    private static final long UPLOAD_TIMEOUT_SECONDS = 1800L;
     private static final String CHUNK_UPLOAD_PREFIX = "chunk_upload::";
 
     @Override
@@ -32,11 +34,16 @@ public class ChunkStateServiceImpl implements ChunkStateService {
         Boolean[] chunkStatus = ops.get(key);
 
         if (chunkStatus == null) {
-            chunkStatus = new Boolean[totalChunks];
+            throw new IllegalStateException("Upload status not initialized for file: " + fileId);
         }
 
         chunkStatus[chunkNumber - 1] = true;
-        ops.set(key, chunkStatus, 1, TimeUnit.DAYS);
+
+        ops.set(key, chunkStatus, UPLOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+
+        if (isUploadComplete(chunkStatus)) {
+            deleteChunkUploadStatus(fileId);
+        }
     }
 
     @Override
@@ -50,5 +57,23 @@ public class ChunkStateServiceImpl implements ChunkStateService {
     public void deleteChunkUploadStatus(UUID fileId) {
         String key = CHUNK_UPLOAD_PREFIX + fileId;
         redisTemplate.delete(key);
+    }
+
+    @Override
+    public void createChunkUploadStatus(UUID fileId, int totalChunks) {
+        String key = CHUNK_UPLOAD_PREFIX + fileId;
+        Boolean[] chunkStatus = new Boolean[totalChunks];
+
+        Arrays.fill(chunkStatus, false);
+        redisTemplate.opsForValue().set(key, chunkStatus, UPLOAD_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    }
+
+    private boolean isUploadComplete(Boolean[] chunkStatus) {
+        for (Boolean status : chunkStatus) {
+            if (!Boolean.TRUE.equals(status)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
