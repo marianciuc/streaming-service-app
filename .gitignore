@@ -1,3 +1,27 @@
 .idea
 .env
 .idea
+
+# Ignore macOS system files
+.DS_Store
+# Ignore temporary files
+tmp/
+temp/
+
+# Ignore build directories
+target/
+build/
+dist/
+out/
+
+# Ignore logs
+logs
+*.log
+
+# Ignore Lombok generated files
+.lombok/
+
+# Ignore Maven files
+/.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+target/
