@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The Episode class represents an episode of a TV series.
@@ -47,6 +48,6 @@ public class Episode extends BaseEntity{
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "episode")
-    private List<MediaLink> mediaLinks;
+    @Column(name = "master_playlist_id")
+    UUID masterPlaylistId;
 }
