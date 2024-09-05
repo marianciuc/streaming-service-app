@@ -14,6 +14,7 @@ import java.util.UUID;
 
 public record UploadVideoDto (
         UUID contentId,
-        RecordStatus recordStatus
+        RecordStatus recordStatus,
+        UUID masterPlaylistId
 ) {
 }
