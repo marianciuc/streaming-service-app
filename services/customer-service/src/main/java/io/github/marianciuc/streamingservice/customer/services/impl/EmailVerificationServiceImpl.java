@@ -11,7 +11,6 @@ package io.github.marianciuc.streamingservice.customer.services.impl;
 import io.github.marianciuc.streamingservice.customer.dto.EmailVerificationCodeMessage;
 import io.github.marianciuc.streamingservice.customer.exceptions.VerificationCodeException;
 import io.github.marianciuc.streamingservice.customer.kafka.EmailNotificationProducer;
-import io.github.marianciuc.streamingservice.customer.services.CustomerService;
 import io.github.marianciuc.streamingservice.customer.services.EmailVerificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
