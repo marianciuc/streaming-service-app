@@ -118,7 +118,8 @@ public class ContentServiceImpl implements ContentService {
             String ageRating,
             String releaseDateYear,
             ContentType contentType,
-            RecordStatus recordStatus
+            RecordStatus recordStatus,
+            Boolean orderByDateDesk
     ) {
         Specification<Content> spec = Specification.where(null);
 
@@ -130,6 +131,7 @@ public class ContentServiceImpl implements ContentService {
         if (releaseDateYear != null && !releaseDateYear.isEmpty()) spec = spec.and(ContentSpecification.releaseDateYearIs(releaseDateYear));
         if (contentType != null) spec = spec.and(ContentSpecification.typeIs(contentType));
         if (recordStatus != null) spec = spec.and(ContentSpecification.recordStatusIs(recordStatus));
+        if (orderByDateDesk != null && orderByDateDesk) spec = spec.and(ContentSpecification.orderByReleaseDateDesc());
 
         PageRequest pageRequest = PageRequest.of(page, pageSize);
         Page<Content> contentPage = repository.findAll(spec, pageRequest);
