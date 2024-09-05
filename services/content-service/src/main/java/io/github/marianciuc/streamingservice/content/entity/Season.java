@@ -9,10 +9,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @SuperBuilder
@@ -34,6 +36,9 @@ public class Season extends BaseEntity {
     @NotNull
     private Integer number;
 
+    @Column(name = "description", nullable = false)
+    private String description;
+
     @Column(name = "title", nullable = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -43,7 +48,7 @@ public class Season extends BaseEntity {
     @Column(name = "season_release_date", nullable = false)
     @NotNull
     @Builder.Default
-    private LocalDateTime releaseDate = LocalDateTime.now();
+    private LocalDate releaseDate = LocalDate.now();
 
     @OneToMany(mappedBy = "season", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Episode> episodes;
