@@ -1,34 +1,50 @@
 package io.github.marianciuc.streamingservice.content.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@SuperBuilder
 @Entity
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "seasons")
 @Data
+@Table(name = "seasons", indexes = {
+        @Index(name = "index_season_number", columnList = "number"),
+        @Index(name = "index_season_title", columnList = "title")
+})
 public class Season extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "content_id", nullable = false)
+    @NotNull
     private Content content;
 
-    @Column(name = "season_number")
-    private Integer seasonNumber;
+    @Column(name = "number", nullable = false)
+    @NotNull
+    private Integer number;
 
-    @Column(name = "season_title")
-    private String seasonTitle;
+    @Column(name = "title", nullable = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Builder.Default
+    private String title = "Untitled Season";
 
-    @Column(name = "season_release_date")
-    private LocalDateTime seasonReleaseDate;
+    @Column(name = "season_release_date", nullable = false)
+    @NotNull
+    @Builder.Default
+    private LocalDateTime releaseDate = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "season")
+    @OneToMany(mappedBy = "season", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Episode> episodes;
 }
