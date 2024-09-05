@@ -8,11 +8,9 @@
 
 package io.github.marianciuc.streamingservice.content.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,12 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "actors")
-public class Actor extends BaseEntity {
-
-    @NotNull
-    @Column(name = "name", nullable = false)
-    private String name;
-
+public class Actor extends Person {
     @ManyToMany(mappedBy = "actors")
     private List<Content> contents;
 }
