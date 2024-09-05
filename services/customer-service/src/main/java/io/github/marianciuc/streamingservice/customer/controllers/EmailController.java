@@ -8,21 +8,18 @@
 
 package io.github.marianciuc.streamingservice.customer.controllers;
 
-import io.github.marianciuc.streamingservice.customer.services.CustomerService;
+import io.github.marianciuc.streamingservice.customer.services.impl.CustomerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/customers/email")
 @RequiredArgsConstructor
 public class EmailController {
 
-    private final CustomerService service;
+    private final CustomerServiceImpl service;
 
     @PostMapping("/verify-email")
     public ResponseEntity<Void> verifyEmail(@RequestParam("verifyCode") String verifyCode, Authentication authentication) {
