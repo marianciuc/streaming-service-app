@@ -56,6 +56,30 @@ public class Content extends BaseEntity{
     @JoinColumn(name = "movie_id", referencedColumnName = "id")
     private Movie movie;
 
-    @OneToMany(mappedBy = "content")
+    @ManyToMany
+    @JoinTable(
+            name = "content_tags",
+            joinColumns = @JoinColumn(name = "content_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags;
+
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Season> seasons;
+
+    @ManyToMany
+    @JoinTable(
+            name = "content_directors",
+            joinColumns = @JoinColumn(name = "content_id"),
+            inverseJoinColumns = @JoinColumn(name = "director_id")
+    )
+    private List<Director> directors;
+
+    @ManyToMany
+    @JoinTable(
+            name = "content_actors",
+            joinColumns = @JoinColumn(name = "content_id"),
+            inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    private List<Actor> actors;
 }
