@@ -2,6 +2,7 @@ package io.github.marianciuc.streamingservice.content.specifications;
 
 import io.github.marianciuc.streamingservice.content.entity.Content;
 import io.github.marianciuc.streamingservice.content.enums.ContentType;
+import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.UUID;
@@ -13,33 +14,42 @@ import java.util.UUID;
  */
 public class ContentSpecification {
 
-    /**
-     * Returns a Specification that checks if the title of a Content object contains the specified title.
-     *
-     * @param title the title to search for in the Content objects
-     * @return a Specification that checks if the title of a Content object contains the specified title
-     */
     public static Specification<Content> titleContains(String title) {
         return (root, query, cb) -> cb.like(root.get("title"), "%" + title + "%");
     }
 
-    /**
-     * Returns a Specification that checks if the type of a Content object is equal to the specified type.
-     *
-     * @param type the ContentType to check for in the Content objects
-     * @return a Specification that checks if the type of a Content object is equal to the specified type
-     */
     public static Specification<Content> typeIs(ContentType type) {
         return (root, query, cb) -> cb.equal(root.get("type"), type);
     }
 
-    /**
-     * Returns a Specification that checks if the genreId of a Content object is equal to the specified genreId.
-     *
-     * @param genreId the genreId to check for in the Content objects
-     * @return a Specification that checks if the genreId of a Content object is equal to the specified genreId
-     */
-    public static Specification<Content> genreIdIs(UUID genreId) {
-        return (root, query, cb) -> cb.equal(root.get("genreId"), genreId);
+    public static Specification<Content> hasGenre(UUID genreId) {
+        return (root, query, cb) -> cb.equal(root.join("genres").get("id"), genreId);
+    }
+
+    public static Specification<Content> hasDirector(UUID directorId) {
+        return (root, query, cb) -> cb.equal(root.join("directors").get("id"), directorId);
+    }
+
+    public static Specification<Content> actorIdIs(UUID actorId) {
+        return (root, query, cb) -> cb.equal(root.join("actors").get("id"), actorId);
+    }
+
+    public static Specification<Content> ageRatingIs(String ageRating) {
+        return (root, query, cb) -> cb.equal(root.get("ageRating"), ageRating);
+    }
+
+    public static Specification<Content> releaseDateYearIs(String releaseDateYear) {
+        return (root, query, cb) -> cb.equal(cb.function("YEAR", Integer.class, root.get("releaseDate")), Integer.parseInt(releaseDateYear));
+    }
+
+    public static Specification<Content> recordStatusIs(RecordStatus recordStatus) {
+        return (root, query, cb) -> cb.equal(root.get("recordStatus"), recordStatus);
+    }
+
+    public static Specification<Content> orderByReleaseDateDesc() {
+        return (root, query, cb) -> {
+            query.orderBy(cb.desc(root.get("releaseDate")));
+            return cb.conjunction();
+        };
     }
 }
