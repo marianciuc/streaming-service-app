@@ -2,6 +2,7 @@ package io.github.marianciuc.streamingservice.media.handlers;
 
 import io.github.marianciuc.streamingservice.media.dto.ExceptionResponse;
 import io.github.marianciuc.streamingservice.media.exceptions.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,12 +12,14 @@ import org.springframework.web.context.request.WebRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * The ExceptionHandlerController class handles exceptions by constructing an appropriate ResponseEntity with an
  * ExceptionResponse object containing the HttpStatus and message.
  */
 @RestControllerAdvice
+@Slf4j
 public class ExceptionHandlerController {
 
     private static final Map<Class<? extends Exception>, HttpStatus> EXCEPTION_STATUS_MAP = new HashMap<>();
