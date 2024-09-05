@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,10 +31,7 @@ public class Content extends BaseEntity{
     private ContentType contentType;
 
     @Column(name = "release_date", nullable = false)
-    private LocalDateTime releaseDate;
-
-    @Column(name = "duration", nullable = false)
-    private Integer duration;
+    private LocalDate releaseDate;
 
     @Column(name = "rating")
     private double rating;
