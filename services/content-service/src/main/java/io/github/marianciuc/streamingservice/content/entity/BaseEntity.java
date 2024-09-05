@@ -20,26 +20,25 @@ import java.util.UUID;
 @SuperBuilder
 @NoArgsConstructor
 public class BaseEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()", updatable = false, insertable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()", insertable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "record_status", length = 30, columnDefinition = "varchar(30) default 'ACTIVE'")
     @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "record_status", length = 30, nullable = false)
     private RecordStatus recordStatus = RecordStatus.ACTIVE;
 
     public boolean isRecordStatusDeleted() {
-        return this.recordStatus == RecordStatus.DELETED;
+        return RecordStatus.DELETED.equals(this.recordStatus);
     }
 }
