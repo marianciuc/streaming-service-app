@@ -9,6 +9,8 @@
 package io.github.marianciuc.streamingservice.customer.dto;
 
 import io.github.marianciuc.streamingservice.customer.model.Customer;
+import jakarta.validation.constraints.Email;
+import org.aspectj.lang.annotation.Before;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +19,9 @@ import java.util.UUID;
 public record CustomerDto(
         UUID id,
         String theme,
-        String email,
+        @Email(message = "Invalid email address") String email,
+
+        @Before("java.time.LocalDate.now()")
         LocalDate birthDate,
         String country,
         String username,
@@ -26,7 +30,11 @@ public record CustomerDto(
         boolean isEmailVerified,
         boolean receiveNewsletter,
         boolean enableNotifications,
+
+        @Before("java.time.LocalDateTime.now()")
         LocalDateTime createdAt,
+
+        @Before("java.time.LocalDateTime.now()")
         LocalDateTime updatedAt
 ) {
     public static CustomerDto to(Customer customer) {
