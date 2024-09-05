@@ -18,6 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "genres")
 public class Genre extends BaseEntity{
+
     @Column(name = "name", nullable = false)
     private String name;
 
