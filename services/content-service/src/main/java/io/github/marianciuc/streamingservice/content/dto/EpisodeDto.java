@@ -18,8 +18,8 @@ public record EpisodeDto (
         String title,
         String description,
         UUID seasonId,
-        int number,
-        int duration,
+        Integer number,
+        Integer duration,
         String masterPlaylistUrl,
         UUID masterPlaylistId,
         LocalDate releaseDate
