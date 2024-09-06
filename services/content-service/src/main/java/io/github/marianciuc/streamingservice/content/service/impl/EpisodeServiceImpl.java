@@ -10,11 +10,13 @@ package io.github.marianciuc.streamingservice.content.service.impl;
 
 import io.github.marianciuc.streamingservice.content.dto.CreateMasterPlayListMessage;
 import io.github.marianciuc.streamingservice.content.dto.EpisodeDto;
+import io.github.marianciuc.streamingservice.content.dto.SeasonDto;
 import io.github.marianciuc.streamingservice.content.entity.Episode;
 import io.github.marianciuc.streamingservice.content.entity.Season;
 import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
 import io.github.marianciuc.streamingservice.content.exceptions.InvalidArgumentsException;
 import io.github.marianciuc.streamingservice.content.exceptions.NotFoundException;
+import io.github.marianciuc.streamingservice.content.kafka.KafkaMediaProducer;
 import io.github.marianciuc.streamingservice.content.repository.EpisodeRepository;
 import io.github.marianciuc.streamingservice.content.service.EpisodeService;
 import io.github.marianciuc.streamingservice.content.service.SeasonService;
@@ -29,6 +31,7 @@ public class EpisodeServiceImpl implements EpisodeService {
 
     private final EpisodeRepository repository;
     private final SeasonService seasonService;
+    private final KafkaMediaProducer kafkaMediaProducer;
 
     @Override
     public UUID createEpisode(EpisodeDto episodeDto) {
@@ -53,6 +56,14 @@ public class EpisodeServiceImpl implements EpisodeService {
 
     @Override
     public UUID updateEpisode(UUID episodeId, EpisodeDto episodeDto) {
+        Episode episode = this.getEpisodeEntity(episodeId);
+
+        if (!episodeDto.title().isBlank()) episode.setTitle(episodeDto.title());
+        if (episodeDto.duration() != null) episode.setDuration(episodeDto.duration());
+        if (episodeDto.number() != null) episode.setNumber(episodeDto.number());
+        if (episodeDto.releaseDate() != null) episode.setReleaseDate(episodeDto.releaseDate());
+        if (!episodeDto.description().isBlank()) episode.setDescription(episodeDto.description());
+
         return null;
     }
 
@@ -69,16 +80,28 @@ public class EpisodeServiceImpl implements EpisodeService {
 
     @Override
     public void deleteEpisode(UUID episodeId) {
-
+        kafkaMediaProducer.sendDeleteMediaMessage(episodeId);
+        repository.deleteById(episodeId);
     }
 
     @Override
     public void updateEpisodeMasterPlaylist(CreateMasterPlayListMessage message) {
-        if (message.url().isEmpty()) return;
+        Episode episode = this.getEpisodeEntity(message.contentId());
+        episode.setMasterPlaylistId(message.masterPlaylistId());
+
+        if (!message.url().isEmpty()) {
+            episode.setMasterPlaylistUrl(message.url());
+            episode.setRecordStatus(RecordStatus.ACTIVE);
+        }
+        repository.save(episode);
     }
 
     @Override
     public EpisodeDto findEpisodeByParams(UUID contentId, Integer seasonNumber, Integer episodeNumber) {
-        return null;
+        SeasonDto seasonDto = seasonService.findSeasonByParams(contentId, seasonNumber);
+        return seasonDto.episodes().stream()
+                .filter(e -> e.number().equals(episodeNumber))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Episode not found"));
     }
 }
