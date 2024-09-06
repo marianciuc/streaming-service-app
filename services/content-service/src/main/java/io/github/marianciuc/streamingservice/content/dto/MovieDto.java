@@ -8,13 +8,24 @@
 
 package io.github.marianciuc.streamingservice.content.dto;
 
+import io.github.marianciuc.streamingservice.content.entity.Movie;
+
 import java.util.UUID;
 
 public record MovieDto(
         UUID id,
         UUID contentId,
-        int duration,
+        Integer duration,
         String masterPlaylistUrl,
         UUID masterPlaylistId
 ) {
+    public static MovieDto toMovieDto(Movie movie) {
+        return new MovieDto(
+                movie.getId(),
+                movie.getContent().getId(),
+                movie.getDuration(),
+                movie.getMasterPlaylistUrl(),
+                movie.getMasterPlaylistId()
+        );
+    }
 }
