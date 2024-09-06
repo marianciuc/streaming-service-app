@@ -17,7 +17,6 @@ import io.github.marianciuc.streamingservice.content.exceptions.NotFoundExceptio
 import io.github.marianciuc.streamingservice.content.kafka.KafkaContentProducer;
 import io.github.marianciuc.streamingservice.content.repository.ContentRepository;
 import io.github.marianciuc.streamingservice.content.service.*;
-import io.github.marianciuc.streamingservice.content.service.ContentService;
 import io.github.marianciuc.streamingservice.content.specifications.ContentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -97,14 +96,23 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public void deleteContent(UUID contentId) {
         Content content = getContentEntity(contentId);
+        if (content.getContentType() == ContentType.MOVIE) {
+            if (content.getMovie() == null) repository.delete(content);
+            else content.getMovie().setRecordStatus(RecordStatus.DELETED);
+        } else {
+            if (content.getSeasons() == null) repository.delete(content);
+            else content.getSeasons().forEach(season -> {
+                season.setRecordStatus(RecordStatus.DELETED);
+                season.getEpisodes().forEach(episode -> episode.setRecordStatus(RecordStatus.DELETED));
+            });
+        }
         content.setRecordStatus(RecordStatus.DELETED);
         repository.save(content);
-        kafkaContentProducer.sendDeleteContentMessage(contentId);
     }
 
     @Override
     public Content getContentEntity(UUID contentId) {
-        return repository.findById(contentId).orElseThrow(()-> new NotFoundException("Content not found"));
+        return repository.findById(contentId).orElseThrow(() -> new NotFoundException("Content not found"));
     }
 
     @Override
@@ -128,7 +136,8 @@ public class ContentServiceImpl implements ContentService {
         if (directorId != null) spec = spec.and(ContentSpecification.hasDirector(directorId));
         if (actorId != null) spec = spec.and(ContentSpecification.actorIdIs(actorId));
         if (ageRating != null && !ageRating.isEmpty()) spec = spec.and(ContentSpecification.ageRatingIs(ageRating));
-        if (releaseDateYear != null && !releaseDateYear.isEmpty()) spec = spec.and(ContentSpecification.releaseDateYearIs(releaseDateYear));
+        if (releaseDateYear != null && !releaseDateYear.isEmpty())
+            spec = spec.and(ContentSpecification.releaseDateYearIs(releaseDateYear));
         if (contentType != null) spec = spec.and(ContentSpecification.typeIs(contentType));
         if (recordStatus != null) spec = spec.and(ContentSpecification.recordStatusIs(recordStatus));
         if (orderByDateDesk != null && orderByDateDesk) spec = spec.and(ContentSpecification.orderByReleaseDateDesc());
