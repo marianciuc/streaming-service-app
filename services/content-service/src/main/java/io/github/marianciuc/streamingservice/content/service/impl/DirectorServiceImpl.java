@@ -57,9 +57,7 @@ public class DirectorServiceImpl implements DirectorService {
 
     @Override
     public PersonDto findDirectorById(UUID id) {
-        return repository.findById(id)
-                .map(PersonDto::toPersonDto)
-                .orElseThrow(() -> new NotFoundException("Director not found"));
+        return PersonDto.toPersonDto(this.findDirectorEntityById(id));
     }
 
     @Override
