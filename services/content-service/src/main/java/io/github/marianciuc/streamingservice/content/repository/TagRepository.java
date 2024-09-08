@@ -16,4 +16,6 @@ import java.util.UUID;
 
 public interface TagRepository extends JpaRepository<Tag, UUID> {
     List<Tag> findByNameStartingWith(String prefix);
+
+    boolean existsByName(String tag);
 }
