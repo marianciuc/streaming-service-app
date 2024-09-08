@@ -45,6 +45,7 @@ public class User implements UserPrincipal {
     @Column(nullable = false, unique = true, name = "username", updatable = false)
     private String username;
 
+    @Column(nullable = false, name = "password_hash")
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
