@@ -12,7 +12,7 @@ package io.github.marianciuc.streamingservice.user.serializers;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.SignedJWT;
-import io.github.marianciuc.streamingservice.user.dto.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +38,6 @@ public class AccessJWETokenStringDeserializer implements TokenDeserializer {
             if (encryptedJWT.verify(this.verifier)) {
                 return new Token(
                         UUID.fromString(encryptedJWT.getHeader().getKeyID()),
-                        encryptedJWT.getJWTClaimsSet().getClaims().get("username").toString(),
                         UUID.fromString(encryptedJWT.getJWTClaimsSet().getClaim("user-id").toString()),
                         encryptedJWT.getJWTClaimsSet().getSubject(),
                         encryptedJWT.getJWTClaimsSet().getIssuer(),
