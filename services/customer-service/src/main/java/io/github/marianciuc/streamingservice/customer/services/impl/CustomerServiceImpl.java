@@ -9,12 +9,12 @@
 package io.github.marianciuc.streamingservice.customer.services.impl;
 
 import io.github.marianciuc.jwtsecurity.entity.JwtUser;
-import io.github.marianciuc.streamingservice.customer.dto.CreateCustomerMessage;
 import io.github.marianciuc.streamingservice.customer.dto.CustomerDto;
 import io.github.marianciuc.streamingservice.customer.dto.PaginationResponse;
 import io.github.marianciuc.streamingservice.customer.exceptions.AccessDeniedException;
 import io.github.marianciuc.streamingservice.customer.exceptions.EntityNotFoundException;
 import io.github.marianciuc.streamingservice.customer.exceptions.VerificationCodeException;
+import io.github.marianciuc.streamingservice.customer.kafka.messages.CreateUserMessage;
 import io.github.marianciuc.streamingservice.customer.model.Customer;
 import io.github.marianciuc.streamingservice.customer.repository.CustomerRepository;
 import io.github.marianciuc.streamingservice.customer.services.CustomerService;
@@ -29,6 +29,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -57,18 +59,22 @@ public class CustomerServiceImpl implements CustomerService {
     private final EmailVerificationService emailVerificationService;
 
     @Override
-    public void createCustomer(CreateCustomerMessage message) {
+    public void createCustomer(CreateUserMessage message) {
         Customer newCustomer = Customer.builder()
                 .id(message.id())
                 .email(message.email())
                 .theme(Defaults.THEME)
                 .preferredLanguage(Defaults.LANGUAGE)
+                .profilePicture("")
+                .country("")
+                .birthDate(LocalDate.now())
                 .profileIsCompleted(Defaults.PROFILE_IS_COMPLETED)
                 .isEmailVerified(Defaults.EMAIL_VERIFIED)
                 .receiveNewsletter(Defaults.RECEIVE_NEWSLETTER)
                 .enableNotifications(Defaults.ENABLE_NOTIFICATIONS)
                 .username(message.username())
                 .build();
+        log.info("Creating new customer {}", newCustomer);
         repository.save(newCustomer);
     }
 
