@@ -14,6 +14,7 @@ import lombok.Setter;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Setter
 public class AccessTokenFactory implements TokenFactory {
@@ -36,7 +37,7 @@ public class AccessTokenFactory implements TokenFactory {
         Instant now = Instant.now();
 
         return new Token(
-                token.userId(),
+                token.tokenId(),
                 token.userId(),
                 token.subject(),
                 token.issuer(),
