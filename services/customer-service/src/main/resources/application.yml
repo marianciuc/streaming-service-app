@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: customer-service
+  config:
+    import: optional:configserver:http://localhost:8889
+  datasource:
+    url: jdbc:postgresql://localhost:5432/customers_db
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    oracleucp:
+      database-name: customers_db
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    properties:
+      hibernate:
+        default_schema: public
+  flyway:
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    url: ${spring.datasource.url}
+    baseline-on-migrate: true
+    enabled: true
+    baseline-description: "init"
+    baseline-version: 1
+    default-schema: public
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: customer-service-group
+      properties:
+        spring.json.type.mapping: createUserMessage:io.github.marianciuc.streamingservice.customer.kafka.messages.CreateUserMessage
