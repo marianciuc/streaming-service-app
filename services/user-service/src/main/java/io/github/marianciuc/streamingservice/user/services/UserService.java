@@ -22,15 +22,13 @@ public interface UserService extends UserDetailsService {
     /**
      * Creates a User based on the RegistrationRequest and Role.
      * @param request A representation of a RegistrationRequest.
-     * @param role A representation of a Role.
      * @return The User that was created.
      */
-    User createUser(RegistrationRequest request);
+    void createUser(RegistrationRequest request);
 
     /**
      * Changes the existing User's password
      * @param request A representation of ChangePasswordRequest.
-     * @param authentication A representation of authentication.
      */
     void changePassword(ChangePasswordRequest request);
 
