@@ -15,14 +15,6 @@ import java.util.UUID;
  * UserRepository interface to manage data related to the user entity.
  */
 public interface UserRepository extends JpaRepository<User, UUID> {
-    /**
-     * Find by username optional.
-     *
-     * @param username the username
-     * @return the optional
-     */
-    Optional<User> findByUsername(String username);
-
 
     /**
      * Finds a User by their email or username.
