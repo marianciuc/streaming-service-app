@@ -8,11 +8,11 @@
 
 package io.github.marianciuc.streamingservice.user.services.impl;
 
-import io.github.marianciuc.streamingservice.user.exceptions.NotFoundException;
 import io.github.marianciuc.streamingservice.user.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,10 +32,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
      *
      * @param username the username of the user
      * @return the UserDetails object containing the user details
-     * @throws NotFoundException if the user is not found
+     * @throws UsernameNotFoundException if the user is not found
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return userRepository.findByEmailOrUsername(username).orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_MSG));
+        return userRepository.findByEmailOrUsername(username).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_MSG));
     }
 }
