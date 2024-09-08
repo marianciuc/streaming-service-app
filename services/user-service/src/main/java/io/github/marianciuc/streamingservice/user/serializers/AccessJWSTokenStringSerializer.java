@@ -14,7 +14,7 @@ import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import io.github.marianciuc.streamingservice.user.dto.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.exceptions.TokenSigningException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -55,7 +55,6 @@ public class AccessJWSTokenStringSerializer implements TokenSerializer {
         return new JWTClaimsSet.Builder()
                 .jwtID(token.userId().toString())
                 .subject(token.subject())
-                .claim("username", token.username())
                 .issueTime(Date.from(token.createdAt()))
                 .expirationTime(Date.from(token.expiresAt()))
                 .issuer(token.issuer())
