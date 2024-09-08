@@ -8,6 +8,8 @@
 
 package io.github.marianciuc.streamingservice.user.security.providers;
 
+import io.github.marianciuc.streamingservice.user.entity.JWTUserPrincipal;
+import io.github.marianciuc.streamingservice.user.entity.UserPrincipal;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,7 +50,7 @@ public class CredentialsAuthenticationProvider implements AuthenticationProvider
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserPrincipal userDetails = (UserPrincipal) userDetailsService.loadUserByUsername(username);
         if (userDetails != null && passwordEncoder.matches(password, userDetails.getPassword())) {
             return new UsernamePasswordAuthenticationToken(
                     userDetails, password, userDetails.getAuthorities());
