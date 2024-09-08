@@ -1,7 +1,5 @@
 package io.github.marianciuc.streamingservice.user.entity;
 
-import io.github.marianciuc.jwtsecurity.enums.TokenType;
-import io.github.marianciuc.jwtsecurity.service.JwtUserDetails;
 import io.github.marianciuc.streamingservice.user.enums.RecordStatus;
 import io.github.marianciuc.streamingservice.user.enums.Role;
 import jakarta.persistence.*;
@@ -35,7 +33,7 @@ import java.util.UUID;
         @Index(name = "idxEmail", columnList = "email"),
         @Index(name = "idxUsername", columnList = "username")
 })
-public class User implements JwtUserDetails {
+public class User implements UserPrincipal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -74,7 +72,6 @@ public class User implements JwtUserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    @Override
     public String getRole() {
         return role.name();
     }
@@ -102,15 +99,5 @@ public class User implements JwtUserDetails {
     @Override
     public boolean isEnabled() {
         return recordStatus == RecordStatus.ACTIVE;
-    }
-
-    @Override
-    public TokenType getType() {
-        return null;
-    }
-
-    @Override
-    public boolean isService() {
-        return false;
     }
 }
