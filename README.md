@@ -9,6 +9,7 @@ The project employs the following technologies:
 - MinIO (S3)
 - Redis
 - FFmpeg
+- Kafka
 - Spring Boot: A framework for building microservices.
 - Spring Security: Manages authentication and authorization.
 - Feign: A declarative HTTP client for microservices.
