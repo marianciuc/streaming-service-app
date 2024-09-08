@@ -8,7 +8,7 @@
 
 package io.github.marianciuc.streamingservice.user.serializers;
 
-import io.github.marianciuc.streamingservice.user.dto.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
 
 import java.util.function.Function;
 
