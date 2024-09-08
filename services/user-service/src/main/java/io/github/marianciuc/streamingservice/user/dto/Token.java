@@ -14,6 +14,7 @@ import java.util.UUID;
 
 public record Token(
         UUID tokenId,
+        String username,
         UUID userId,
         String subject,
         String issuer,
