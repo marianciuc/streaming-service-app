@@ -9,8 +9,8 @@
 package io.github.marianciuc.streamingservice.user.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.marianciuc.streamingservice.user.dto.Token;
-import io.github.marianciuc.streamingservice.user.dto.TokenPair;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.TokenPair;
 import io.github.marianciuc.streamingservice.user.factories.RefreshTokenFactory;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
