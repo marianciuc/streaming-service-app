@@ -25,8 +25,8 @@ import java.util.Date;
 public class RefreshJWETokenStringSerializer implements TokenSerializer {
 
     private final JWEEncrypter jweEncrypter;
-    private static final JWEAlgorithm JWE_ALGORITHM = JWEAlgorithm.DIR;
-    private static final EncryptionMethod JWE_ENCRYPTION_METHOD = EncryptionMethod.A128GCM;
+    private JWEAlgorithm JWE_ALGORITHM = JWEAlgorithm.DIR;
+    private EncryptionMethod JWE_ENCRYPTION_METHOD = EncryptionMethod.A128GCM;
 
     /**
      * Applies the token serialization process to produce a JWE-encoded representation of the given token.
@@ -37,29 +37,20 @@ public class RefreshJWETokenStringSerializer implements TokenSerializer {
      */
     @Override
     public String apply(Token token) {
-        var jwtHeader = buildJweHeader(token);
-        var jwtClaimsSet = buildJwtClaimsSet(token);
-        return serializeToken(jwtHeader, jwtClaimsSet);
-    }
-
-    private JWEHeader buildJweHeader(Token token) {
-        return new JWEHeader.Builder(JWE_ALGORITHM, JWE_ENCRYPTION_METHOD)
+        var jwtHeader =  new JWEHeader.Builder(JWE_ALGORITHM, JWE_ENCRYPTION_METHOD)
                 .keyID(token.userId().toString())
                 .build();
-    }
 
-    private JWTClaimsSet buildJwtClaimsSet(Token token) {
-        return new JWTClaimsSet.Builder()
+        var jwtClaimsSet = new JWTClaimsSet.Builder()
                 .jwtID(token.userId().toString())
                 .subject(token.subject())
                 .issueTime(Date.from(token.createdAt()))
+                .claim("user-id", token.userId().toString())
                 .expirationTime(Date.from(token.expiresAt()))
                 .issuer(token.issuer())
                 .claim("authorities", token.roles())
                 .build();
-    }
-
-    private String serializeToken(JWEHeader jwtHeader, JWTClaimsSet jwtClaimsSet) {
+        log.info("JWT Claims Set: {}", jwtClaimsSet);
         var encryptedJWT = new EncryptedJWT(jwtHeader, jwtClaimsSet);
         try {
             encryptedJWT.encrypt(this.jweEncrypter);
@@ -68,5 +59,13 @@ public class RefreshJWETokenStringSerializer implements TokenSerializer {
             log.error("Error encrypting JWT", e);
             throw new TokenEncryptionException("Failed to encrypt JWT", e);
         }
+    }
+
+    public void setJweAlgorithm(JWEAlgorithm jweAlgorithm) {
+        this.JWE_ALGORITHM = jweAlgorithm;
+    }
+
+    public void setJweEncryptionMethod(EncryptionMethod encryptionMethod) {
+        this.JWE_ENCRYPTION_METHOD = encryptionMethod;
     }
 }
