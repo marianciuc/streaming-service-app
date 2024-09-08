@@ -30,9 +30,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationConverter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Arrays;
+
 
 /**
  * Configurer to set up JWT and Username/Password authentication in the security filter chain.
@@ -62,15 +65,15 @@ public class JwtAuthenticationConfigurer implements SecurityConfigurer<DefaultSe
     private AuthenticationConverter usernamePasswordAuthenticationConverter;
 
     @Override
-    public void init(HttpSecurity builder) throws Exception {
+    public void init(HttpSecurity builder)  {
         var csrfConfigurer = builder.getConfigurer(CsrfConfigurer.class);
         if (csrfConfigurer != null) {
-            csrfConfigurer.ignoringRequestMatchers(new AntPathRequestMatcher(API_TOKENS_PATH, POST_METHOD));
+            csrfConfigurer.ignoringRequestMatchers(new AntPathRequestMatcher("/api/v1/auth/register", POST_METHOD));
         }
     }
 
     @Override
-    public void configure(HttpSecurity builder) throws Exception {
+    public void configure(HttpSecurity builder) {
         initializeProvidersAndConverters();
 
         AuthenticationManager authManager = new ProviderManager(Arrays.asList(this.credentialsAuthenticationProvider, this.jwtAuthenticationProvider));
@@ -86,9 +89,9 @@ public class JwtAuthenticationConfigurer implements SecurityConfigurer<DefaultSe
         refreshTokenFilter.setIncludeRefreshToken(true);
 
         builder
-                .addFilter(usernamePasswordAuthenticationFilter)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(refreshTokenFilter, JWTAuthenticationFilter.class);
+                .addFilterBefore(usernamePasswordAuthenticationFilter, CsrfFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter, CsrfFilter.class)
+                .addFilterAfter(refreshTokenFilter, LogoutFilter.class);
     }
 
     private void initializeProvidersAndConverters() {
@@ -103,8 +106,8 @@ public class JwtAuthenticationConfigurer implements SecurityConfigurer<DefaultSe
                 this.usernamePasswordAuthenticationConverter,
                 this.accessTokenFactory,
                 this.refreshTokenFactory,
-                this.refreshTokenSerializer,
                 this.accessTokenSerializer,
+                this.refreshTokenSerializer,
                 authManager
         );
     }
