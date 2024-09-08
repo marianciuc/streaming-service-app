@@ -27,7 +27,7 @@ import java.util.List;
 @Table(name = "tags")
 public class Tag extends BaseEntity {
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "tags")
