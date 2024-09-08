@@ -1,4 +1,4 @@
-package io.github.marianciuc.streamingservice.user.entity;/*
+/*
  * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
  *
  * Project: STREAMING SERVICE APP
@@ -6,7 +6,10 @@ package io.github.marianciuc.streamingservice.user.entity;/*
  *
  */
 
-import io.github.marianciuc.streamingservice.user.dto.Token;
+package io.github.marianciuc.streamingservice.user.entity;
+
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -15,6 +18,7 @@ import java.util.UUID;
 
 public class JWTUserPrincipal extends User implements UserPrincipal {
 
+    @Getter
     private final Token token;
     private final UUID id;
 
@@ -30,4 +34,5 @@ public class JWTUserPrincipal extends User implements UserPrincipal {
     public UUID getId() {
         return id;
     }
+
 }
