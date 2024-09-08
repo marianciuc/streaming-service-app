@@ -11,6 +11,7 @@ package io.github.marianciuc.streamingservice.user.factories;
 
 import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.entity.JWTUserPrincipal;
+import io.github.marianciuc.streamingservice.user.entity.UserPrincipal;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 
@@ -36,18 +37,16 @@ public class RefreshTokenFactory implements AuthenticationTokenFactory {
      */
     @Override
     public Token apply(Authentication authentication) {
-        UUID userId = UUID.randomUUID();
-        if (authentication.getPrincipal() instanceof JWTUserPrincipal jwtUserPrincipal) {
-
+        if (authentication.getPrincipal() instanceof UserPrincipal userPrincipal) {
             LinkedList<String> authorities = authentication.getAuthorities().stream()
                     .map(Object::toString).map("GRAND::"::concat).collect(LinkedList::new, LinkedList::add, LinkedList::addAll);
             authorities.add("REFRESH::REFRESH_TOKEN");
             Instant now = Instant.now();
 
             return new Token(
-                    userId,
-                    jwtUserPrincipal.getId(),
-                    jwtUserPrincipal.getUsername(),
+                    UUID.randomUUID(),
+                    userPrincipal.getId(),
+                    userPrincipal.getUsername(),
                     issuer,
                     authorities,
                     now,
