@@ -6,10 +6,10 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.user.security;
+package io.github.marianciuc.streamingservice.user.security.converters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.marianciuc.streamingservice.user.dto.CredentialsRequest;
+import io.github.marianciuc.streamingservice.user.dto.requests.CredentialsRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
