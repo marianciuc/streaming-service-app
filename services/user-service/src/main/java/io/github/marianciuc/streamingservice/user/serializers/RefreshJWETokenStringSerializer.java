@@ -11,7 +11,7 @@ package io.github.marianciuc.streamingservice.user.serializers;
 import com.nimbusds.jose.*;
 import com.nimbusds.jwt.EncryptedJWT;
 import com.nimbusds.jwt.JWTClaimsSet;
-import io.github.marianciuc.streamingservice.user.dto.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.exceptions.TokenEncryptionException;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -52,7 +52,6 @@ public class RefreshJWETokenStringSerializer implements TokenSerializer {
         return new JWTClaimsSet.Builder()
                 .jwtID(token.userId().toString())
                 .subject(token.subject())
-                .claim("username", token.username())
                 .issueTime(Date.from(token.createdAt()))
                 .expirationTime(Date.from(token.expiresAt()))
                 .issuer(token.issuer())
