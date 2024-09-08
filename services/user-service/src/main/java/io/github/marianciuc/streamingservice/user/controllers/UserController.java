@@ -1,7 +1,6 @@
 package io.github.marianciuc.streamingservice.user.controllers;
 
-import io.github.marianciuc.streamingservice.user.dto.ChangePasswordRequest;
-import io.github.marianciuc.streamingservice.user.dto.CreateEmployeeRequest;
+import io.github.marianciuc.streamingservice.user.dto.requests.ChangePasswordRequest;
 import io.github.marianciuc.streamingservice.user.enums.APIPath;
 import io.github.marianciuc.streamingservice.user.enums.Role;
 import io.github.marianciuc.streamingservice.user.services.impl.UserServiceImpl;
@@ -35,7 +34,7 @@ public class UserController {
      */
     @PutMapping(APIPath.CHANGE_PASSWORD)
     public ResponseEntity<Void> changePassword(@RequestBody @Validated ChangePasswordRequest request, Authentication authentication){
-        userService.changePassword(request, authentication);
+        userService.changePassword(request);
         return ResponseEntity.ok().build();
     }
 
