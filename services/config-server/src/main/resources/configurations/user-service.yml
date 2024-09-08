@@ -16,6 +16,19 @@ spring:
     baseline-version: 0
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: createUserMessage:io.github.marianciuc.streamingservice.user.kafka.messages.CreateUserMessage
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: users-service-group
+      properties:
+        spring.json.trusted.packages: "io.github.marianciuc.streamingservice.users.dto"
 server:
   port: 8050
 jwt:
