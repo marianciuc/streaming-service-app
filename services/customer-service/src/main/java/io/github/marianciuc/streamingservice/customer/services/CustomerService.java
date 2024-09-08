@@ -8,9 +8,9 @@
 
 package io.github.marianciuc.streamingservice.customer.services;
 
-import io.github.marianciuc.streamingservice.customer.dto.CreateCustomerMessage;
 import io.github.marianciuc.streamingservice.customer.dto.CustomerDto;
 import io.github.marianciuc.streamingservice.customer.dto.PaginationResponse;
+import io.github.marianciuc.streamingservice.customer.kafka.messages.CreateUserMessage;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public interface CustomerService {
      *
      * @param message the message containing the details of the customer to be created.
      */
-    void createCustomer(CreateCustomerMessage message);
+    void createCustomer(CreateUserMessage message);
 
 
     /**
