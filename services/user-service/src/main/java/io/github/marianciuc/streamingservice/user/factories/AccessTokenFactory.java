@@ -8,7 +8,7 @@
 
 package io.github.marianciuc.streamingservice.user.factories;
 
-import io.github.marianciuc.streamingservice.user.dto.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import lombok.Setter;
 
 import java.time.Duration;
