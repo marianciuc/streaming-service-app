@@ -11,7 +11,7 @@ package io.github.marianciuc.streamingservice.user.serializers;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWEDecrypter;
 import com.nimbusds.jwt.EncryptedJWT;
-import io.github.marianciuc.streamingservice.user.dto.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +37,6 @@ public class RefreshJWSTokenStringDeserializer implements TokenDeserializer {
             signedJWT.decrypt(this.jweDecrypter);
             return new Token(
                     UUID.fromString(signedJWT.getHeader().getKeyID()),
-                    signedJWT.getJWTClaimsSet().getClaims().get("username").toString(),
                     UUID.fromString(signedJWT.getJWTClaimsSet().getClaim("user-id").toString()),
                     signedJWT.getJWTClaimsSet().getSubject(),
                     signedJWT.getJWTClaimsSet().getIssuer(),
