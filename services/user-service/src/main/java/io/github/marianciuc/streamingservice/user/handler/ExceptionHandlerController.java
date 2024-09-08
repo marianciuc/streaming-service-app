@@ -1,7 +1,6 @@
 package io.github.marianciuc.streamingservice.user.handler;
 
-import io.github.marianciuc.jwtsecurity.exceptions.UnsupportedJsonWebTokenException;
-import io.github.marianciuc.streamingservice.user.dto.ExceptionResponse;
+import io.github.marianciuc.streamingservice.user.dto.responses.ExceptionResponse;
 import io.github.marianciuc.streamingservice.user.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,12 +55,6 @@ public class ExceptionHandlerController {
     @ExceptionHandler(SecurityBadCredentialsException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     protected ResponseEntity<Object> handle(SecurityBadCredentialsException ex, WebRequest request) {
-        return constructResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
-    }
-
-    @ExceptionHandler(UnsupportedJsonWebTokenException.class)
-    @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    protected ResponseEntity<Object> handle(UnsupportedJsonWebTokenException ex, WebRequest request) {
         return constructResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
