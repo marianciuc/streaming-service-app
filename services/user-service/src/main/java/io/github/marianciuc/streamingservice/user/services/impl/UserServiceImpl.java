@@ -9,21 +9,27 @@
 package io.github.marianciuc.streamingservice.user.services.impl;
 
 
-import io.github.marianciuc.streamingservice.user.dto.*;
+import io.github.marianciuc.streamingservice.user.dto.requests.ChangePasswordRequest;
+import io.github.marianciuc.streamingservice.user.dto.requests.RegistrationRequest;
+import io.github.marianciuc.streamingservice.user.dto.responses.UserResponse;
 import io.github.marianciuc.streamingservice.user.entity.User;
 import io.github.marianciuc.streamingservice.user.enums.RecordStatus;
 import io.github.marianciuc.streamingservice.user.enums.Role;
+import io.github.marianciuc.streamingservice.user.exceptions.IllegalArgumentException;
 import io.github.marianciuc.streamingservice.user.exceptions.NotFoundException;
 import io.github.marianciuc.streamingservice.user.exceptions.SecurityBadCredentialsException;
 import io.github.marianciuc.streamingservice.user.mappers.UserMapper;
 import io.github.marianciuc.streamingservice.user.repositories.UserRepository;
 import io.github.marianciuc.streamingservice.user.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+
+import static io.github.marianciuc.streamingservice.user.security.utils.SecurityUtils.extractJwtUserPrincipals;
 
 /**
  * The {@code UserServiceImpl} class implements the {@link UserService} interface
@@ -49,14 +55,17 @@ public class UserServiceImpl implements UserService {
      * @param role The Role object representing the user's role.
      * @return A newly created User object.
      */
-    public User createUser(RegistrationRequest request, Role role) {
+    public User createUser(RegistrationRequest request) {
+        if (repository.existsByEmailOrUsername(request.email(), request.username())) {
+            throw new IllegalArgumentException("User with this email or username already exists");
+        }
         return User.builder()
                 .username(request.username())
                 .email(request.email())
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .isBanned(false)
                 .recordStatus(RecordStatus.ACTIVE)
-                .role(role)
+                .role(request.role())
                 .build();
     }
 
@@ -110,16 +119,28 @@ public class UserServiceImpl implements UserService {
      * Changes the password of the authenticated user if the old password matches the current password.
      *
      * @param request         the ChangePasswordRequest object containing the old and new passwords
-     * @param authentication the Authentication object representing the current authentication details
      * @throws SecurityBadCredentialsException if the old password does not match the current password
      */
-    public void changePassword(ChangePasswordRequest request, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+    public void changePassword(ChangePasswordRequest request) {
+        User user = this.getUserById(extractJwtUserPrincipals().getId());
         if (passwordEncoder.matches(request.oldPassword(), user.getPasswordHash())) {
             String encodedNewPassword = passwordEncoder.encode(request.newPassword());
             user.setPasswordHash(encodedNewPassword);
             repository.save(user);
         }
         else throw new SecurityBadCredentialsException(PASSWORD_DOES_NOT_MATCH_MSG);
+    }
+
+
+    /**
+     * Loads the user details for authentication and authorization based on the provided username.
+     *
+     * @param username the username or email of the user
+     * @return the UserDetails object containing the user details
+     * @throws UsernameNotFoundException if the user is not found
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return repository.findByEmailOrUsername(username).orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_MSG));
     }
 }
