@@ -1,4 +1,12 @@
-package io.github.marianciuc.streamingservice.user.dto;
+/*
+ * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
+ *
+ * Project: STREAMING SERVICE APP
+ * File: UserResponse.java
+ *
+ */
+
+package io.github.marianciuc.streamingservice.user.dto.responses;
 
 
 import io.github.marianciuc.streamingservice.user.enums.RecordStatus;

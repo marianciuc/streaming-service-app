@@ -2,13 +2,13 @@
  * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
  *
  * Project: STREAMING SERVICE APP
- * File: TokenAuthenticationProvider.java
+ * File: JWTAuthenticationProvider.java
  *
  */
 
-package io.github.marianciuc.streamingservice.user.security;
+package io.github.marianciuc.streamingservice.user.security.providers;
 
-import io.github.marianciuc.streamingservice.user.dto.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.entity.JWTUserPrincipal;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

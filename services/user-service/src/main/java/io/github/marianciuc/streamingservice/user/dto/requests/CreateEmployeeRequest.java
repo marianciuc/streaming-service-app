@@ -1,4 +1,12 @@
-package io.github.marianciuc.streamingservice.user.dto;
+/*
+ * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
+ *
+ * Project: STREAMING SERVICE APP
+ * File: CreateEmployeeRequest.java
+ *
+ */
+
+package io.github.marianciuc.streamingservice.user.dto.requests;
 
 import io.github.marianciuc.streamingservice.user.enums.Role;
 import jakarta.validation.constraints.Email;

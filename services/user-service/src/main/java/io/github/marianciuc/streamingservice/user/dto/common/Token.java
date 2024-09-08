@@ -6,7 +6,7 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.user.dto;
+package io.github.marianciuc.streamingservice.user.dto.common;
 
 import java.time.Instant;
 import java.util.List;
@@ -14,7 +14,6 @@ import java.util.UUID;
 
 public record Token(
         UUID tokenId,
-        String username,
         UUID userId,
         String subject,
         String issuer,

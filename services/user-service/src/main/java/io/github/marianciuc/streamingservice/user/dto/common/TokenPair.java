@@ -2,11 +2,11 @@
  * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
  *
  * Project: STREAMING SERVICE APP
- * File: Tokens.java
+ * File: TokenPair.java
  *
  */
 
-package io.github.marianciuc.streamingservice.user.dto;
+package io.github.marianciuc.streamingservice.user.dto.common;
 
 public record TokenPair(
         String accessToken,
