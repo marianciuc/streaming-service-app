@@ -9,8 +9,8 @@
 package io.github.marianciuc.streamingservice.user.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.marianciuc.streamingservice.user.dto.Token;
-import io.github.marianciuc.streamingservice.user.dto.TokenPair;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.TokenPair;
 import io.github.marianciuc.streamingservice.user.factories.AuthenticationTokenFactory;
 import io.github.marianciuc.streamingservice.user.factories.TokenFactory;
 import io.github.marianciuc.streamingservice.user.serializers.TokenSerializer;
@@ -30,6 +30,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
 
+/**
+ * Filter for processing username and password authentication requests.
+ */
 @Setter
 public class UsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -40,7 +43,22 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
     private final TokenSerializer refreshTokenSerializer;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public UsernamePasswordAuthenticationFilter(AuthenticationConverter authenticationConverter, TokenFactory accessTokenFactory, AuthenticationTokenFactory refreshTokenFactory, TokenSerializer accessTokenSerializer, TokenSerializer refreshTokenSerializer, AuthenticationManager authenticationManager) {
+    /**
+     * Constructs a UsernamePasswordAuthenticationFilter with the provided parameters.
+     *
+     * @param authenticationConverter the converter to extract authentication from the request.
+     * @param accessTokenFactory      the factory to create access tokens.
+     * @param refreshTokenFactory     the factory to create refresh tokens.
+     * @param accessTokenSerializer   the serializer for access tokens.
+     * @param refreshTokenSerializer  the serializer for refresh tokens.
+     * @param authenticationManager   the manager to handle the authentication process.
+     */
+    public UsernamePasswordAuthenticationFilter(AuthenticationConverter authenticationConverter,
+                                                TokenFactory accessTokenFactory,
+                                                AuthenticationTokenFactory refreshTokenFactory,
+                                                TokenSerializer accessTokenSerializer,
+                                                TokenSerializer refreshTokenSerializer,
+                                                AuthenticationManager authenticationManager) {
         super(new AntPathRequestMatcher("/login", HttpMethod.POST.name()));
         this.authenticationConverter = authenticationConverter;
         this.accessTokenFactory = accessTokenFactory;
@@ -50,21 +68,42 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
         setAuthenticationManager(authenticationManager);
     }
 
+    /**
+     * Attempts to authenticate the user by extracting credentials from the request.
+     *
+     * @param request  the HTTP request object.
+     * @param response the HTTP response object.
+     * @return the Authentication object if successful.
+     * @throws AuthenticationException if authentication attempt fails.
+     */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request,
+                                                HttpServletResponse response) throws AuthenticationException {
         return authenticationConverter.convert(request);
     }
 
+    /**
+     * Handles successful authentication by creating and returning token pairs.
+     *
+     * @param request    the HTTP request object.
+     * @param response   the HTTP response object.
+     * @param chain      the filter chain.
+     * @param authResult the result of the authentication process.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain chain, Authentication authResult) throws IOException {
         Token refreshToken = refreshTokenFactory.apply(authResult);
         Token accessToken = accessTokenFactory.apply(refreshToken);
 
         String refreshTokenString = refreshTokenSerializer.apply(refreshToken);
         String accessTokenString = accessTokenSerializer.apply(accessTokenFactory.apply(refreshToken));
 
-        TokenPair tokenPair = new TokenPair(accessTokenString, accessToken.expiresAt().toString(), refreshTokenString, refreshToken.expiresAt().toString());
+        TokenPair tokenPair = new TokenPair(accessTokenString, accessToken.expiresAt().toString(),
+                refreshTokenString, refreshToken.expiresAt().toString());
         String jsonTokenPair = objectMapper.writeValueAsString(tokenPair);
+
         response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
         response.getWriter().write(jsonTokenPair);
     }
