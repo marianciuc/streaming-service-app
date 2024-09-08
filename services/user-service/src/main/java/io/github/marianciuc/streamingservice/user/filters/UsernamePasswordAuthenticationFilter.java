@@ -11,14 +11,16 @@ package io.github.marianciuc.streamingservice.user.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.dto.common.TokenPair;
+import io.github.marianciuc.streamingservice.user.entity.JWTUserPrincipal;
+import io.github.marianciuc.streamingservice.user.entity.UserPrincipal;
 import io.github.marianciuc.streamingservice.user.factories.AuthenticationTokenFactory;
 import io.github.marianciuc.streamingservice.user.factories.TokenFactory;
 import io.github.marianciuc.streamingservice.user.serializers.TokenSerializer;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.ContentType;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +36,7 @@ import java.io.IOException;
  * Filter for processing username and password authentication requests.
  */
 @Setter
+@Slf4j
 public class UsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private final AuthenticationConverter authenticationConverter;
@@ -79,7 +82,11 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-        return authenticationConverter.convert(request);
+        Authentication authRequest = authenticationConverter.convert(request);
+        if (authRequest == null) {
+            throw new AuthenticationException("Failed to convert authentication request") {};
+        }
+        return getAuthenticationManager().authenticate(authRequest);
     }
 
     /**
@@ -98,7 +105,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
         Token accessToken = accessTokenFactory.apply(refreshToken);
 
         String refreshTokenString = refreshTokenSerializer.apply(refreshToken);
-        String accessTokenString = accessTokenSerializer.apply(accessTokenFactory.apply(refreshToken));
+        String accessTokenString = accessTokenSerializer.apply(refreshToken);
 
         TokenPair tokenPair = new TokenPair(accessTokenString, accessToken.expiresAt().toString(),
                 refreshTokenString, refreshToken.expiresAt().toString());
@@ -107,5 +114,4 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
         response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
         response.getWriter().write(jsonTokenPair);
     }
-
 }
