@@ -8,14 +8,13 @@
 
 package io.github.marianciuc.streamingservice.user.services.impl;
 
-import io.github.marianciuc.streamingservice.user.dto.Token;
+import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.entity.JWTUserPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -28,7 +27,7 @@ public class TokenAuthenticationUserDetailsService implements AuthenticationUser
     public UserDetails loadUserDetails(Authentication authentication) throws UsernameNotFoundException {
             if (authentication.getPrincipal() instanceof Token token) {
             return new JWTUserPrincipal(
-                    token.username(),
+                    token.subject(),
                     "",
                     token.expiresAt().isBefore(Instant.now()),
                     true,
