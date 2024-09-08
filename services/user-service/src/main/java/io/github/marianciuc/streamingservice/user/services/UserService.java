@@ -8,21 +8,16 @@
 
 package io.github.marianciuc.streamingservice.user.services;
 
-import io.github.marianciuc.streamingservice.user.dto.ChangePasswordRequest;
-import io.github.marianciuc.streamingservice.user.dto.RegistrationRequest;
-import io.github.marianciuc.streamingservice.user.dto.UserResponse;
+import io.github.marianciuc.streamingservice.user.dto.requests.ChangePasswordRequest;
+import io.github.marianciuc.streamingservice.user.dto.requests.RegistrationRequest;
+import io.github.marianciuc.streamingservice.user.dto.responses.UserResponse;
 import io.github.marianciuc.streamingservice.user.entity.User;
 import io.github.marianciuc.streamingservice.user.enums.Role;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.UUID;
 
-/**
- * Interface for user-related operations.
- *
- * @author Vladimir Marianciuc
- */
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     /**
      * Creates a User based on the RegistrationRequest and Role.
@@ -30,14 +25,14 @@ public interface UserService {
      * @param role A representation of a Role.
      * @return The User that was created.
      */
-    User createUser(RegistrationRequest request, Role role);
+    User createUser(RegistrationRequest request);
 
     /**
      * Changes the existing User's password
      * @param request A representation of ChangePasswordRequest.
      * @param authentication A representation of authentication.
      */
-    void changePassword(ChangePasswordRequest request, Authentication authentication);
+    void changePassword(ChangePasswordRequest request);
 
     /**
      * Updates the Role of an existing User.
@@ -67,5 +62,4 @@ public interface UserService {
      * @see UserResponse
      */
     UserResponse getUserResponse(UUID userId);
-
 }
