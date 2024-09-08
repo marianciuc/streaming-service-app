@@ -52,14 +52,13 @@ public class UserServiceImpl implements UserService {
      * Creates a new User object based on the provided RegistrationRequest and Role.
      *
      * @param request The RegistrationRequest object containing the user's information.
-     * @param role The Role object representing the user's role.
      * @return A newly created User object.
      */
-    public User createUser(RegistrationRequest request) {
+    public void createUser(RegistrationRequest request) {
         if (repository.existsByEmailOrUsername(request.email(), request.username())) {
             throw new IllegalArgumentException("User with this email or username already exists");
         }
-        return User.builder()
+        User user = User.builder()
                 .username(request.username())
                 .email(request.email())
                 .passwordHash(passwordEncoder.encode(request.password()))
@@ -67,6 +66,7 @@ public class UserServiceImpl implements UserService {
                 .recordStatus(RecordStatus.ACTIVE)
                 .role(request.role())
                 .build();
+        repository.save(user);
     }
 
     /**
