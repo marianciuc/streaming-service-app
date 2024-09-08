@@ -9,6 +9,7 @@ import com.nimbusds.jose.jwk.OctetSequenceKey;
 import io.github.marianciuc.streamingservice.user.factories.AccessTokenFactory;
 import io.github.marianciuc.streamingservice.user.factories.RefreshTokenFactory;
 import io.github.marianciuc.streamingservice.user.serializers.*;
+import io.github.marianciuc.streamingservice.user.services.UserService;
 import io.github.marianciuc.streamingservice.user.services.impl.TokenAuthenticationUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -46,7 +46,7 @@ public class SecurityConfig {
             @Value("${jwt.access-token-key}") String accessTokenKey,
             @Value("${jwt.refresh-token-key}") String refreshTokenKey,
             TokenAuthenticationUserDetailsService tokenAuthenticationUserDetailsService,
-            UserDetailsService userDetailsService,
+            UserService userDetailsService,
             PasswordEncoder passwordEncoder
     ) throws ParseException, JOSEException {
 
