@@ -18,19 +18,21 @@ import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.exceptions.TokenSigningException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
-@RequiredArgsConstructor
 @Setter
 @Slf4j
 public class AccessJWSTokenStringSerializer implements TokenSerializer {
 
     private final JWSSigner signer;
-    private static final JWSAlgorithm ALGORITHM = JWSAlgorithm.HS256;
+    private JWSAlgorithm algorithm = JWSAlgorithm.HS256;
+
+    public AccessJWSTokenStringSerializer(JWSSigner signer) {
+        this.signer = signer;
+    }
 
     /**
      * Applies the token serialization process to produce a JWS-encoded representation of the given token.
@@ -40,29 +42,18 @@ public class AccessJWSTokenStringSerializer implements TokenSerializer {
      */
     @Override
     public String apply(@NotNull @Valid Token token) {
-        var jwtHeader = buildJwtHeader(token);
-        var jwtClaimsSet = buildJwtClaimsSet(token);
-        return signAndSerializeJwt(jwtHeader, jwtClaimsSet);
-    }
-
-    private JWSHeader buildJwtHeader(Token token) {
-        return new JWSHeader.Builder(ALGORITHM)
-                .keyID(token.userId().toString())
+        var jwtHeader = new JWSHeader.Builder(algorithm)
+                .keyID(token.tokenId().toString())
                 .build();
-    }
-
-    private JWTClaimsSet buildJwtClaimsSet(Token token) {
-        return new JWTClaimsSet.Builder()
-                .jwtID(token.userId().toString())
+        var jwtClaimsSet = new JWTClaimsSet.Builder()
+                .jwtID(token.tokenId().toString())
+                .claim("user-id", token.userId().toString())
                 .subject(token.subject())
                 .issueTime(Date.from(token.createdAt()))
                 .expirationTime(Date.from(token.expiresAt()))
                 .issuer(token.issuer())
                 .claim("authorities", token.roles())
                 .build();
-    }
-
-    private String signAndSerializeJwt(JWSHeader jwtHeader, JWTClaimsSet jwtClaimsSet) {
         var signedJWT = new SignedJWT(jwtHeader, jwtClaimsSet);
         try {
             signedJWT.sign(this.signer);
@@ -71,5 +62,12 @@ public class AccessJWSTokenStringSerializer implements TokenSerializer {
             log.error("Error signing JWT", e);
             throw new TokenSigningException("Failed to sign JWT", e);
         }
+    }
+
+    public void setAlgorithm(JWSAlgorithm algorithm) {
+        if (algorithm == null) {
+            throw new IllegalArgumentException("Algorithm cannot be null");
+        }
+        this.algorithm = algorithm;
     }
 }
