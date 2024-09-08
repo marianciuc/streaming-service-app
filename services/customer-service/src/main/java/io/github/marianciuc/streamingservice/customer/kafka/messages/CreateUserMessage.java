@@ -6,11 +6,11 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.customer.dto;
+package io.github.marianciuc.streamingservice.customer.kafka.messages;
 
 import java.util.UUID;
 
-public record CreateCustomerMessage (
+public record CreateUserMessage(
         UUID id,
         String email,
         String username
