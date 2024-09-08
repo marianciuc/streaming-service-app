@@ -9,6 +9,7 @@
 package io.github.marianciuc.streamingservice.user.services.impl;
 
 
+import io.github.marianciuc.streamingservice.user.kafka.messages.CreateUserMessage;
 import io.github.marianciuc.streamingservice.user.dto.requests.ChangePasswordRequest;
 import io.github.marianciuc.streamingservice.user.dto.requests.RegistrationRequest;
 import io.github.marianciuc.streamingservice.user.dto.responses.UserResponse;
@@ -18,6 +19,7 @@ import io.github.marianciuc.streamingservice.user.enums.Role;
 import io.github.marianciuc.streamingservice.user.exceptions.IllegalArgumentException;
 import io.github.marianciuc.streamingservice.user.exceptions.NotFoundException;
 import io.github.marianciuc.streamingservice.user.exceptions.SecurityBadCredentialsException;
+import io.github.marianciuc.streamingservice.user.kafka.KafkaUserProducer;
 import io.github.marianciuc.streamingservice.user.mappers.UserMapper;
 import io.github.marianciuc.streamingservice.user.repositories.UserRepository;
 import io.github.marianciuc.streamingservice.user.services.UserService;
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
+    private final KafkaUserProducer kafkaUserProducer;
 
     /**
      *
@@ -66,7 +69,8 @@ public class UserServiceImpl implements UserService {
                 .recordStatus(RecordStatus.ACTIVE)
                 .role(request.role())
                 .build();
-        repository.save(user);
+        User newUser = repository.save(user);
+        kafkaUserProducer.sendUserCreatedMessage(new CreateUserMessage(newUser.getId(), newUser.getEmail(), newUser.getUsername()));
     }
 
     /**
