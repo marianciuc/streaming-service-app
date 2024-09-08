@@ -33,7 +33,7 @@ public class UserController {
      * @return a ResponseEntity with a status of 200 OK if the password change was successful, or the appropriate error response if it failed
      */
     @PutMapping(APIPath.CHANGE_PASSWORD)
-    public ResponseEntity<Void> changePassword(@RequestBody @Validated ChangePasswordRequest request, Authentication authentication){
+    public ResponseEntity<Void> changePassword(@RequestBody @Validated ChangePasswordRequest request){
         userService.changePassword(request);
         return ResponseEntity.ok().build();
     }
