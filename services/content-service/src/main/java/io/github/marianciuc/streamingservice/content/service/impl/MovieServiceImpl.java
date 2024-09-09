@@ -8,7 +8,7 @@
 
 package io.github.marianciuc.streamingservice.content.service.impl;
 
-import io.github.marianciuc.streamingservice.content.dto.CreateMasterPlayListMessage;
+import io.github.marianciuc.streamingservice.content.kafka.messages.CreateMasterPlayListMessage;
 import io.github.marianciuc.streamingservice.content.dto.MovieDto;
 import io.github.marianciuc.streamingservice.content.entity.Content;
 import io.github.marianciuc.streamingservice.content.entity.Movie;
