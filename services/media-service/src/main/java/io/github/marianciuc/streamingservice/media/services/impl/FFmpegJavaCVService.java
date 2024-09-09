@@ -54,12 +54,13 @@ public class FFmpegJavaCVService implements VideoCompressingService {
     private final VideoStorageService videoStorageService;
 
     @Override
-    public String compressVideoAndUploadToStorage(InputStream io, ResolutionDto resolution, UUID id) throws CompressingException {
+    public String compressVideoAndUploadToStorage(ResolutionDto resolution, UUID id) throws CompressingException {
         File inputFile = null;
 
         try {
             inputFile = createTempFile(PREFIX_INPUT_FILE, "input-temp-file");
-            Files.copy(io, Path.of(inputFile.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(videoStorageService.assembleVideo(id), Path.of(inputFile.getAbsolutePath()),
+                    StandardCopyOption.REPLACE_EXISTING);
             return executeCompression(inputFile.getAbsolutePath(), resolution, id);
         } catch (IOException e) {
             throw new CompressingException(IO_EXCEPTION_MSG, e);
@@ -143,7 +144,6 @@ public class FFmpegJavaCVService implements VideoCompressingService {
                     .append(objectName)
                     .append("\n");
         }
-
         outputStream.reset();
     }
 
