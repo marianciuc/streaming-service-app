@@ -2,7 +2,7 @@ spring:
   application:
     name: subscription-service
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://localhost:8880
   datasource:
     url: jdbc:postgresql://localhost:5432/subscriptions
     username: root

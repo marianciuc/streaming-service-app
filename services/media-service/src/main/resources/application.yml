@@ -1,8 +1,12 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   application:
     name: media-service
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://localhost:8889
   data:
     redis:
       host: localhost
@@ -37,16 +41,18 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: masterPlaylistMessage:io.github.marianciuc.streamingservice.media.kafka.messages.MasterPlaylistMessage,resolutionMessage:io.github.marianciuc.streamingservice.media.kafka.messages.ResolutionMessage,startConvertingMessage:io.github.marianciuc.streamingservice.media.kafka.messages.StartConvertingMessage
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       group-id: media-service-group
       properties:
-        spring.json.trusted.packages: "io.github.marianciuc.streamingservice.media.dto"
+        spring.json.type.mapping: startConvertingMessage:io.github.marianciuc.streamingservice.media.kafka.messages.StartConvertingMessage
 mime:
   url: http://localhost:9000
-  access-key: root
-  secret-key: root
+  access-key: uMJS4Vo5jcbBkaoc4fOz
+  secret-key: wbkeLZGbtSqWzzMzzILaCbvooVJokFRjL7wHWtL6
   bucket-name: media-bucket
 server:
   port: 8054
