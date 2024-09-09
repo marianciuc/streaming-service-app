@@ -15,13 +15,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MinioConfig {
-    @Value("${minio.url}")
+
+    @Value("${mime.url}")
     private String minioUrl;
 
-    @Value("${minio.access-key}")
+    @Value("${mime.access-key}")
     private String accessKey;
 
-    @Value("${minio.secret-key}")
+    @Value("${mime.secret-key}")
     private String secretKey;
 
     @Bean

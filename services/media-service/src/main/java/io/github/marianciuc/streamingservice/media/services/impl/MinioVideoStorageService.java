@@ -39,8 +39,7 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class MinioVideoStorageService implements VideoStorageService {
 
-    @Value("${minio.bucket.name}")
-    private String bucketName;
+    private final String bucketName = "videos";
 
     private final MinioClient minioClient;
 

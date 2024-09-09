@@ -37,8 +37,7 @@ public class MinioImageStorageService implements ImageStorageService {
     private static final String ERROR_GETTING_IMAGE_MSG = "Error while getting image with filename: %s";
     private static final String ERROR_DELETING_IMAGE_MSG = "Error while deleting image with filename: %s";
 
-    @Value("${minio.bucket.name}")
-    private String bucketName;
+    private final String bucketName = "images";
 
     private final MinioClient minioClient;
 
