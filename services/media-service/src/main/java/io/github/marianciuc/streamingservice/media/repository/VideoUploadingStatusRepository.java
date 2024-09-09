@@ -8,10 +8,13 @@
 
 package io.github.marianciuc.streamingservice.media.repository;
 
+import io.github.marianciuc.streamingservice.media.dto.VideoFileUploadStatusDto;
 import io.github.marianciuc.streamingservice.media.entity.VideoUploadingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface VideoUploadingStatusRepository extends JpaRepository<VideoUploadingStatus, UUID> {
+    List<VideoUploadingStatus> findAllByVideoId(UUID videoId);
 }
