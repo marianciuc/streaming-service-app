@@ -76,22 +76,11 @@ public class ResolutionServiceImpl implements ResolutionService {
     }
 
     @Override
-    public Resolution getEntityById(UUID id) {
-        return resolutionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(RESOLUTION_NOT_FOUND_MSG + ": " + id));
-    }
-
-    @Override
     public void deleteResolution(UUID id) {
         Resolution r = resolutionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(RESOLUTION_NOT_FOUND_MSG + ": " + id));
 
         kafkaResolutionProducer.sendDeleteResolutionTopic(ResolutionMessage.toResolutionMessage(r));
         resolutionRepository.delete(r);
-    }
-
-    @Override
-    public List<Resolution> getAllEntities() {
-        return resolutionRepository.findAll();
     }
 }

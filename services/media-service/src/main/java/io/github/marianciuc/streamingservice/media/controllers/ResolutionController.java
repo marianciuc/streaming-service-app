@@ -39,7 +39,6 @@ public class ResolutionController {
      * @return a ResponseEntity containing the ResolutionDto for the specified ID
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_SERVICE', 'ROLE_ADMIN')")
     private ResponseEntity<ResolutionDto> getResolution(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(resolutionService.getResolutionById(id));
     }
@@ -51,7 +50,6 @@ public class ResolutionController {
      * @return a ResponseEntity containing the created ResolutionDto
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_SERVICE', 'ROLE_ADMIN')")
     private ResponseEntity<ResolutionDto> createResolution(@RequestBody @Valid ResolutionDto request) {
         return ResponseEntity.ok(resolutionService.createResolution(request));
     }
@@ -63,7 +61,6 @@ public class ResolutionController {
      * @return a ResponseEntity indicating the result of the delete operation
      */
     @DeleteMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_SERVICE', 'ROLE_ADMIN')")
     private ResponseEntity<Void> deleteResolution(@RequestParam("id") UUID id) {
         resolutionService.deleteResolution(id);
         return ResponseEntity.ok().build();
@@ -76,7 +73,6 @@ public class ResolutionController {
      * @return a ResponseEntity containing the updated ResolutionDto
      */
     @PutMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_SERVICE', 'ROLE_ADMIN')")
     private ResponseEntity<ResolutionDto> updateResolution(@RequestBody @Valid ResolutionDto request) {
         return ResponseEntity.ok(resolutionService.updateResolution(request));
     }
@@ -87,7 +83,6 @@ public class ResolutionController {
      * @return a ResponseEntity containing a List of ResolutionDto objects representing all resolutions
      */
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_SERVICE', 'ROLE_ADMIN')")
     private ResponseEntity<List<ResolutionDto>> getAllResolutions() {
         return ResponseEntity.ok(resolutionService.getAllResolutions());
     }
