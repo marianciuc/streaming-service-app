@@ -9,11 +9,10 @@
 package io.github.marianciuc.streamingservice.media.services.impl;
 
 import io.github.marianciuc.streamingservice.media.dto.ResolutionDto;
-import io.github.marianciuc.streamingservice.media.dto.ResolutionMessage;
 import io.github.marianciuc.streamingservice.media.entity.Resolution;
 import io.github.marianciuc.streamingservice.media.exceptions.NotFoundException;
 import io.github.marianciuc.streamingservice.media.kafka.KafkaResolutionProducer;
-import io.github.marianciuc.streamingservice.media.mappers.ResolutionMapper;
+import io.github.marianciuc.streamingservice.media.kafka.messages.ResolutionMessage;
 import io.github.marianciuc.streamingservice.media.repository.ResolutionRepository;
 import io.github.marianciuc.streamingservice.media.services.ResolutionService;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +29,11 @@ public class ResolutionServiceImpl implements ResolutionService {
 
     private final ResolutionRepository resolutionRepository;
     private final KafkaResolutionProducer kafkaResolutionProducer;
-    private final ResolutionMapper resolutionMapper;
 
     @Override
     public ResolutionDto createResolution(ResolutionDto request) {
         Resolution resolution = Resolution.builder()
+                .id(UUID.randomUUID())
                 .name(request.name())
                 .width(request.width())
                 .height(request.height())
@@ -43,9 +42,8 @@ public class ResolutionServiceImpl implements ResolutionService {
                 .build();
 
         resolutionRepository.save(resolution);
-        ResolutionMessage resolutionMessage = resolutionMapper.toResponse(resolution);
-        kafkaResolutionProducer.sendCreatedResolutionTopic(resolutionMessage);
-        return resolutionMapper.toResolutionDto(resolution);
+        kafkaResolutionProducer.sendCreatedResolutionTopic(ResolutionMessage.toResolutionMessage(resolution));
+        return ResolutionDto.toResolutionDto(resolution);
     }
 
     @Override
@@ -60,22 +58,21 @@ public class ResolutionServiceImpl implements ResolutionService {
         existingResolution.setDescription(request.description());
 
         Resolution updatedResolution = resolutionRepository.save(existingResolution);
-        ResolutionMessage resolutionMessage = resolutionMapper.toResponse(updatedResolution);
 
-        kafkaResolutionProducer.sendUpdateResolutionTopic(resolutionMessage);
-        return resolutionMapper.toResolutionDto(updatedResolution);
+        kafkaResolutionProducer.sendUpdateResolutionTopic(ResolutionMessage.toResolutionMessage(updatedResolution));
+        return ResolutionDto.toResolutionDto(updatedResolution);
     }
 
     @Override
     public List<ResolutionDto> getAllResolutions() {
-        return resolutionRepository.findAll().stream().map(resolutionMapper::toResolutionDto).toList();
+        return resolutionRepository.findAll().stream().map(ResolutionDto::toResolutionDto).toList();
     }
 
     @Override
     public ResolutionDto getResolutionById(UUID id) {
         Resolution resolution = resolutionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(RESOLUTION_NOT_FOUND_MSG + ": " + id));
-        return resolutionMapper.toResolutionDto(resolution);
+        return ResolutionDto.toResolutionDto(resolution);
     }
 
     @Override
@@ -88,9 +85,8 @@ public class ResolutionServiceImpl implements ResolutionService {
     public void deleteResolution(UUID id) {
         Resolution r = resolutionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(RESOLUTION_NOT_FOUND_MSG + ": " + id));
-        ResolutionMessage resolutionResponse = resolutionMapper.toResponse(r);
 
-        kafkaResolutionProducer.sendDeleteResolutionTopic(resolutionResponse);
+        kafkaResolutionProducer.sendDeleteResolutionTopic(ResolutionMessage.toResolutionMessage(r));
         resolutionRepository.delete(r);
     }
 
