@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -14,7 +12,7 @@ import java.util.UUID;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
-@Table(name = "medias")
+@Table(name = "files")
 public class VideoFileMetadata {
 
     @Id
@@ -27,14 +25,10 @@ public class VideoFileMetadata {
     @ManyToOne(fetch = FetchType.LAZY)
     private Resolution resolution;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "video_id")
     private Video video;
 
     @Column(name = "is_processed")
     private Boolean isProcessed;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP()", updatable = false, insertable = false)
-    private LocalDateTime createdAt;
 }
