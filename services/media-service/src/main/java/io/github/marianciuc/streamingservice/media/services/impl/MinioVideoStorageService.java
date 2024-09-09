@@ -14,8 +14,8 @@ import io.github.marianciuc.streamingservice.media.exceptions.VideoStorageExcept
 import io.github.marianciuc.streamingservice.media.exceptions.VideoUploadException;
 import io.github.marianciuc.streamingservice.media.services.VideoStorageService;
 import io.minio.*;
-        import io.minio.errors.*;
-        import io.minio.messages.Item;
+import io.minio.errors.MinioException;
+import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +45,6 @@ public class MinioVideoStorageService implements VideoStorageService {
     private final MinioClient minioClient;
 
     private static final String NULL_ARGUMENT_EXCEPTION_MESSAGE = "Chunk, chunkNumber, and fileId must not be null";
-    private static final String SUCCESS_UPLOAD_MESSAGE = "Successfully uploaded chunk {} for file {}";
     private static final String ERROR_UPLOAD_MESSAGE = "Error occurred while uploading chunk {} for file {}: {}";
     private static final String NULL_FILE_ID_EXCEPTION_MESSAGE = "fileId must not be null";
     private static final String SUCCESS_DELETE_CHUNK_MESSAGE = "Successfully deleted chunk {}";
@@ -55,42 +54,31 @@ public class MinioVideoStorageService implements VideoStorageService {
 
     @Override
     public void uploadVideoChunk(MultipartFile chunk, Integer chunkNumber, UUID id) {
-        validateArguments(chunk, chunkNumber, id);
-
-        try (InputStream inputStream = chunk.getInputStream()) {
-            String objectName = id + "/chunk" + chunkNumber;
-            uploadFile(objectName, inputStream, chunk.getSize(), chunk.getContentType());
-            log.info(SUCCESS_UPLOAD_MESSAGE, chunkNumber, id);
-        } catch (MinioException | IOException | InvalidKeyException | NoSuchAlgorithmException e) {
-            logAndThrowUploadException(chunkNumber, id, e);
-        }
-    }
-
-    private void validateArguments(MultipartFile chunk, Integer chunkNumber, UUID id) {
         if (chunk == null || chunkNumber == null || id == null) {
             throw new VideoUploadException(NULL_ARGUMENT_EXCEPTION_MESSAGE);
         }
+        try (InputStream inputStream = chunk.getInputStream()) {
+            String objectName = id + "/chunk" + chunkNumber;
+            uploadFile(objectName, inputStream, chunk.getSize(), chunk.getContentType());
+        } catch (MinioException | IOException | InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new VideoUploadException(format(ERROR_UPLOAD_MESSAGE, chunkNumber, id, e), e);
+        }
     }
 
-    private void logAndThrowUploadException(Integer chunkNumber, UUID id, Exception e) {
-        log.error(ERROR_UPLOAD_MESSAGE, chunkNumber, id, e.toString());
-        throw new VideoUploadException(format(ERROR_UPLOAD_MESSAGE, chunkNumber, id, e), e);
-    }
-
-    public void uploadFile(String objectName, InputStream inputStream, long size, String contentType) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
-        minioClient.putObject(
-                PutObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(objectName)
-                        .stream(inputStream, size, -1)
-                        .contentType(contentType)
-                        .build()
+    public void uploadFile(String objectName, InputStream inputStream,
+                           long size, String contentType) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
+        minioClient.putObject(PutObjectArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .stream(inputStream, size, -1)
+                .contentType(contentType)
+                .build()
         );
     }
 
     @Override
     public void deleteVideo(UUID id) {
-        validateId(id);
+        if (id == null) throw new IllegalArgumentException(NULL_FILE_ID_EXCEPTION_MESSAGE);
         try {
             String objectPrefix = id + "/";
             Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder().bucket(bucketName).prefix(objectPrefix).build());
@@ -101,24 +89,14 @@ public class MinioVideoStorageService implements VideoStorageService {
             }
             log.info(SUCCESS_DELETE_FILE_MESSAGE, id);
         } catch (MinioException | IOException | InvalidKeyException | NoSuchAlgorithmException e) {
-            logAndThrowDeleteException(id, e);
+            throw new VideoDeleteException(format(ERROR_DELETE_MESSAGE, id, e), e);
         }
-    }
-
-    private void validateId(UUID id) {
-        if (id == null) {
-            throw new IllegalArgumentException(NULL_FILE_ID_EXCEPTION_MESSAGE);
-        }
-    }
-
-    private void logAndThrowDeleteException(UUID id, Exception e) {
-        log.error(ERROR_DELETE_MESSAGE, id, e.toString());
-        throw new VideoDeleteException(format(ERROR_DELETE_MESSAGE, id, e), e);
     }
 
     @Override
     public InputStream assembleVideo(UUID id) {
-        validateId(id);
+        if (id == null) throw new IllegalArgumentException(NULL_FILE_ID_EXCEPTION_MESSAGE);
+
         String objectPrefix = id + "/";
         List<InputStream> chunkStreams = new ArrayList<>();
         try {
@@ -131,7 +109,6 @@ public class MinioVideoStorageService implements VideoStorageService {
             return new SequenceInputStream(Collections.enumeration(chunkStreams));
         } catch (MinioException | IOException | InvalidKeyException | NoSuchAlgorithmException e) {
             cleanUpStreams(chunkStreams, id);
-            log.error(ERROR_ASSEMBLE_MESSAGE, id, e);
             throw new VideoAssembleException(format(ERROR_ASSEMBLE_MESSAGE, id, e), e);
         }
     }
