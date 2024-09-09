@@ -2,11 +2,11 @@
  * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
  *
  * Project: STREAMING SERVICE APP
- * File: MediaDto.java
+ * File: MediaDeleteMessage.java
  *
  */
 
-package io.github.marianciuc.streamingservice.media.dto;
+package io.github.marianciuc.streamingservice.media.kafka.messages;
 
 import java.util.UUID;
 
