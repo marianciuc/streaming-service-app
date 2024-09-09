@@ -8,8 +8,11 @@
 
 package io.github.marianciuc.streamingservice.media.services;
 
+import io.github.marianciuc.streamingservice.media.dto.VideoFileUploadStatusDto;
 import io.github.marianciuc.streamingservice.media.enums.StatusType;
+import io.github.marianciuc.streamingservice.media.validation.VideoFile;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,4 +30,14 @@ public interface VideoUploadStatusService {
      * @param title the title of the status entry
      */
     void createVideoUploadStatus(UUID videoId, String message, StatusType statusType, String title);
+
+
+    /**
+     * Retrieves the upload status of a specified video.
+     *
+     * @param videoId the unique identifier of the video
+     * @return a list of VideoFileUploadStatusDto objects representing the upload statuses of the video
+     * @throws IllegalArgumentException if the video with the given id does not exist
+     */
+    List<VideoFileUploadStatusDto> getVideoUploadStatus(UUID videoId);
 }
