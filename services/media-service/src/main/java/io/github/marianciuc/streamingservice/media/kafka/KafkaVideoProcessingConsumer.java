@@ -8,8 +8,8 @@
 
 package io.github.marianciuc.streamingservice.media.kafka;
 
-import io.github.marianciuc.streamingservice.media.dto.ConvertingTaskDto;
-import io.github.marianciuc.streamingservice.media.services.VideoService;
+import io.github.marianciuc.streamingservice.media.kafka.messages.StartConvertingMessage;
+import io.github.marianciuc.streamingservice.media.services.VideoProcessingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -19,12 +19,12 @@ import static io.github.marianciuc.streamingservice.media.kafka.KafkaTopics.STAR
 
 @Component
 @RequiredArgsConstructor
-public class TaskConsumer {
+public class KafkaVideoProcessingConsumer {
 
-    private final VideoService videoService;
+    private final VideoProcessingService videoProcessingService;
 
     @KafkaListener(topics = START_COMPRESSING_TOPIC, groupId = "${spring.kafka.consumer.group-id}")
-    private void consumeCompressTask(ConvertingTaskDto convertingTaskDto) {
-        videoService.processMediaFile(convertingTaskDto);
+    private void consumeCompressTask(StartConvertingMessage startConvertingMessage) {
+        videoProcessingService.processMediaFile(startConvertingMessage);
     }
 }
