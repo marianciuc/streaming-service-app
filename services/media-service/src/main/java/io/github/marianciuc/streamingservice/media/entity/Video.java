@@ -24,7 +24,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "videos")
+@Table(name = "video")
 public class Video {
 
     @Id
@@ -51,9 +51,9 @@ public class Video {
     @Column(name = "master_playlist_path")
     private String masterPlaylistPath;
 
-    @OneToMany(mappedBy = "videos", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VideoFileMetadata> files;
 
-    @OneToMany(mappedBy = "videos", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VideoUploadingStatus> statuses;
 }

@@ -58,7 +58,6 @@ public class VideoController {
      * @param mediaType - The media type (e.g., MOVIE, EPISODE) of the content.
      * @return A ResponseEntity containing the generated upload metadata.
      */
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @GetMapping("/upload/prepare")
     public ResponseEntity<UploadMetadataDto> generateMetadata(
             @RequestParam(value = PARAM_FILE_SIZE) long fileSize,
@@ -79,7 +78,6 @@ public class VideoController {
      * @return A ResponseEntity containing a success message if the chunk is uploaded successfully
      * or an error message if there is an issue during the upload.
      */
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
             @RequestParam(value = PARAM_FILE_ID) UUID fileId,
