@@ -19,8 +19,4 @@ import java.util.UUID;
 
 public interface VideoRepository extends JpaRepository<Video, UUID> {
     Optional<Video> findVideoById(UUID videoId);
-
-    @Modifying
-    @Query("UPDATE Video v SET v.resolutionCounter = v.resolutionCounter + :incrementValue WHERE v.id = :videoId")
-    void incrementResolutionCounter(@Param("videoId") UUID videoId, @Param("incrementValue") int incrementValue);
 }
