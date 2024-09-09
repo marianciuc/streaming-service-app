@@ -34,9 +34,6 @@ public class Video {
     @Column(name = "content_id")
     private UUID contentId;
 
-    @Column(name = "user_id")
-    private UUID userId;
-
     @Column(name = "content_type")
     private String contentType;
 
@@ -44,18 +41,12 @@ public class Video {
     @Column(name = "media_type")
     private MediaType mediaType;
 
-    @Column(name = "resolution_count")
-    private Integer resolutionCounter;
-
-    @Column(name = "resolutions_processed")
-    private Integer resolutionsProcessed;
+    @Column(name = "processed_resolutions")
+    private Integer processedResolutions;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private VideoStatues status;
-
-    @Column(name = "total_chunks")
-    private int totalChunks;
 
     @Column(name = "master_playlist_path")
     private String masterPlaylistPath;
