@@ -8,9 +8,7 @@
 
 package io.github.marianciuc.streamingservice.media.services.impl;
 
-import io.github.marianciuc.jwtsecurity.entity.JwtUser;
 import io.github.marianciuc.streamingservice.media.entity.Image;
-import io.github.marianciuc.streamingservice.media.exceptions.ForbiddenException;
 import io.github.marianciuc.streamingservice.media.exceptions.ImageNotFoundException;
 import io.github.marianciuc.streamingservice.media.exceptions.ImageUploadException;
 import io.github.marianciuc.streamingservice.media.services.ImageStorageService;
@@ -21,7 +19,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,15 +43,10 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public UUID uploadImage(MultipartFile file, Authentication authentication) {
-        Object principal = authentication.getPrincipal();
-        if (!(principal instanceof JwtUser jwtUser)) {
-            throw new ForbiddenException(FORBIDDEN_MSG);
-        }
+    public UUID uploadImage(MultipartFile file) {
         try {
             String url = imageStorageService.uploadImage(file);
             Image image = Image.builder()
-                    .userId(jwtUser.getId())
                     .contentLength(file.getSize())
                     .contentType(file.getContentType())
                     .createdAt(LocalDateTime.now())

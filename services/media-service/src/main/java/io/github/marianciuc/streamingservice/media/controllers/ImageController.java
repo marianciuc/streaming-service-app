@@ -54,8 +54,8 @@ public class ImageController {
      * @return ResponseEntity containing the UUID of the uploaded image.
      */
     @PostMapping("/upload")
-    public ResponseEntity<UUID> upload(@RequestParam(value = "file") @ImageFile MultipartFile file, Authentication authentication) {
-        return ResponseEntity.ok(imageService.uploadImage(file, authentication));
+    public ResponseEntity<UUID> upload(@RequestParam(value = "file") @ImageFile MultipartFile file) {
+        return ResponseEntity.ok(imageService.uploadImage(file));
     }
 
     /**

@@ -30,9 +30,6 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "user_id")
-    private UUID userId;
-
     @Column(name = "content_type")
     private String contentType;
 

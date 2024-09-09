@@ -34,7 +34,7 @@ public interface ImageService {
      * @param authentication The authentication information of the user uploading the image.
      * @return The UUID of the uploaded image.
      */
-    UUID uploadImage(MultipartFile file, Authentication authentication);
+    UUID uploadImage(MultipartFile file);
 
     /**
      * Deletes an image by its ID.
