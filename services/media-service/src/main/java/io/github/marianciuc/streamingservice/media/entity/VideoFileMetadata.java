@@ -21,9 +21,6 @@ public class VideoFileMetadata {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "content_type")
-    private String contentType;
-
     @Column(name = "play_list_path")
     private String playListPath;
 
@@ -32,6 +29,9 @@ public class VideoFileMetadata {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Video video;
+
+    @Column(name = "is_processed")
+    private Boolean isProcessed;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
