@@ -6,7 +6,7 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.content.dto;
+package io.github.marianciuc.streamingservice.content.kafka.messages;
 
 import java.util.UUID;
 
