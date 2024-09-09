@@ -9,7 +9,11 @@
 package io.github.marianciuc.streamingservice.media.controllers;
 
 import io.github.marianciuc.streamingservice.media.dto.UploadMetadataDto;
+import io.github.marianciuc.streamingservice.media.dto.VideoFileUploadStatusDto;
+import io.github.marianciuc.streamingservice.media.services.UploadVideoService;
+import io.github.marianciuc.streamingservice.media.services.VideoFileMetadataService;
 import io.github.marianciuc.streamingservice.media.services.VideoService;
+import io.github.marianciuc.streamingservice.media.services.VideoUploadStatusService;
 import io.github.marianciuc.streamingservice.media.validation.VideoFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,7 @@ import io.github.marianciuc.streamingservice.media.enums.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -40,7 +45,8 @@ public class VideoController {
     private static final String PARAM_CHUNK_NUMBER = "chunkNumber";
     private static final String PARAM_FILE_ID = "tempFileName";
 
-    private final VideoService videoService;
+    private final UploadVideoService uploadVideoService;
+    private final VideoUploadStatusService videoUploadStatusService;
 
 
     /**
@@ -60,7 +66,7 @@ public class VideoController {
             @RequestParam(value = PARAM_CONTENT_TYPE) String contentType,
             @RequestParam(value = PARAM_MEDIA_TYPE) MediaType mediaType
     ) {
-        return ResponseEntity.ok(videoService.prepareVideo(contentType, fileSize, mediaType, contentId));
+        return ResponseEntity.ok(uploadVideoService.prepareVideo(contentType, fileSize, mediaType, contentId));
     }
 
     /**
@@ -81,7 +87,12 @@ public class VideoController {
             @RequestParam(value = PARAM_TOTAL_CHUNKS) Integer totalChunks,
             @RequestParam(value = PARAM_FILE) @VideoFile MultipartFile chunk
     ) {
-        videoService.uploadVideo(chunk, chunkNumber, fileId, totalChunks);
+        uploadVideoService.uploadVideo(chunk, chunkNumber, fileId, totalChunks);
         return ResponseEntity.ok("Chunk successfully uploaded.");
+    }
+
+    @GetMapping("/statuses/{file-id}")
+    public ResponseEntity<List<VideoFileUploadStatusDto>> getStatues(@PathVariable("file-id") UUID fileId) {
+        return ResponseEntity.ok(videoUploadStatusService.getVideoUploadStatus(fileId));
     }
 }
