@@ -9,7 +9,7 @@
 package io.github.marianciuc.streamingservice.media.controllers;
 
 
-import io.github.marianciuc.streamingservice.media.services.VideoService;
+import io.github.marianciuc.streamingservice.media.services.PlaylistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -27,14 +27,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VideoStreamController {
 
-    private final VideoService videoService;
+    private final PlaylistService playlistService;
 
     @GetMapping("/playlist/{videoId}")
     public ResponseEntity<Resource> getMasterPlaylist(@PathVariable UUID videoId) {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/vnd.apple.mpegurl"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"playlist.m3u8\"")
-                .body(videoService.getMasterPlaylistResource(videoId));
+                .body(playlistService.getMasterPlaylistResource(videoId));
     }
 
     @GetMapping("/segment/{resolution}/{videoId}/segment{chunkIndex}.ts")
@@ -43,7 +43,7 @@ public class VideoStreamController {
             @PathVariable UUID videoId,
             @PathVariable int chunkIndex
     ) {
-        Resource resource = videoService.getVideoSegmentResource(videoId, resolution, chunkIndex);
+        Resource resource = playlistService.getVideoSegmentResource(videoId, resolution, chunkIndex);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("video/mp2t"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"segment" + chunkIndex + ".ts\"")
