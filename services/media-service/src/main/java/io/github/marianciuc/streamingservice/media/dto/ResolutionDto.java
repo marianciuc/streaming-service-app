@@ -8,6 +8,7 @@
 
 package io.github.marianciuc.streamingservice.media.dto;
 
+import io.github.marianciuc.streamingservice.media.entity.Resolution;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -39,4 +40,18 @@ public record ResolutionDto(
         @Min(value = 1, message = "Bitrate must be greater than 0")
         Integer bitrate
 ) {
+        public static ResolutionDto toResolutionDto(Resolution resolution) {
+                return new ResolutionDto(
+                        resolution.getId(),
+                        resolution.getName(),
+                        resolution.getDescription(),
+                        resolution.getHeight(),
+                        resolution.getWidth(),
+                        resolution.getBitrate()
+                );
+        }
+
+        public static Resolution toEntity(ResolutionDto resolutionDto) {
+                return Resolution.builder().id(resolutionDto.id).build();
+        }
 }

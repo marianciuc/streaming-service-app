@@ -11,7 +11,7 @@ package io.github.marianciuc.streamingservice.media.dto;
 import java.util.UUID;
 
 public record UploadMetadataDto(
-        UUID temporaryFileId,
+        UUID id,
         int totalChunks
 ) {
 }
