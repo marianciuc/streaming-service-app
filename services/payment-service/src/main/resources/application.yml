@@ -1,0 +1,46 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:8889
+  application:
+    name: payment-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    oracleucp:
+      database-name: payment_db
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    properties:
+      hibernate:
+        default_schema: public
+  flyway:
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    url: ${spring.datasource.url}
+    baseline-on-migrate: true
+    enabled: true
+    baseline-description: "init"
+    baseline-version: 1
+    default-schema: public
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: paymentStatusMessage:io.github.marianciuc.streamingservice.payment.kafka.messages.PaymentStatusMessage
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: payment-service-group
+      properties:
+        spring.json.type.mapping: initializePaymentMessage:io.github.marianciuc.streamingservice.payment.kafka.messages.InitializePaymentMessage
+
+stripe:
+  api:
+    key: sk_test_51MjSvlFARn3daPh2BZK5w2CdwkxDqUcUzgoHW6WYFYCo227NlUr7tQuamhdGkrvHdTmJkS3vqKlfjqRyFciHf0a200l9ciSAhM
