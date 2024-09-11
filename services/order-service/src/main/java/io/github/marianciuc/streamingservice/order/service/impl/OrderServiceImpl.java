@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
      * @throws RuntimeException if there is an issue with the subscription.
      */
     @Override
-    public OrderResponse createOrder(OrderRequest orderRequest, Authentication authentication) {
+    public OrderResponse createOrder(OrderRequest orderRequest) {
         UUID userId = this.resolveUserId(authentication, orderRequest);
         ResponseEntity<SubscriptionDto> subscriptionResponse = subscriptionClient.getSubscription(orderRequest.subscriptionId());
         ResponseEntity<UserSubscriptionDto> activeSubscriptionResponse = subscriptionClient.getActiveSubscription(userId);
