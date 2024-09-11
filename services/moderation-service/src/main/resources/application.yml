@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: moderation-service
+  config:
+    import: optional:configserver:http://localhost:8889
+  datasource:
+    url: jdbc:postgresql://localhost:5432/moderation_db
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    oracleucp:
+      database-name: moderation_db
