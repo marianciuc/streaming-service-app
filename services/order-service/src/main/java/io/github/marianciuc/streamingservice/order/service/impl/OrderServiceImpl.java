@@ -15,7 +15,6 @@ import io.github.marianciuc.streamingservice.order.dto.*;
 import io.github.marianciuc.streamingservice.order.entity.Order;
 import io.github.marianciuc.streamingservice.order.entity.OrderStatus;
 import io.github.marianciuc.streamingservice.order.kafka.KafkaProducer;
-import io.github.marianciuc.streamingservice.order.mappers.OrderMapper;
 import io.github.marianciuc.streamingservice.order.repository.OrderRepository;
 import io.github.marianciuc.streamingservice.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +39,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository repository;
     private final SubscriptionClient subscriptionClient;
     private final KafkaProducer kafkaProducer;
-    private final OrderMapper mapper;
     private final UserService userService;
 
     /**
@@ -51,26 +49,25 @@ public class OrderServiceImpl implements OrderService {
      * @return the created OrderResponse.
      * @throws RuntimeException if there is an issue with the subscription.
      */
-    @Override
-    public OrderResponse createOrder(OrderRequest orderRequest) {
-        UUID userId = this.resolveUserId(authentication, orderRequest);
-        ResponseEntity<SubscriptionDto> subscriptionResponse = subscriptionClient.getSubscription(orderRequest.subscriptionId());
-        ResponseEntity<UserSubscriptionDto> activeSubscriptionResponse = subscriptionClient.getActiveSubscription(userId);
-
-        if (subscriptionResponse.getStatusCode().is2xxSuccessful()) {
-            this.cancelExistingOrders(userId);
-            if (activeSubscriptionResponse.getStatusCode().is4xxClientError()) {
-                return this.createNewOrder(subscriptionResponse.getBody(), userId, orderRequest.subscriptionId(), OrderStatus.CREATED, null);
-            } else if (activeSubscriptionResponse.getStatusCode().is2xxSuccessful() && activeSubscriptionResponse.getBody() != null) {
-                UUID activeSubscriptionId = activeSubscriptionResponse.getBody().id();
-                OrderResponse orderResponse = this.createNewOrder(subscriptionResponse.getBody(), userId, orderRequest.subscriptionId(), OrderStatus.SCHEDULED, activeSubscriptionResponse.getBody().endDate());
-                subscriptionClient.cancelSubscription(activeSubscriptionId);
-                return orderResponse;
-            }
-        }
-
-        throw new RuntimeException("Unable to create order due to subscription issues");
-    }
+//    @Override
+//    public OrderResponse createOrder(OrderRequest orderRequest) {
+////        ResponseEntity<SubscriptionDto> subscriptionResponse = subscriptionClient.getSubscription(orderRequest.subscriptionId());
+////        ResponseEntity<UserSubscriptionDto> activeSubscriptionResponse = subscriptionClient.getActiveSubscription(userId);
+////
+////        if (subscriptionResponse.getStatusCode().is2xxSuccessful()) {
+////            this.cancelExistingOrders(userId);
+////            if (activeSubscriptionResponse.getStatusCode().is4xxClientError()) {
+////                return this.createNewOrder(subscriptionResponse.getBody(), userId, orderRequest.subscriptionId(), OrderStatus.CREATED, null);
+////            } else if (activeSubscriptionResponse.getStatusCode().is2xxSuccessful() && activeSubscriptionResponse.getBody() != null) {
+////                UUID activeSubscriptionId = activeSubscriptionResponse.getBody().id();
+////                OrderResponse orderResponse = this.createNewOrder(subscriptionResponse.getBody(), userId, orderRequest.subscriptionId(), OrderStatus.SCHEDULED, activeSubscriptionResponse.getBody().endDate());
+////                subscriptionClient.cancelSubscription(activeSubscriptionId);
+////                return orderResponse;
+////            }
+////        }
+//
+//        throw new RuntimeException("Unable to create order due to subscription issues");
+//    }
 
     /**
      * Resolves the user ID based on the authentication details and request.
@@ -109,21 +106,26 @@ public class OrderServiceImpl implements OrderService {
      * @return the created OrderResponse.
      */
     private OrderResponse createNewOrder(SubscriptionDto subscriptionDto, UUID userId, UUID subscriptionId, OrderStatus orderStatus, LocalDate scheduledTime) {
-        Order.OrderBuilder orderBuilder = Order.builder()
-                .orderCreateDate(LocalDateTime.now())
-                .subscriptionId(subscriptionId)
-                .userId(userId)
-                .amount(Objects.requireNonNull(subscriptionDto).price())
-                .orderStatus(orderStatus);
+//        Order.OrderBuilder orderBuilder = Order.builder()
+//                .orderCreateDate(LocalDateTime.now())
+//                .subscriptionId(subscriptionId)
+//                .userId(userId)
+//                .amount(Objects.requireNonNull(subscriptionDto).price())
+//                .orderStatus(orderStatus);
+//
+//        if (scheduledTime != null) {
+//            orderBuilder.scheduledTime(scheduledTime);
+//        }
+//
+//        Order order = orderBuilder.build();
+//        kafkaProducer.produceOrderMessage(orderResponse);
+//        return orderResponse;
+        return null;
+    }
 
-        if (scheduledTime != null) {
-            orderBuilder.scheduledTime(scheduledTime);
-        }
-
-        Order order = orderBuilder.build();
-        OrderResponse orderResponse = mapper.toOrderResponse(repository.save(order));
-        kafkaProducer.produceOrderMessage(orderResponse);
-        return orderResponse;
+    @Override
+    public OrderResponse createOrder(OrderRequest orderRequest, Authentication authentication) {
+        return null;
     }
 
     @Override
