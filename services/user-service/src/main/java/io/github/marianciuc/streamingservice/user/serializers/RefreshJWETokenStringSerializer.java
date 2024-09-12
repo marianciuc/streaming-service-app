@@ -14,19 +14,17 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.exceptions.TokenEncryptionException;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
 @RequiredArgsConstructor
-@Setter
 @Slf4j
 public class RefreshJWETokenStringSerializer implements TokenSerializer {
 
     private final JWEEncrypter jweEncrypter;
-    private JWEAlgorithm JWE_ALGORITHM = JWEAlgorithm.DIR;
-    private EncryptionMethod JWE_ENCRYPTION_METHOD = EncryptionMethod.A128GCM;
+    private JWEAlgorithm jweAlgorithm = JWEAlgorithm.DIR;
+    private EncryptionMethod encryptionMethod = EncryptionMethod.A128GCM;
 
     /**
      * Applies the token serialization process to produce a JWE-encoded representation of the given token.
@@ -37,8 +35,9 @@ public class RefreshJWETokenStringSerializer implements TokenSerializer {
      */
     @Override
     public String apply(Token token) {
-        var jwtHeader =  new JWEHeader.Builder(JWE_ALGORITHM, JWE_ENCRYPTION_METHOD)
+        var jwtHeader =  new JWEHeader.Builder(jweAlgorithm, encryptionMethod)
                 .keyID(token.userId().toString())
+                .contentType("JWT")
                 .build();
 
         var jwtClaimsSet = new JWTClaimsSet.Builder()
@@ -50,22 +49,25 @@ public class RefreshJWETokenStringSerializer implements TokenSerializer {
                 .issuer(token.issuer())
                 .claim("authorities", token.roles())
                 .build();
-        log.info("JWT Claims Set: {}", jwtClaimsSet);
-        var encryptedJWT = new EncryptedJWT(jwtHeader, jwtClaimsSet);
+
+        JWEObject jweObject = new JWEObject(jwtHeader, new Payload(jwtClaimsSet.toJSONObject()));
         try {
-            encryptedJWT.encrypt(this.jweEncrypter);
-            return encryptedJWT.serialize();
+            jweObject.encrypt(this.jweEncrypter);
+            return jweObject.serialize();
         } catch (JOSEException e) {
             log.error("Error encrypting JWT", e);
             throw new TokenEncryptionException("Failed to encrypt JWT", e);
         }
     }
 
-    public void setJweAlgorithm(JWEAlgorithm jweAlgorithm) {
-        this.JWE_ALGORITHM = jweAlgorithm;
+    public RefreshJWETokenStringSerializer encryptionMethod(EncryptionMethod encryptionMethod) {
+        this.encryptionMethod = encryptionMethod;
+        return this;
     }
 
-    public void setJweEncryptionMethod(EncryptionMethod encryptionMethod) {
-        this.JWE_ENCRYPTION_METHOD = encryptionMethod;
+    public RefreshJWETokenStringSerializer jweAlgorithm(JWEAlgorithm jweAlgorithm) {
+        this.jweAlgorithm = jweAlgorithm;
+        return this;
     }
+
 }

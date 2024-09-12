@@ -11,16 +11,23 @@ package io.github.marianciuc.streamingservice.user.filters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import io.github.marianciuc.streamingservice.user.dto.common.TokenPair;
+import io.github.marianciuc.streamingservice.user.entity.JWTUserPrincipal;
+import io.github.marianciuc.streamingservice.user.factories.AccessTokenFactory;
+import io.github.marianciuc.streamingservice.user.factories.AuthenticationTokenFactory;
 import io.github.marianciuc.streamingservice.user.factories.RefreshTokenFactory;
+import io.github.marianciuc.streamingservice.user.factories.TokenFactory;
+import io.github.marianciuc.streamingservice.user.serializers.TokenSerializer;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -28,48 +35,83 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
-import java.util.function.Function;
 
-@Setter
+@Slf4j
 public class RefreshAccessJWTFilter extends OncePerRequestFilter {
 
-    private RequestMatcher requestMatcher = new AntPathRequestMatcher("/jwt/refresh", HttpMethod.POST.name());
+    private final RequestMatcher requestMatcher = new AntPathRequestMatcher("/jwt/refresh", HttpMethod.POST.name());
+
+    @Setter
     private SecurityContextRepository securityContextRepository;
 
-    private Function<Token, Token> accessTokenFactory;
-    private Function<Authentication, Token> refreshTokenFactory = new RefreshTokenFactory();
-    private Function<Token, String> accessTokenSerializer = Object::toString;
-    private Function<Token, String> refreshTokenSerializer = Object::toString;
+    private TokenFactory accessTokenFactory = new AccessTokenFactory();
+    private AuthenticationTokenFactory refreshTokenFactory = new RefreshTokenFactory();
+    private TokenSerializer accessTokenSerializer = Object::toString;
+    private TokenSerializer refreshTokenSerializer = Object::toString;
     private Boolean includeRefreshToken = false;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("RefreshAccessJWTFilter");
         if (requestMatcher.matches(request)) {
-            if (securityContextRepository.containsContext(request)) {
-                SecurityContext context = securityContextRepository.loadDeferredContext(request).get();
-                if (context != null && context.getAuthentication() instanceof PreAuthenticatedAuthenticationToken && context.getAuthentication().getPrincipal() instanceof Token token) {
-                    var accessToken = accessTokenFactory.apply(token);
-                    if (accessToken != null) {
-                        response.setStatus(HttpServletResponse.SC_OK);
-                        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            log.info("Refresh token request");
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-                        if (includeRefreshToken) {
-                            var refreshToken = refreshTokenFactory.apply(context.getAuthentication());
-                            this.objectMapper.writeValue(response.getWriter(),
-                                    new TokenPair(accessTokenSerializer.apply(accessToken), accessToken.expiresAt().toString(), refreshTokenSerializer.apply(refreshToken), refreshToken.expiresAt().toString()));
-                            return;
-                        }
-                        this.objectMapper.writeValue(response.getWriter(),
-                                new TokenPair(accessTokenSerializer.apply(accessToken), accessToken.expiresAt().toString(), null, null));
-                        return;
-                    }
+            if (authentication instanceof PreAuthenticatedAuthenticationToken && authentication.getPrincipal() instanceof JWTUserPrincipal userPrincipal) {
+
+                log.info("Refresh token request for user {}", userPrincipal.getUsername());
+                log.info("Token: {}", userPrincipal.getToken());
+
+                if (!userPrincipal.getToken().roles().contains("REFRESH::REFRESH_TOKEN")) {
+                    log.error("Invalid token, missing required role");
+                    throw new AccessDeniedException("Invalid token");
                 }
-                throw new AccessDeniedException("Invalid token");
+
+                Token accessToken = accessTokenFactory.apply(userPrincipal.getToken());
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                if (includeRefreshToken) {
+                    var refreshToken = refreshTokenFactory.apply(authentication);
+                    this.objectMapper.writeValue(response.getWriter(),
+                            new TokenPair(accessTokenSerializer.apply(accessToken), accessToken.expiresAt().toString(), refreshTokenSerializer.apply(refreshToken), refreshToken.expiresAt().toString()));
+                } else {
+                    this.objectMapper.writeValue(response.getWriter(),
+                            new TokenPair(accessTokenSerializer.apply(accessToken), accessToken.expiresAt().toString(), null, null));
+                }
+                return;
             }
+            throw new AccessDeniedException("Invalid token");
         }
         filterChain.doFilter(request, response);
     }
+
+    public RefreshAccessJWTFilter accessTokenFactory(TokenFactory accessTokenFactory) {
+        this.accessTokenFactory = accessTokenFactory;
+        return this;
+    }
+
+    public RefreshAccessJWTFilter refreshTokenFactory(AuthenticationTokenFactory refreshTokenFactory) {
+        this.refreshTokenFactory = refreshTokenFactory;
+        return this;
+    }
+
+    public RefreshAccessJWTFilter accessTokenSerializer(TokenSerializer accessTokenSerializer) {
+        this.accessTokenSerializer = accessTokenSerializer;
+        return this;
+    }
+
+    public RefreshAccessJWTFilter refreshTokenSerializer(TokenSerializer refreshTokenSerializer) {
+        this.refreshTokenSerializer = refreshTokenSerializer;
+        return this;
+    }
+
+    public RefreshAccessJWTFilter includeRefreshToken(Boolean includeRefreshToken) {
+        this.includeRefreshToken = includeRefreshToken;
+        return this;
+    }
+
 }
