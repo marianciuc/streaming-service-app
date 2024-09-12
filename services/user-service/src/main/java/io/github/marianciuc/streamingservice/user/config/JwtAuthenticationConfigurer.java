@@ -12,13 +12,15 @@ import io.github.marianciuc.streamingservice.user.factories.AuthenticationTokenF
 import io.github.marianciuc.streamingservice.user.factories.TokenFactory;
 import io.github.marianciuc.streamingservice.user.filters.JWTAuthenticationFilter;
 import io.github.marianciuc.streamingservice.user.filters.RefreshAccessJWTFilter;
+import io.github.marianciuc.streamingservice.user.filters.RequestPublicKeyFilter;
 import io.github.marianciuc.streamingservice.user.filters.UsernamePasswordAuthenticationFilter;
 import io.github.marianciuc.streamingservice.user.security.converters.JWTAuthenticationConverter;
 import io.github.marianciuc.streamingservice.user.security.converters.UsernamePasswordAuthenticationConverter;
 import io.github.marianciuc.streamingservice.user.security.providers.CredentialsAuthenticationProvider;
 import io.github.marianciuc.streamingservice.user.security.providers.JWTAuthenticationProvider;
 import io.github.marianciuc.streamingservice.user.security.utils.ProviderManager;
-import io.github.marianciuc.streamingservice.user.serializers.*;
+import io.github.marianciuc.streamingservice.user.serializers.TokenDeserializer;
+import io.github.marianciuc.streamingservice.user.serializers.TokenSerializer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.SecurityConfigurer;
@@ -30,7 +32,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationConverter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -64,8 +66,10 @@ public class JwtAuthenticationConfigurer implements SecurityConfigurer<DefaultSe
     private AuthenticationConverter jwtAuthenticationConverter;
     private AuthenticationConverter usernamePasswordAuthenticationConverter;
 
+    private String publicKey;
+
     @Override
-    public void init(HttpSecurity builder)  {
+    public void init(HttpSecurity builder) {
         var csrfConfigurer = builder.getConfigurer(CsrfConfigurer.class);
         if (csrfConfigurer != null) {
             csrfConfigurer.ignoringRequestMatchers(new AntPathRequestMatcher("/api/v1/auth/register", POST_METHOD));
@@ -81,17 +85,22 @@ public class JwtAuthenticationConfigurer implements SecurityConfigurer<DefaultSe
         var usernamePasswordAuthenticationFilter = this.createUsernamePasswordAuthenticationFilter(authManager);
         var jwtAuthenticationFilter = new JWTAuthenticationFilter(this.jwtAuthenticationConverter, authManager);
         var refreshTokenFilter = new RefreshAccessJWTFilter();
+        var publicKeysFilter = new RequestPublicKeyFilter(publicKey);
 
-        refreshTokenFilter.setAccessTokenFactory(this.accessTokenFactory);
-        refreshTokenFilter.setRefreshTokenFactory(this.refreshTokenFactory);
-        refreshTokenFilter.setAccessTokenSerializer(this.accessTokenSerializer);
-        refreshTokenFilter.setRefreshTokenSerializer(this.refreshTokenSerializer);
-        refreshTokenFilter.setIncludeRefreshToken(true);
+        SecurityContextRepository securityContextRepository = builder.getSharedObject(SecurityContextRepository.class);
+        refreshTokenFilter.setSecurityContextRepository(securityContextRepository);
+        refreshTokenFilter.accessTokenFactory(this.accessTokenFactory);
+        refreshTokenFilter.refreshTokenFactory(this.refreshTokenFactory);
+        refreshTokenFilter.accessTokenSerializer(this.accessTokenSerializer);
+        refreshTokenFilter.refreshTokenSerializer(this.refreshTokenSerializer);
+        refreshTokenFilter.includeRefreshToken(true);
+
 
         builder
                 .addFilterBefore(usernamePasswordAuthenticationFilter, CsrfFilter.class)
-                .addFilterAfter(jwtAuthenticationFilter, CsrfFilter.class)
-                .addFilterAfter(refreshTokenFilter, LogoutFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, usernamePasswordAuthenticationFilter.getClass())
+                .addFilterBefore(publicKeysFilter, usernamePasswordAuthenticationFilter.getClass())
+                .addFilterAfter(refreshTokenFilter, jwtAuthenticationFilter.getClass());
     }
 
     private void initializeProvidersAndConverters() {
@@ -151,8 +160,14 @@ public class JwtAuthenticationConfigurer implements SecurityConfigurer<DefaultSe
         this.accessTokenSerializer = accessTokenSerializer;
         return this;
     }
+
     public JwtAuthenticationConfigurer refreshTokenSerializer(TokenSerializer refreshTokenSerializer) {
         this.refreshTokenSerializer = refreshTokenSerializer;
+        return this;
+    }
+
+    public JwtAuthenticationConfigurer publicKey(String publicKey) {
+        this.publicKey = publicKey;
         return this;
     }
 }

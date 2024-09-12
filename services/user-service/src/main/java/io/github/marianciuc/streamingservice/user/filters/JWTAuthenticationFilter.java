@@ -33,7 +33,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
      * Constructs a JWTAuthenticationFilter with the provided {@link AuthenticationConverter} and {@link AuthenticationManager}.
      *
      * @param authenticationConverter the converter to extract authentication from the request.
-     * @param authenticationManager the manager to handle the authentication process.
+     * @param authenticationManager   the manager to handle the authentication process.
      */
     public JWTAuthenticationFilter(AuthenticationConverter authenticationConverter, AuthenticationManager authenticationManager) {
         super(new RequestHeaderRequestMatcher(HttpHeaders.AUTHORIZATION));
@@ -51,15 +51,22 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        return authenticationConverter.convert(request);
+        logger.info("JWT filter");
+        Authentication authRequest = authenticationConverter.convert(request);
+        logger.info("auth converted");
+        if (authRequest == null) {
+            throw new AuthenticationException("Failed to convert authentication request") {};
+        }
+        logger.info("Attempting authentication with token");
+        return getAuthenticationManager().authenticate(authRequest);
     }
 
     /**
      * Handles successful authentication by continuing the filter chain.
      *
-     * @param request  the HTTP request object.
-     * @param response the HTTP response object.
-     * @param chain    the filter chain.
+     * @param request    the HTTP request object.
+     * @param response   the HTTP response object.
+     * @param chain      the filter chain.
      * @param authResult the result of the authentication process.
      * @throws IOException, ServletException if an I/O error occurs.
      */

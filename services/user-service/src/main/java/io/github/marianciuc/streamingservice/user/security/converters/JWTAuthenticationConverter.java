@@ -55,6 +55,7 @@ public class JWTAuthenticationConverter implements AuthenticationConverter {
 
             Token refreshToken = this.refreshTokenStringDeserializer.apply(token);
             if (refreshToken != null) {
+                System.out.println("refresh token found");
                 return new PreAuthenticatedAuthenticationToken(refreshToken, token);
             }
         }
