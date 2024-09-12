@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
-@Setter
 @Slf4j
 public class AccessJWSTokenStringSerializer implements TokenSerializer {
 
@@ -41,7 +40,7 @@ public class AccessJWSTokenStringSerializer implements TokenSerializer {
      * @throws TokenSigningException if the token signing process fails.
      */
     @Override
-    public String apply(@NotNull @Valid Token token) {
+    public String apply(Token token) {
         var jwtHeader = new JWSHeader.Builder(algorithm)
                 .keyID(token.tokenId().toString())
                 .build();
@@ -69,5 +68,10 @@ public class AccessJWSTokenStringSerializer implements TokenSerializer {
             throw new IllegalArgumentException("Algorithm cannot be null");
         }
         this.algorithm = algorithm;
+    }
+
+    public AccessJWSTokenStringSerializer algorithm(JWSAlgorithm algorithm) {
+        this.algorithm = algorithm;
+        return this;
     }
 }

@@ -10,7 +10,7 @@ package io.github.marianciuc.streamingservice.user.serializers;
 
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import io.github.marianciuc.streamingservice.user.dto.common.Token;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Slf4j
 public class AccessJWETokenStringDeserializer implements TokenDeserializer {
 
-    private final MACVerifier verifier;
+    private final JWSVerifier verifier;
 
     /**
      * Deserializes a token from a string representation
