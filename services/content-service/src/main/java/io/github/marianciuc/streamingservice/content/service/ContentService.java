@@ -15,6 +15,7 @@ import io.github.marianciuc.streamingservice.content.enums.ContentType;
 import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
 import io.github.marianciuc.streamingservice.content.exceptions.NotFoundException;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -98,4 +99,13 @@ public interface ContentService {
             RecordStatus recordStatus,
             Boolean orderByDateDesk
     );
+
+    /**
+     * Updates the rating of the content.
+     * @param content the content to update
+     * @param rateSum the sum of all rates
+     * @param rateCount the number of rates
+     * @param rating the rating of the content
+     */
+    void updateContentRating(Content content, BigDecimal rateSum, int rateCount, BigDecimal rating);
 }

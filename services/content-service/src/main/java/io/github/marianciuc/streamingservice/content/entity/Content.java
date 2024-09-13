@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @SuperBuilder
@@ -36,14 +35,20 @@ public class Content extends BaseEntity{
     @Column(name = "release_date", nullable = false)
     private LocalDate releaseDate;
 
-    @Column(name = "rating")
-    private double rating;
-
     @Column(name = "age_rating")
     private String ageRating;
 
     @Column(name = "poster_url")
     private String posterUrl;
+
+    @Column(name = "rating")
+    private BigDecimal rating = BigDecimal.ZERO;
+
+    @Column(name = "rate_count")
+    private int rateCount = 0;
+
+    @Column(name = "rate_sum")
+    private BigDecimal rateSum = BigDecimal.ZERO;
 
     @ManyToMany
     @JoinTable(

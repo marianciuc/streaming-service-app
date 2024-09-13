@@ -14,7 +14,6 @@ import io.github.marianciuc.streamingservice.content.entity.*;
 import io.github.marianciuc.streamingservice.content.enums.ContentType;
 import io.github.marianciuc.streamingservice.content.enums.RecordStatus;
 import io.github.marianciuc.streamingservice.content.exceptions.NotFoundException;
-import io.github.marianciuc.streamingservice.content.kafka.KafkaContentProducer;
 import io.github.marianciuc.streamingservice.content.repository.ContentRepository;
 import io.github.marianciuc.streamingservice.content.service.*;
 import io.github.marianciuc.streamingservice.content.specifications.ContentSpecification;
@@ -24,6 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +37,6 @@ public class ContentServiceImpl implements ContentService {
     private final DirectorService directorService;
     private final TagService tagService;
     private final GenreService genreService;
-    private final KafkaContentProducer kafkaContentProducer;
 
     @Override
     public UUID createContent(ContentDto contentDto) {
@@ -54,7 +54,6 @@ public class ContentServiceImpl implements ContentService {
                 .genres(genres)
                 .posterUrl(contentDto.posterUrl())
                 .tags(tags)
-                .rating(0.0)
                 .releaseDate(contentDto.releaseDate())
                 .build();
         return repository.save(content).getId();
@@ -151,5 +150,12 @@ public class ContentServiceImpl implements ContentService {
                 contentPage.getSize(),
                 contentPage.getContent().stream().map(ContentDto::toContentDto).toList()
         );
+    }
+
+    @Override
+    public void updateContentRating(Content content, BigDecimal rateSum, int rateCount, BigDecimal rating) {
+        content.setRateSum(rateSum);
+        content.setRateCount(rateCount);
+        content.setRating(rating);
     }
 }
