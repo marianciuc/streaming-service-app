@@ -20,8 +20,8 @@ import io.github.marianciuc.streamingservice.user.exceptions.IllegalArgumentExce
 import io.github.marianciuc.streamingservice.user.exceptions.NotFoundException;
 import io.github.marianciuc.streamingservice.user.exceptions.SecurityBadCredentialsException;
 import io.github.marianciuc.streamingservice.user.kafka.KafkaUserProducer;
-import io.github.marianciuc.streamingservice.user.mappers.UserMapper;
 import io.github.marianciuc.streamingservice.user.repositories.UserRepository;
+import io.github.marianciuc.streamingservice.user.security.utils.SecurityUtils;
 import io.github.marianciuc.streamingservice.user.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,8 +30,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
-
-import static io.github.marianciuc.streamingservice.user.security.utils.SecurityUtils.extractJwtUserPrincipals;
 
 /**
  * The {@code UserServiceImpl} class implements the {@link UserService} interface
@@ -47,7 +45,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper mapper;
     private final KafkaUserProducer kafkaUserProducer;
 
     /**
@@ -92,7 +89,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserResponse getUserResponse(UUID userId) {
-        return mapper.toResponse(this.getUserById(userId));
+        return UserResponse.toResponse(this.getUserById(userId));
     }
 
 
@@ -126,7 +123,7 @@ public class UserServiceImpl implements UserService {
      * @throws SecurityBadCredentialsException if the old password does not match the current password
      */
     public void changePassword(ChangePasswordRequest request) {
-        User user = this.getUserById(extractJwtUserPrincipals().getId());
+        User user = this.getUserById(SecurityUtils.extractJwtUserPrincipals().getId());
         if (passwordEncoder.matches(request.oldPassword(), user.getPasswordHash())) {
             String encodedNewPassword = passwordEncoder.encode(request.newPassword());
             user.setPasswordHash(encodedNewPassword);
