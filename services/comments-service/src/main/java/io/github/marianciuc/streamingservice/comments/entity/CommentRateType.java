@@ -8,5 +8,16 @@
 
 package io.github.marianciuc.streamingservice.comments.entity;
 
-public enum ReviewRateType {
+import lombok.Getter;
+
+@Getter
+public enum CommentRateType {
+    LIKE(-1),
+    DISLIKE(1);
+
+    private final int value;
+
+    CommentRateType(int value) {
+        this.value = value;
+    }
 }

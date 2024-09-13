@@ -2,7 +2,7 @@
  * Copyright (c) 2024  Vladimir Marianciuc. All Rights Reserved.
  *
  * Project: STREAMING SERVICE APP
- * File: Review.java
+ * File: ReviewRate.java
  *
  */
 
@@ -14,40 +14,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Data
-@Table(name = "reviews")
-public class Review {
-
+@Table(name = "comments_rates")
+public class CommentRate {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_review_id")
-    private Review parentReview;
-
+    @Column(name = "user_id")
     private UUID userId;
 
-    private UUID contentId;
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
-    private String content;
-
-    private Boolean isDeleted;
-
-    private ModerationStatus moderationStatus;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    private Integer likes = 0;
-
-    private Integer dislikes = 0;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rate_type")
+    private CommentRateType reviewRateType;
 }
