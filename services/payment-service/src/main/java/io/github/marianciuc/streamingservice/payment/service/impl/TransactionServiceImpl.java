@@ -90,6 +90,11 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public Transaction findTransactionEntity(UUID transactionId) {
+        return this.repository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
+    }
+
+    @Override
     public List<TransactionDto> getTransactions(Integer page, Integer size, String sort, PaymentStatus status, UUID userId) {
         Sort.Direction sortDirection = Sort.Direction.fromString(sort);
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "amount"));

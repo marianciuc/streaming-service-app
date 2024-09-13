@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
-@RestController("/api/v1/transactions")
+@RestController("/api/v1/payments/transactions")
 @RequiredArgsConstructor
 public class TransactionsController {
     private final TransactionService transactionService;
