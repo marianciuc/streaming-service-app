@@ -11,8 +11,10 @@ package io.github.marianciuc.streamingservice.payment.service.impl;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
-import io.github.marianciuc.streamingservice.payment.dto.common.CardHolderDto;
 import io.github.marianciuc.streamingservice.payment.dto.common.TransactionDto;
+import io.github.marianciuc.streamingservice.payment.dto.responses.PaginationResponse;
+import io.github.marianciuc.streamingservice.payment.entity.CardHolder;
+import io.github.marianciuc.streamingservice.payment.entity.JWTUserPrincipal;
 import io.github.marianciuc.streamingservice.payment.entity.Transaction;
 import io.github.marianciuc.streamingservice.payment.enums.PaymentStatus;
 import io.github.marianciuc.streamingservice.payment.kafka.PaymentKafkaProducer;
@@ -20,7 +22,15 @@ import io.github.marianciuc.streamingservice.payment.kafka.messages.InitializePa
 import io.github.marianciuc.streamingservice.payment.repository.TransactionRepository;
 import io.github.marianciuc.streamingservice.payment.service.CardHolderService;
 import io.github.marianciuc.streamingservice.payment.service.TransactionService;
+import io.github.marianciuc.streamingservice.payment.specifications.TransactionSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,14 +46,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public void initializeTransaction(InitializePaymentMessage message) {
-        CardHolderDto cardHolderDto = cardHolderService.getCardHolder(message.userId());
+        CardHolder cardHolder = cardHolderService.findCardHolderEntity(message.userId());
 
         Transaction transaction = Transaction.builder()
                 .amount(message.amount())
                 .currency(message.currency())
                 .orderId(message.orderId())
                 .status(PaymentStatus.PENDING)
-                .cardHolder(CardHolderDto.toDto(cardHolderDto))
+                .cardHolder(cardHolder)
                 .build();
 
         PaymentIntentCreateParams params =
@@ -52,7 +62,7 @@ public class TransactionServiceImpl implements TransactionService {
                         .setCurrency(message.currency().name().toLowerCase())
                         .setConfirm(true).setAutomaticPaymentMethods(PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
                                 .setEnabled(true).setAllowRedirects(PaymentIntentCreateParams.AutomaticPaymentMethods.AllowRedirects.NEVER).build())
-                        .setCustomer(cardHolderDto.stripeCustomerId())
+                        .setCustomer(cardHolder.getStripeCustomerId())
                         .build();
         try {
             PaymentIntent paymentIntent = PaymentIntent.create(params);
@@ -75,11 +85,32 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionDto findTransaction(UUID transactionId) {
+
         return null;
     }
 
     @Override
-    public List<TransactionDto> findAllTransactionsByFilters(UUID userId, PaymentStatus paymentStatus, Integer page, Integer size) {
-        return List.of();
+    public List<TransactionDto> getTransactions(Integer page, Integer size, String sort, PaymentStatus status, UUID userId) {
+        Sort.Direction sortDirection = Sort.Direction.fromString(sort);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "id"));
+
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof JWTUserPrincipal jwtUserPrincipal) {
+            if (jwtUserPrincipal.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
+                userId = (userId != null) ? userId : jwtUserPrincipal.getUserId();
+            } else {
+                userId = jwtUserPrincipal.getUserId();
+            }
+            Specification<Transaction> specification = TransactionSpecification.buildSpec(status, userId);
+            Page<Transaction> transactionPage = repository.findAll(specification, pageable);
+
+            PaginationResponse<List<TransactionDto>> response = new PaginationResponse<>(
+                    transactionPage.getTotalPages(),
+                    transactionPage.getNumber(),
+                    transactionPage.getNumberOfElements(),
+                    transactionPage.getContent().stream().map(TransactionDto::toDto).toList()
+            );
+        }
+        throw new AccessDeniedException("Access denied");
     }
 }

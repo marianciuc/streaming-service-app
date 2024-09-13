@@ -18,6 +18,5 @@ import java.util.UUID;
 public interface TransactionService {
     void initializeTransaction(InitializePaymentMessage message);
     TransactionDto findTransaction(UUID transactionId);
-    List<TransactionDto> findAllTransactionsByFilters(UUID userId, PaymentStatus paymentStatus, Integer page,
-                                                      Integer size);
+    List<TransactionDto> getTransactions(Integer page, Integer size, String sort, PaymentStatus status, UUID userId);
 }
