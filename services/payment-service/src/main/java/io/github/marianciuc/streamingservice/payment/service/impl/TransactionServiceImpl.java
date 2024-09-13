@@ -92,7 +92,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<TransactionDto> getTransactions(Integer page, Integer size, String sort, PaymentStatus status, UUID userId) {
         Sort.Direction sortDirection = Sort.Direction.fromString(sort);
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "id"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "amount"));
 
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof JWTUserPrincipal jwtUserPrincipal) {
             if (jwtUserPrincipal.getAuthorities().stream()
