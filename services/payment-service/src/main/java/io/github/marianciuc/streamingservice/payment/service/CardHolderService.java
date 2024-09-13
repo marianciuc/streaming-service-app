@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public interface CardHolderService {
     CardHolderDto createCardHolder(CreateCartHolderRequest request);
-    CardHolderDto getCardHolder(UUID cardHolderId);
+    CardHolderDto findCardHolder(UUID cardHolderId);
     void updatePaymentMethod(String token);
     void updateCardHolder(UpdateCardHolderRequest request);
     CardHolder findCardHolderEntity(UUID cardHolderId);
