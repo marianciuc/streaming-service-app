@@ -1,11 +1,11 @@
 package io.github.marianciuc.streamingservice.user.config;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.crypto.DirectDecrypter;
-import com.nimbusds.jose.crypto.DirectEncrypter;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.RSADecrypter;
+import com.nimbusds.jose.crypto.RSAEncrypter;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.RSAKey;
 import io.github.marianciuc.streamingservice.user.factories.AccessTokenFactory;
 import io.github.marianciuc.streamingservice.user.factories.RefreshTokenFactory;
 import io.github.marianciuc.streamingservice.user.serializers.*;
@@ -22,7 +22,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.text.ParseException;
 
@@ -37,6 +36,7 @@ public class SecurityConfig {
         http.apply(jwtAuthenticationConfigurer);
         http
                 .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(config -> config
                         .requestMatchers("/api/v1/auth/register").permitAll()
                         .anyRequest().authenticated()
@@ -47,17 +47,28 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationConfigurer jwtAuthenticationConfigurer(
-            @Value("${jwt.access-token-key}") String accessTokenKey,
-            @Value("${jwt.refresh-token-key}") String refreshTokenKey,
+            @Value("${jwt.private-key}") String privateKey,
+            @Value("${jwt.public-key}") String publicKey,
             TokenAuthenticationUserDetailsService tokenAuthenticationUserDetailsService,
             UserService userDetailsService,
             PasswordEncoder passwordEncoder
     ) throws ParseException, JOSEException {
 
-        TokenDeserializer accessTokenDeserializer = new AccessJWETokenStringDeserializer(new MACVerifier(OctetSequenceKey.parse(accessTokenKey)));
-        TokenDeserializer refreshTokenDeserializer = new RefreshJWSTokenStringDeserializer(new DirectDecrypter(OctetSequenceKey.parse(refreshTokenKey)));
-        TokenSerializer accessTokenSerializer = new AccessJWSTokenStringSerializer(new MACSigner(OctetSequenceKey.parse(accessTokenKey)));
-        TokenSerializer refreshTokenSerializer = new RefreshJWETokenStringSerializer(new DirectEncrypter(OctetSequenceKey.parse(refreshTokenKey)));
+        RSAKey privateJWK = RSAKey.parse(privateKey);
+        RSAKey publicJWK = RSAKey.parse(publicKey);
+
+        JWSSigner signer = new RSASSASigner(privateJWK);
+        JWEEncrypter encrypter = new RSAEncrypter(publicJWK);
+        JWEDecrypter decrypter = new RSADecrypter(privateJWK);
+        JWSVerifier verifier = new RSASSAVerifier(publicJWK);
+
+        TokenDeserializer accessTokenDeserializer = new AccessJWETokenStringDeserializer(verifier);
+        TokenSerializer accessTokenSerializer = new AccessJWSTokenStringSerializer(signer).algorithm(JWSAlgorithm.RS256);
+        TokenDeserializer refreshTokenDeserializer = new RefreshJWSTokenStringDeserializer(decrypter);
+        TokenSerializer refreshTokenSerializer =
+                new RefreshJWETokenStringSerializer(encrypter)
+                        .jweAlgorithm(JWEAlgorithm.RSA_OAEP_256)
+                        .encryptionMethod(EncryptionMethod.A256GCM);
 
         return new JwtAuthenticationConfigurer()
                 .passwordEncoder(passwordEncoder)
@@ -68,6 +79,7 @@ public class SecurityConfig {
                 .accessTokenStringDeserializer(accessTokenDeserializer)
                 .refreshTokenStringDeserializer(refreshTokenDeserializer)
                 .accessTokenSerializer(accessTokenSerializer)
+                .publicKey(publicKey)
                 .refreshTokenSerializer(refreshTokenSerializer);
     }
 
