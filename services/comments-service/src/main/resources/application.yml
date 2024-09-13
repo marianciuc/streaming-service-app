@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: comments-service
+  config:
+    import: optional:configserver:http://localhost:8882
+
+server:
+    port: 8081
+application:
+  config:
+    content-url: http://localhost:8222/api/v1/content
+    user-url: http://localhost:8080/api/v1/users
