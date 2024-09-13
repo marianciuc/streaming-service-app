@@ -62,7 +62,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
                                                 TokenSerializer accessTokenSerializer,
                                                 TokenSerializer refreshTokenSerializer,
                                                 AuthenticationManager authenticationManager) {
-        super(new AntPathRequestMatcher("/login", HttpMethod.POST.name()));
+        super(new AntPathRequestMatcher("/jwt/tokens", HttpMethod.POST.name()));
         this.authenticationConverter = authenticationConverter;
         this.accessTokenFactory = accessTokenFactory;
         this.refreshTokenFactory = refreshTokenFactory;
@@ -82,6 +82,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
+       log.info("UsernamePasswordAuthenticationFilter");
         Authentication authRequest = authenticationConverter.convert(request);
         if (authRequest == null) {
             throw new AuthenticationException("Failed to convert authentication request") {};
