@@ -3,28 +3,25 @@ package io.github.marianciuc.streamingservice.payment.controller;
 import io.github.marianciuc.streamingservice.payment.dto.common.AddressDto;
 import io.github.marianciuc.streamingservice.payment.dto.common.CardHolderDto;
 import io.github.marianciuc.streamingservice.payment.dto.requests.CreateCartHolderRequest;
-import io.github.marianciuc.streamingservice.payment.enums.Currency;
-import io.github.marianciuc.streamingservice.payment.kafka.messages.InitializePaymentMessage;
-import io.github.marianciuc.streamingservice.payment.kafka.messages.PaymentStatusMessage;
+import io.github.marianciuc.streamingservice.payment.dto.requests.UpdateCardHolderRequest;
+import io.github.marianciuc.streamingservice.payment.entity.JWTUserPrincipal;
 import io.github.marianciuc.streamingservice.payment.service.AddressService;
 import io.github.marianciuc.streamingservice.payment.service.CardHolderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/payments")
 @RequiredArgsConstructor
 public class PaymentController {
-
-    private final KafkaTemplate<String, InitializePaymentMessage> kafkaTemplate;
 
     private final CardHolderService cardHolderService;
     private final AddressService addressService;
@@ -34,15 +31,9 @@ public class PaymentController {
         return ResponseEntity.ok(cardHolderService.createCardHolder(request));
     }
 
-//    @PutMapping("/payment-method")
-//    public ResponseEntity<Void> updatePaymentMethod(@RequestBody PaymentMethodRequest request) {
-//        paymentMethodService.updatePaymentMethod(request);
-//        return ResponseEntity.ok().build();
-//    }
-
     @PutMapping("/card-holder")
-    public ResponseEntity<Void> updateCardHolder(@RequestBody CreateCartHolderRequest request) {
-//        cardHolderService.updateCardHolder(request);
+    public ResponseEntity<Void> updateCardHolder(@RequestBody UpdateCardHolderRequest request) {
+        cardHolderService.updateCardHolder(request);
         return ResponseEntity.ok().build();
     }
 
@@ -52,14 +43,24 @@ public class PaymentController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<Void> test() {
-        Message<InitializePaymentMessage> message = MessageBuilder
-                .withPayload(new InitializePaymentMessage(UUID.randomUUID(), UUID.fromString("7b23b971-1111-49f1-ab34" +
-                        "-203b65c4c66e"), Currency.USD, 1L))
-                .setHeader(KafkaHeaders.TOPIC, "start-payment-processing")
-                .build();
-        kafkaTemplate.send(message);
+    @PutMapping("/payment-method")
+    public ResponseEntity<Void> updatePaymentMethod(@RequestParam("token") String token) {
+        cardHolderService.updatePaymentMethod(token);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/card-holder")
+    public ResponseEntity<CardHolderDto> getCardHolder(@RequestParam(value = "cardHolderId", required = false) UUID cardHolderId,
+                                                       Authentication authentication) {
+        if (authentication.getPrincipal() instanceof JWTUserPrincipal jwtUserPrincipal) {
+            if (jwtUserPrincipal.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
+                UUID idToFetch = (cardHolderId != null) ? cardHolderId : jwtUserPrincipal.getUserId();
+                return ResponseEntity.ok(cardHolderService.getCardHolder(idToFetch));
+            } else {
+                return ResponseEntity.ok(cardHolderService.getCardHolder(jwtUserPrincipal.getUserId()));
+            }
+        }
+        throw new AccessDeniedException("Access denied");
     }
 }
