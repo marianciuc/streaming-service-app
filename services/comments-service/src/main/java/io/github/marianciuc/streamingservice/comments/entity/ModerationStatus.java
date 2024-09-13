@@ -9,4 +9,7 @@
 package io.github.marianciuc.streamingservice.comments.entity;
 
 public enum ModerationStatus {
+    APPROVED,
+    REJECTED,
+    PENDING
 }
