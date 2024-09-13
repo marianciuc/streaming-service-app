@@ -51,7 +51,7 @@ public class AccessJWSTokenStringSerializer implements TokenSerializer {
                 .issueTime(Date.from(token.createdAt()))
                 .expirationTime(Date.from(token.expiresAt()))
                 .issuer(token.issuer())
-                .claim("authorities", token.roles())
+                .claim("authorities", token.roles().stream().map(s -> s.replace("GRAND::", "")).toList())
                 .build();
         var signedJWT = new SignedJWT(jwtHeader, jwtClaimsSet);
         try {
