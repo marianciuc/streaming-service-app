@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.List;
 public class Content extends BaseEntity{
     @Column(name = "title", nullable = false)
     private String title;
+
+    private BigDecimal avgRate;
 
     @Column(name = "description", nullable = false)
     private String description;
@@ -80,4 +83,8 @@ public class Content extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = "actor_id")
     )
     private List<Actor> actors;
+
+
+    @OneToMany(mappedBy = "content")
+    private List<Rate> rates;
 }
