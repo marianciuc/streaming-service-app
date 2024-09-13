@@ -10,7 +10,6 @@ package io.github.marianciuc.streamingservice.comments.services.impl;
 
 import io.github.marianciuc.streamingservice.comments.clients.ContentClient;
 import io.github.marianciuc.streamingservice.comments.clients.CustomerClient;
-import io.github.marianciuc.streamingservice.comments.dto.CommentDto;
 import io.github.marianciuc.streamingservice.comments.dto.CustomerDto;
 import io.github.marianciuc.streamingservice.comments.dto.requests.CreateCommentRequest;
 import io.github.marianciuc.streamingservice.comments.dto.requests.CreateReplyRequest;

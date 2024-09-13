@@ -8,7 +8,6 @@
 
 package io.github.marianciuc.streamingservice.comments.services;
 
-import io.github.marianciuc.streamingservice.comments.dto.CommentDto;
 import io.github.marianciuc.streamingservice.comments.dto.requests.CreateCommentRequest;
 import io.github.marianciuc.streamingservice.comments.dto.requests.CreateReplyRequest;
 import io.github.marianciuc.streamingservice.comments.dto.response.CommentsResponse;
@@ -17,7 +16,6 @@ import io.github.marianciuc.streamingservice.comments.entity.Comment;
 import io.github.marianciuc.streamingservice.comments.kafka.messages.ModerationMessage;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
