@@ -12,6 +12,7 @@ import io.github.marianciuc.streamingservice.moderation.dto.CategoryDto;
 import io.github.marianciuc.streamingservice.moderation.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_MODERATOR', 'ROLE_ADMIN')")
     public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto) {
         return ResponseEntity.ok(categoryService.add(categoryDto));
     }
