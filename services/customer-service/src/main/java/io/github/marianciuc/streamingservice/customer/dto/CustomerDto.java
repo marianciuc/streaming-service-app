@@ -20,7 +20,6 @@ public record CustomerDto(
         UUID id,
         String theme,
         @Email(message = "Invalid email address") String email,
-
         @Before("java.time.LocalDate.now()")
         LocalDate birthDate,
         String country,
@@ -30,11 +29,7 @@ public record CustomerDto(
         boolean isEmailVerified,
         boolean receiveNewsletter,
         boolean enableNotifications,
-
-        @Before("java.time.LocalDateTime.now()")
         LocalDateTime createdAt,
-
-        @Before("java.time.LocalDateTime.now()")
         LocalDateTime updatedAt
 ) {
     public static CustomerDto to(Customer customer) {
