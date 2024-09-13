@@ -8,7 +8,11 @@
 
 package io.github.marianciuc.streamingservice.payment.service.impl;
 
-import io.github.marianciuc.streamingservice.payment.dto.common.TransactionDto;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Refund;
+import com.stripe.param.RefundCreateParams;
+import io.github.marianciuc.streamingservice.payment.entity.Transaction;
+import io.github.marianciuc.streamingservice.payment.enums.RefundStatus;
 import io.github.marianciuc.streamingservice.payment.repository.RefundRepository;
 import io.github.marianciuc.streamingservice.payment.service.RefundService;
 import io.github.marianciuc.streamingservice.payment.service.TransactionService;
@@ -26,6 +30,28 @@ public class RefundServiceImpl implements RefundService {
 
     @Override
     public void processRefund(UUID transactionId) {
-        TransactionDto transaction = transactionService.findTransaction(transactionId);
+        Transaction transaction = this.transactionService.findTransactionEntity(transactionId);
+
+        io.github.marianciuc.streamingservice.payment.entity.Refund refund =
+                io.github.marianciuc.streamingservice.payment.entity.Refund.builder()
+                        .status(RefundStatus.SUCCESS)
+                        .currency(transaction.getCurrency())
+                        .transaction(transaction)
+                        .build();
+
+        RefundCreateParams params =
+                RefundCreateParams.builder().setPaymentIntent(transaction.getStripePaymentIntentId()).build();
+
+        try {
+            Refund stripeRefund = Refund.create(params);
+            refund.setStripeRefundId(stripeRefund.getId());
+            refund.setAmount(stripeRefund.getAmount());
+            refund.setStatus(RefundStatus.SUCCESS);
+        } catch (StripeException e) {
+            refund.setStatus(RefundStatus.FAILED);
+            throw new RuntimeException(e);
+        } finally {
+            this.repository.save(refund);
+        }
     }
 }
