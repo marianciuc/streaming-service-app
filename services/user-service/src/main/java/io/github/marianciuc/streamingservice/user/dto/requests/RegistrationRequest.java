@@ -9,6 +9,7 @@
 package io.github.marianciuc.streamingservice.user.dto.requests;
 
 import io.github.marianciuc.streamingservice.user.enums.Role;
+import io.github.marianciuc.streamingservice.user.validation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -18,7 +19,7 @@ import jakarta.validation.constraints.NotBlank;
 public record RegistrationRequest(
         @NotBlank(message = "Username is mandatory") String username,
         @Email(message = "Email should be valid") String email,
-        @NotBlank(message = "Password is mandatory") String password,
+        @NotBlank(message = "Password is mandatory") @ValidPassword String password,
         @NotBlank Role role
 ) {
 }
