@@ -8,7 +8,8 @@
 
 package io.github.marianciuc.streamingservice.moderation.controllers;
 
-import io.github.marianciuc.streamingservice.moderation.dto.CategoryDto;
+import io.github.marianciuc.streamingservice.moderation.dto.requests.CategoryRequest;
+import io.github.marianciuc.streamingservice.moderation.dto.responses.CategoryResponse;
 import io.github.marianciuc.streamingservice.moderation.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,13 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_MODERATOR', 'ROLE_ADMIN')")
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto) {
-        return ResponseEntity.ok(categoryService.add(categoryDto));
+    public ResponseEntity<CategoryResponse> addCategory(@RequestBody CategoryRequest request) {
+        return ResponseEntity.ok(categoryService.add(request));
     }
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
         return ResponseEntity.ok(categoryService.findAll());
     }
 }
