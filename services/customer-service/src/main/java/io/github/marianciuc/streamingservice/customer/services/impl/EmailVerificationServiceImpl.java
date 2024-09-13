@@ -34,9 +34,10 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     @Override
     public void sendVerificationEmail(String email) {
-        String code = generateVerificationCode();
-        saveVerificationCode(email, code);
-        emailNotificationProducer.sendEmailNotification(new EmailVerificationCodeMessage(email, code, VERIFICATION_CODE_EXPIRATION_IN_MINUTES));
+        String code = this.generateVerificationCode();
+        this.saveVerificationCode(email, code);
+        this.emailNotificationProducer.sendEmailNotification(new EmailVerificationCodeMessage(email, code,
+                VERIFICATION_CODE_EXPIRATION_IN_MINUTES));
     }
 
     @Override
@@ -48,14 +49,15 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
             log.error("Verification code {} is invalid or expired", verifyCode);
             throw new VerificationCodeException("Invalid or expired verification code");
         } else {
-            redisTemplate.delete(key);
+            this.redisTemplate.delete(key);
             return storedEmail;
         }
 
     }
 
     private void saveVerificationCode(String email, String code) {
-        redisTemplate.opsForValue().set(getKey(code), email, VERIFICATION_CODE_EXPIRATION_IN_MINUTES, TimeUnit.MINUTES);
+        this.redisTemplate.opsForValue().set(getKey(code), email, VERIFICATION_CODE_EXPIRATION_IN_MINUTES,
+                TimeUnit.MINUTES);
     }
 
 
