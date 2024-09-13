@@ -6,7 +6,7 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.payment.config;
+package io.github.marianciuc.streamingservice.customer.configs;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;

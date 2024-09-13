@@ -6,7 +6,7 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.payment.config;
+package io.github.marianciuc.streamingservice.comments.config;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
@@ -32,10 +32,9 @@ public class JwtConfig {
                 .bodyToMono(String.class)
                 .block();
 
-        log.info("Secret: {}", publicKey);
         assert publicKey != null;
-
         RSAKey publicJWK = RSAKey.parse(publicKey);
+
         return new RSASSAVerifier(publicJWK);
     }
 }
