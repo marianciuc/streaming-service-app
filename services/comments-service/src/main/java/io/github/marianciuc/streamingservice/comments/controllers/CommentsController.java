@@ -8,7 +8,8 @@
 
 package io.github.marianciuc.streamingservice.comments.controllers;
 
-import io.github.marianciuc.streamingservice.comments.dto.CommentDto;
+import io.github.marianciuc.streamingservice.comments.dto.requests.CreateCommentRequest;
+import io.github.marianciuc.streamingservice.comments.dto.response.CommentsResponse;
 import io.github.marianciuc.streamingservice.comments.services.CommentsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CommentsController {
     private final CommentsService commentService;
 
     @PostMapping
-    public ResponseEntity<CommentDto> addComment(@Validated @RequestBody CommentDto commentDto) {
-        return ResponseEntity.ok(this.commentService.add(commentDto));
+    public ResponseEntity<CommentsResponse> addComment(@Validated @RequestBody CreateCommentRequest request) {
+        return ResponseEntity.ok(this.commentService.add(request));
     }
 }
