@@ -4,7 +4,6 @@ import io.github.marianciuc.streamingservice.user.dto.requests.RegistrationReque
 import io.github.marianciuc.streamingservice.user.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -18,7 +17,6 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<Void> register(@RequestBody RegistrationRequest request) {
         userService.createUser(request);
         return ResponseEntity.ok().build();
