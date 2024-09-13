@@ -24,6 +24,18 @@ services:
     networks:
       - streaming-service-app-net
 
+  # Hashicorp Vault service
+  vault:
+    container_name: ms_vault_streaming_service
+    image: hashicorp/vault
+    ports:
+      - 8200:8200
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_DEV_ROOT_TOKEN_ID}
+    networks:
+      - streaming-service-app-net
+    command: "vault server -dev -dev-root-token-id=${VAULT_DEV_ROOT_TOKEN_ID}"
+
   # Zookeeper service
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
