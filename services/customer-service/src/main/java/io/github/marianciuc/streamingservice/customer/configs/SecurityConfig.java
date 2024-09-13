@@ -1,9 +1,9 @@
-package io.github.marianciuc.streamingservice.comments.config;
+package io.github.marianciuc.streamingservice.customer.configs;
 
 
 import com.nimbusds.jose.JWSVerifier;
-import io.github.marianciuc.streamingservice.comments.security.filters.JWTFilter;
-import io.github.marianciuc.streamingservice.comments.security.serialization.AccessJWETokenStringDeserializer;
+import io.github.marianciuc.streamingservice.customer.security.filters.JWTFilter;
+import io.github.marianciuc.streamingservice.customer.security.serialization.AccessJWETokenStringDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
