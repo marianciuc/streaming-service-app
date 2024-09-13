@@ -8,10 +8,8 @@
 
 package io.github.marianciuc.streamingservice.customer.services.impl;
 
-import io.github.marianciuc.jwtsecurity.entity.JwtUser;
 import io.github.marianciuc.streamingservice.customer.dto.CustomerDto;
 import io.github.marianciuc.streamingservice.customer.dto.PaginationResponse;
-import io.github.marianciuc.streamingservice.customer.exceptions.AccessDeniedException;
 import io.github.marianciuc.streamingservice.customer.exceptions.EntityNotFoundException;
 import io.github.marianciuc.streamingservice.customer.exceptions.VerificationCodeException;
 import io.github.marianciuc.streamingservice.customer.kafka.messages.CreateUserMessage;
@@ -19,6 +17,7 @@ import io.github.marianciuc.streamingservice.customer.model.Customer;
 import io.github.marianciuc.streamingservice.customer.repository.CustomerRepository;
 import io.github.marianciuc.streamingservice.customer.services.CustomerService;
 import io.github.marianciuc.streamingservice.customer.services.EmailVerificationService;
+import io.github.marianciuc.streamingservice.customer.security.services.UserService;
 import io.github.marianciuc.streamingservice.customer.specifications.CustomerSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +25,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,8 +41,6 @@ import java.util.UUID;
 @Slf4j
 public class CustomerServiceImpl implements CustomerService {
 
-    private static final String ADMIN_ROLE = "ROLE_ADMIN";
-
     private static class Defaults {
         static final String THEME = "light";
         static final String LANGUAGE = "en";
@@ -57,6 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository repository;
     private final EmailVerificationService emailVerificationService;
+    private final UserService userService;
 
     @Override
     public void createCustomer(CreateUserMessage message) {
@@ -75,22 +71,23 @@ public class CustomerServiceImpl implements CustomerService {
                 .username(message.username())
                 .build();
         log.info("Creating new customer {}", newCustomer);
-        repository.save(newCustomer);
+        this.repository.save(newCustomer);
     }
 
-    public void startEmailVerification(Authentication authentication) {
-        Customer customer = getCustomerFromAuth(authentication);
+    public void startEmailVerification() {
+        Customer customer = this.getCustomerFromAuth();
 
         if (customer.isEmailVerified()) {
             log.error("Email {} is already verified", customer.getEmail());
             throw new VerificationCodeException("Email is already verified");
         }
 
-        emailVerificationService.sendVerificationEmail(customer.getEmail());
+        this.emailVerificationService.sendVerificationEmail(customer.getEmail());
     }
 
-    public void verifyCode(String verifyCode, Authentication authentication) {
-        Customer customer = getCustomerFromAuth(authentication);
+    @Override
+    public void verifyCode(String verifyCode) {
+        Customer customer = this.getCustomerFromAuth();
 
         try {
             String verifiedEmail = emailVerificationService.verifyEmail(verifyCode);
@@ -100,18 +97,18 @@ public class CustomerServiceImpl implements CustomerService {
                 throw new VerificationCodeException("Invalid verification code");
             }
             customer.setEmailVerified(true);
-            repository.save(customer);
+            this.repository.save(customer);
         } catch (VerificationCodeException e) {
             log.error("Verification code {} is invalid or expired", verifyCode);
             throw e;
         }
     }
 
-    private Customer getCustomerFromAuth(Authentication authentication) {
-        JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
-        return repository.findById(jwtUser.getId()).orElseThrow(() -> new RuntimeException("Customer not found"));
+    private Customer getCustomerFromAuth() {
+        return this.repository.findById(this.userService.extractUserIdFromAuth()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
     }
 
+    @Override
     public PaginationResponse<List<CustomerDto>> findAllByFilter(Integer page, Integer pageSize, String country, String email, String id, boolean isEmailVerified, String username) {
         Pageable pageable = PageRequest.of(page, pageSize);
 
@@ -121,7 +118,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .and(Optional.ofNullable(username).map(CustomerSpecification::usernameStartsWith).orElse(null))
                 .and(CustomerSpecification.isEmailVerified(isEmailVerified));
 
-        Page<Customer> customerPage = repository.findAll(spec, pageable);
+        Page<Customer> customerPage = this.repository.findAll(spec, pageable);
 
         return new PaginationResponse<>(
                 customerPage.getTotalPages(),
@@ -132,14 +129,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public CustomerDto findById(UUID customerId) {
-        return repository.findById(customerId).map(CustomerDto::to).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        return this.repository.findById(customerId).map(CustomerDto::to).orElseThrow(() -> new EntityNotFoundException(
+                "Customer not found"));
     }
 
-    public void updateCustomerDetails(UUID customerId, CustomerDto customerDto, Authentication authentication) {
-        Customer existingCustomer = repository.findById(customerId).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
-
-        JwtUser jwtUser = getAuthenticatedUser(authentication);
-        checkUserPermissions(jwtUser, existingCustomer);
+    @Override
+    public void updateCustomerDetails(CustomerDto customerDto) {
+        Customer existingCustomer = this.getCustomerFromAuth();
 
         if (customerDto.email() != null) {
             existingCustomer.setEmail(customerDto.email());
@@ -153,21 +149,6 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerDto.receiveNewsletter() != existingCustomer.isReceiveNewsletter()) existingCustomer.setReceiveNewsletter(customerDto.receiveNewsletter());
         if (customerDto.enableNotifications() != existingCustomer.isEnableNotifications()) existingCustomer.setEnableNotifications(customerDto.enableNotifications());
 
-        repository.save(existingCustomer);
-    }
-
-    private JwtUser getAuthenticatedUser(Authentication authentication) {
-        try {
-            return (JwtUser) authentication.getPrincipal();
-        } catch (ClassCastException e) {
-            throw new AccessDeniedException("Invalid authentication principal");
-        }
-    }
-
-
-    private void checkUserPermissions(JwtUser jwtUser, Customer existingCustomer) {
-        if (!jwtUser.getRole().equals(ADMIN_ROLE) && !jwtUser.getId().equals(existingCustomer.getId())) {
-            throw new AccessDeniedException("You do not have permission to update this user");
-        }
+        this.repository.save(existingCustomer);
     }
 }

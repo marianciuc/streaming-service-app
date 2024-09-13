@@ -34,7 +34,7 @@ public interface CustomerService {
      *
      * @param authentication the authentication details of the current user, used to identify the customer.
      */
-    void startEmailVerification(Authentication authentication);
+    void startEmailVerification();
 
     /**
      * Verifies the provided email verification code for the authenticated customer.
@@ -42,7 +42,7 @@ public interface CustomerService {
      * @param verifyCode the email verification code sent to the customer's email.
      * @param authentication the authentication details of the current user, used to identify the customer.
      */
-    void verifyCode(String verifyCode, Authentication authentication);
+    void verifyCode(String verifyCode);
 
     /**
      * Finds all customers based on the provided filter criteria.
@@ -73,6 +73,6 @@ public interface CustomerService {
      * @param customerDto the DTO containing the updated details of the customer.
      * @param authentication the authentication details of the current user, used to verify permissions.
      */
-    void updateCustomerDetails(UUID customerId, CustomerDto customerDto, Authentication authentication);
+    void updateCustomerDetails(CustomerDto customerDto);
 
 }
