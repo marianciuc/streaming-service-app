@@ -36,4 +36,8 @@ public class Address {
 
     @Column(name = "country")
     private String country;
+
+    @OneToOne
+    @JoinColumn(name = "card_holder_id")
+    private CardHolder cardHolder;
 }
