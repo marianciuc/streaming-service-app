@@ -8,10 +8,13 @@
 
 package io.github.marianciuc.streamingservice.content.repository;
 
+import io.github.marianciuc.streamingservice.content.entity.Content;
 import io.github.marianciuc.streamingservice.content.entity.Rate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface RateRepository extends JpaRepository<Rate, UUID> {
+    Optional<Rate> findByUserIdAndContent(UUID userId, Content content);
 }
