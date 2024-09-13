@@ -30,8 +30,4 @@ public record CardHolderDto(
                 cardHolder.getEmail()
         );
     }
-
-    public static CardHolder toDto(CardHolderDto cardHolderDto) {
-        return CardHolder.builder().userId(cardHolderDto.id).build();
-    }
 }

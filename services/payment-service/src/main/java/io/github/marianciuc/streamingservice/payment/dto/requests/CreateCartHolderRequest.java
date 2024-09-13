@@ -15,14 +15,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.UUID;
-
 @Validated
 public record CreateCartHolderRequest(
-
-        @NotNull(message = "User id is required")
-        UUID id,
-
         @NotNull(message = "Address is required")
         AddressDto address,
 
