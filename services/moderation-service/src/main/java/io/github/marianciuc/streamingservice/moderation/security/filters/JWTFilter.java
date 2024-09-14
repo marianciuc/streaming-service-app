@@ -6,11 +6,11 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.content.security.filters;
+package io.github.marianciuc.streamingservice.moderation.security.filters;
 
-import io.github.marianciuc.streamingservice.content.security.dto.JWTUserPrincipal;
-import io.github.marianciuc.streamingservice.content.security.dto.Token;
-import io.github.marianciuc.streamingservice.content.security.serialization.TokenDeserializer;
+import io.github.marianciuc.streamingservice.moderation.security.dto.JWTUserPrincipal;
+import io.github.marianciuc.streamingservice.moderation.security.dto.Token;
+import io.github.marianciuc.streamingservice.moderation.security.serialization.TokenDeserializer;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ import java.io.IOException;
 @Slf4j
 public class JWTFilter extends OncePerRequestFilter {
 
-    private final TokenDeserializer tokenDeserializer;
+    private final io.github.marianciuc.streamingservice.moderation.security.serialization.TokenDeserializer tokenDeserializer;
 
     public JWTFilter(TokenDeserializer tokenDeserializer) {
         this.tokenDeserializer = tokenDeserializer;
@@ -41,7 +41,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
-            Token jwtToken = this.tokenDeserializer.apply(token);
+            Token jwtToken = tokenDeserializer.apply(token);
 
             if (jwtToken != null) {
                 JWTUserPrincipal jwtUserPrincipal = new JWTUserPrincipal(jwtToken);
