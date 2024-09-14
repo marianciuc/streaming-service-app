@@ -6,13 +6,13 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.content.security.serialization;
+package io.github.marianciuc.streamingservice.moderation.security.serialization;
 
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jwt.SignedJWT;
-import io.github.marianciuc.streamingservice.content.security.dto.Token;
+import io.github.marianciuc.streamingservice.moderation.security.dto.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
