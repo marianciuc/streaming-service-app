@@ -6,12 +6,11 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.content.security.serialization;
+package io.github.marianciuc.streamingservice.moderation.security.serialization;
 
 
 
-
-import io.github.marianciuc.streamingservice.content.security.dto.Token;
+import io.github.marianciuc.streamingservice.moderation.security.dto.Token;
 
 import java.util.function.Function;
 
