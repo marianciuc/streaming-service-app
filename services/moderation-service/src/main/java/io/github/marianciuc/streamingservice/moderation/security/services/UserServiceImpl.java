@@ -6,10 +6,10 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.content.security.services;
+package io.github.marianciuc.streamingservice.moderation.security.services;
 
 
-import io.github.marianciuc.streamingservice.content.security.dto.JWTUserPrincipal;
+import io.github.marianciuc.streamingservice.moderation.security.dto.JWTUserPrincipal;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
