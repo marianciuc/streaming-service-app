@@ -10,8 +10,7 @@ package io.github.marianciuc.streamingservice.moderation.dto;
 
 import java.util.UUID;
 
-public record NoteDto() {
-    NoteDto addNoteToTopic(NoteDto noteDto) {
-        return new NoteDto();
-    }
+public record NoteDto(
+
+) {
 }
