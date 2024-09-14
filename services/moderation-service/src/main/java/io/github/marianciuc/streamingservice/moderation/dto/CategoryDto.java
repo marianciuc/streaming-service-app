@@ -8,5 +8,7 @@
 
 package io.github.marianciuc.streamingservice.moderation.dto;
 
-public record CategoryDto() {
+public record CategoryDto(
+
+) {
 }

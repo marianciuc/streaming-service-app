@@ -14,12 +14,10 @@ import io.github.marianciuc.streamingservice.moderation.services.CategoryService
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController("/api/v1/moderation/categories")
 @RequiredArgsConstructor
@@ -34,7 +32,15 @@ public class CategoryController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-        return ResponseEntity.ok(categoryService.findAll());
+    public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestParam(value = "isDeleted", defaultValue =
+            "false") Boolean isDeleted) {
+        return ResponseEntity.ok(categoryService.findAll(isDeleted));
+    }
+
+    @DeleteMapping("/{categoryId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_MODERATOR', 'ROLE_ADMIN')")
+    public ResponseEntity<Void> deleteCategory(@PathVariable("categoryId") UUID categoryId) {
+        categoryService.delete(categoryId);
+        return ResponseEntity.ok().build();
     }
 }
