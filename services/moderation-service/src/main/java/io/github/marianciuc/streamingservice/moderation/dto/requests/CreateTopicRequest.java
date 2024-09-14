@@ -6,10 +6,13 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.moderation.dto;
+package io.github.marianciuc.streamingservice.moderation.dto.requests;
+
+import java.util.UUID;
 
 public record CreateTopicRequest (
         String title,
-        String description
+        String description,
+        UUID categoryId
 ) {
 }
