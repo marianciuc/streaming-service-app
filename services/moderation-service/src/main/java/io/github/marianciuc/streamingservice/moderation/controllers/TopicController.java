@@ -8,7 +8,7 @@
 
 package io.github.marianciuc.streamingservice.moderation.controllers;
 
-import io.github.marianciuc.streamingservice.moderation.dto.CreateTopicRequest;
+import io.github.marianciuc.streamingservice.moderation.dto.requests.CreateTopicRequest;
 import io.github.marianciuc.streamingservice.moderation.services.TopicMessagesService;
 import io.github.marianciuc.streamingservice.moderation.services.TopicService;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class TopicController {
 
     @PostMapping
     public ResponseEntity<UUID> createTopic(@Valid @RequestBody CreateTopicRequest createTopicRequest) {
-        return ResponseEntity.ok(topicService.createTopic(createTopicRequest));
+        return ResponseEntity.ok(topicService.create(createTopicRequest));
     }
 
 

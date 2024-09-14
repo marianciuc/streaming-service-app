@@ -8,7 +8,11 @@
 
 package io.github.marianciuc.streamingservice.moderation.dto;
 
-public record TopicMessageDto(
+import java.util.UUID;
 
+public record TopicMessageDto(
+        UUID id,
+        String content,
+        UUID topicId
 ) {
 }
