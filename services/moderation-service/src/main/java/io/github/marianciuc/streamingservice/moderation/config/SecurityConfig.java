@@ -1,9 +1,9 @@
-package io.github.marianciuc.streamingservice.content.config;
+package io.github.marianciuc.streamingservice.moderation.config;
 
 
 import com.nimbusds.jose.JWSVerifier;
-import io.github.marianciuc.streamingservice.content.security.filters.JWTFilter;
-import io.github.marianciuc.streamingservice.content.security.serialization.AccessJWETokenStringDeserializer;
+import io.github.marianciuc.streamingservice.moderation.security.filters.JWTFilter;
+import io.github.marianciuc.streamingservice.moderation.security.serialization.AccessJWETokenStringDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
