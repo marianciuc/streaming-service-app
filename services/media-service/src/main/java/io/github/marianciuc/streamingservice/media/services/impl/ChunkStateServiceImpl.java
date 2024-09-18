@@ -33,20 +33,12 @@ public class ChunkStateServiceImpl implements ChunkStateService {
 
         if (chunkNumber - 1 >= totalChunks) {
             throw new ChunkUploadTimeoutException("Chunk number exceeds total chunks for key: " + key);
+        } if (chunkNumber < 0) {
+            throw new IllegalArgumentException("Chunk number must be greater than 0");
         }
 
         chunkStatus[chunkNumber - 1] = true;
-
-        if (isUploadComplete(chunkStatus)) {
-            deleteChunkUploadStatus(fileId);
-        } else {
-            storeChunkStatusInRedis(key, chunkStatus);
-        }
-    }
-
-    @Override
-    public Boolean[] getChunkUploadStatus(UUID fileId) {
-        return getChunkStatusFromRedis(generateRedisKey(fileId));
+        storeChunkStatusInRedis(key, chunkStatus);
     }
 
     @Override
@@ -56,6 +48,7 @@ public class ChunkStateServiceImpl implements ChunkStateService {
 
     @Override
     public void createChunkUploadStatus(UUID fileId, int totalChunks) {
+        if (totalChunks < 1) throw new IllegalArgumentException("Total chunks must be greater than 0");
         String key = generateRedisKey(fileId);
         Boolean[] chunkStatus = initializeChunkStatus(totalChunks);
         storeChunkStatusInRedis(key, chunkStatus);
@@ -66,8 +59,7 @@ public class ChunkStateServiceImpl implements ChunkStateService {
     }
 
     private Boolean[] getChunkStatusFromRedis(String key) {
-        ValueOperations<String, Boolean[]> ops = redisTemplate.opsForValue();
-        Boolean[] chunkStatus = ops.get(key);
+        Boolean[] chunkStatus = redisTemplate.opsForValue().get(key);
 
         if (chunkStatus == null) {
             throw new ChunkUploadNotInitializedException("Upload status not initialized for key: " + key);
@@ -86,12 +78,7 @@ public class ChunkStateServiceImpl implements ChunkStateService {
         return chunkStatus;
     }
 
-    private boolean isUploadComplete(Boolean[] chunkStatus) {
-        for (Boolean status : chunkStatus) {
-            if (!status) {
-                return false;
-            }
-        }
-        return true;
+    public boolean isUploadComplete(UUID fileId) {
+        return Arrays.stream(getChunkStatusFromRedis(generateRedisKey(fileId))).allMatch(Boolean::booleanValue);
     }
 }
