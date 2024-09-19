@@ -22,7 +22,6 @@ import java.time.Instant;
 @Service
 public class TokenAuthenticationUserDetailsService implements AuthenticationUserDetailsService<Authentication> {
 
-
     @Override
     public UserDetails loadUserDetails(Authentication authentication) throws UsernameNotFoundException {
             if (authentication.getPrincipal() instanceof Token token) {

@@ -1,40 +1,40 @@
 package io.github.marianciuc.streamingservice.media.config;
 
+
+import com.nimbusds.jose.JWSVerifier;
+import io.github.marianciuc.streamingservice.media.security.filters.JWTFilter;
+import io.github.marianciuc.streamingservice.media.security.serialization.AccessJWETokenStringDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CsrfFilter;
 
-/**
- * This class provides the configuration for the security of the application.
- * It enables web security and defines the security filter chain for handling HTTP requests.
- */
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
-    /**
-     * This method defines the security filter chain for handling HTTP requests.
-     * It disables CSRF protection, configures authorization for all requests,
-     * sets the session creation policy as stateless, and adds a custom filter before the
-     * UsernamePasswordAuthenticationFilter.
-     *
-     * @param http the HttpSecurity object used for configuring security
-     * @return the configured SecurityFilterChain object
-     * @throws Exception if an error occurs during configuration
-     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWSVerifier verifier) throws Exception {
         http
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer.requestMatchers("/api/v1/media/images/{picture-id}").permitAll())
-                .authorizeHttpRequests(authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer.anyRequest().permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/error", "/api/v1/images").permitAll().anyRequest().authenticated())
+                .addFilterBefore(new JWTFilter(new AccessJWETokenStringDeserializer(verifier)),
+                        CsrfFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

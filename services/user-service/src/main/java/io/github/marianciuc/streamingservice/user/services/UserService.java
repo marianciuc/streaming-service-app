@@ -47,7 +47,7 @@ public interface UserService extends UserDetailsService {
     User getUserById(UUID userId);
 
     /**
-     * Bans a User by their ID.
+     * Bans a User by their ID. If user is already banned, this method will unban them.
      * @param userId An ID of a User.
      */
     void banUser(UUID userId);
