@@ -6,7 +6,7 @@
  *
  */
 
-package io.github.marianciuc.streamingservice.content.config;
+package io.github.marianciuc.streamingservice.media.config;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;

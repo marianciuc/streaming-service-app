@@ -51,13 +51,10 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        logger.info("JWT filter");
         Authentication authRequest = authenticationConverter.convert(request);
-        logger.info("auth converted");
         if (authRequest == null) {
             throw new AuthenticationException("Failed to convert authentication request") {};
         }
-        logger.info("Attempting authentication with token");
         return getAuthenticationManager().authenticate(authRequest);
     }
 
