@@ -43,9 +43,9 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public UUID uploadImage(MultipartFile file) {
+    public UUID upload(MultipartFile file) {
         try {
-            String url = imageStorageService.uploadImage(file);
+            String url = imageStorageService.upload(file);
             Image image = Image.builder()
                     .contentLength(file.getSize())
                     .contentType(file.getContentType())
@@ -61,11 +61,11 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ImageDto getImage(UUID id) {
+    public ImageDto find(UUID id) {
         Image image = repository.findById(id)
                 .orElseThrow(() -> new ImageNotFoundException(String.format(IMAGE_NOT_FOUND_MSG, id)));
         String fileName = image.getFileName();
-        try (InputStream photoInputStream = imageStorageService.getImage(fileName)) {
+        try (InputStream photoInputStream = imageStorageService.find(fileName)) {
             ByteArrayResource byteArrayResource = new ByteArrayResource(photoInputStream.readAllBytes());
             return new ImageDto(byteArrayResource, image.getContentType());
         } catch (IOException e) {
@@ -76,12 +76,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void deleteImage(UUID id) {
+    public void delete(UUID id) {
         Image image = repository.findById(id)
                 .orElseThrow(() -> new ImageNotFoundException(String.format(IMAGE_NOT_FOUND_MSG, id)));
         String fileName = image.getFileName();
         try {
-            imageStorageService.deleteImage(fileName);
+            imageStorageService.delete(fileName);
             repository.delete(image);
         } catch (Exception e) {
             String errorMsg = String.format(ERROR_DELETING_IMAGE_MSG, id, fileName);

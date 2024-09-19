@@ -9,7 +9,6 @@
 package io.github.marianciuc.streamingservice.media.services;
 
 import io.github.marianciuc.streamingservice.media.dto.ImageDto;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -25,21 +24,22 @@ public interface ImageService {
      * @param id The UUID of the image.
      * @return An ImageDto containing the image data.
      */
-    ImageDto getImage(UUID id);
+    ImageDto find(UUID id);
 
     /**
-     * Uploads a new image.
+     * Uploads a photo. Previously file must be validated by {@code @Image} annotation.
      *
-     * @param file The image file to upload.
-     * @param authentication The authentication information of the user uploading the image.
-     * @return The UUID of the uploaded image.
+     * @param file the photo to be uploaded
+     * @return the unique identifier of the uploaded photo
      */
-    UUID uploadImage(MultipartFile file);
+    UUID upload(MultipartFile file);
 
     /**
-     * Deletes an image by its ID.
+     * Deletes a photo.
      *
-     * @param id The UUID of the image to delete.
+     * @param id the unique identifier of the photo
+     * @throws org.springframework.security.access.AccessDeniedException if the user is not authorized to delete the
+     * photo or the photo publisher is different from the current user and the current user is not an admin
      */
-    void deleteImage(UUID id);
+    void delete(UUID id);
 }
