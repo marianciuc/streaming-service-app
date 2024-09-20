@@ -19,10 +19,12 @@ import java.util.UUID;
 public interface VideoCompressingService {
 
     /**
-     * Compresses the video with the given id and uploads it to the storage.
+     * This method compresses the video with the specified resolution and uploads it to the storage in chunks. The
+     * method returns the playlist path of the compressed video in the storage.
+     *
      * @param resolution the resolution to compress and upload video
      * @param id the id of the video to compress and upload
-     * @return the playlist url of the compressed video in the storage
+     * @return the playlist path of the compressed video in the storage
      * @throws CompressingException if the video compression fails
      */
     String compressVideoAndUploadToStorage(ResolutionDto resolution, UUID id) throws CompressingException;
